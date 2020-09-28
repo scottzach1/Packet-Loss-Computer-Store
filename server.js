@@ -8,6 +8,8 @@ const routes = require('./routes');
 
 const app = express();
 
+const store = require('connect-mongodb-session')(session);
+
 app.use(helmet());
 
 app.set('view engine', 'ejs');
@@ -20,8 +22,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: true,
+//  store,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
   },
 }));
 
