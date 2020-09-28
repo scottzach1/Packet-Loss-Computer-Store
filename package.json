@@ -1,30 +1,32 @@
 {
-    "name": "computer-parts-store",
-    "version": "1.0.0",
-    "description": "",
-    "main": "server.js",
-    "scripts": {
-      "dev": "nodemon server.js",
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-      "type": "git",
-      "url": "https://gitlab.ecs.vuw.ac.nz/packet-loss/computer-parts-store"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      "body-parser": "^1.19.0",
-      "connect-mongodb-session": "^2.2.0",
-      "cookie-parser": "^1.4.4",
-      "ejs": "^2.7.1",
-      "express": "^4.17.1",
-      "express-session": "^1.16.2",
-      "helmet": "^3.21.1",
-      "mongodb": "^3.3.2"
-    },
-    "devDependencies": {
-      "nodemon": "^1.19.3"
-    }
+  "name": "nwen304-webapplication",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.ecs.vuw.ac.nz:chandemaya/nwen304-webapplication.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-mongodb-session": "^2.2.0",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^8.1.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "helmet": "^3.21.1",
+    "mongo": "^0.1.0",
+    "mongodb": "^3.3.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3"
   }
-  
+}

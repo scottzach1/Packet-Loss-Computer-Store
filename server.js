@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const helmet = require('helmet');
-const path = require('path');
+const db = require('./src/db')
+const path = require('path')
+
 
 const routes = require('./routes');
 
@@ -28,11 +30,21 @@ app.use(session({
   },
 }));
 
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
 app.use('/', routes);
+
+db.connectToServer((error) =>{
+  if(error){
+    console.log('could not connect to the database');
+    return;
+  }else {
+    console.log('Connected to database ')
+  }
+})
 
 app.listen(3000, () => {
   console.log('Listening on 3000');
