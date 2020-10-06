@@ -7,7 +7,14 @@ import {authServerRouter} from "./routes/authServerRoutes";
 import {cartServerRouter} from "./routes/cartServerRoutes";
 import {shopServerRouter} from "./routes/shopServerRoutes";
 import {accountServerRouter} from "./routes/accountServerRoutes";
+import dotenv from 'dotenv';
 
+// Initialize configuration
+dotenv.config();
+const serverPort = process.env.SERVER_PORT;
+const mongoPort = process.env.MONGO_PORT;
+
+// Create App.
 const app = express();
 app.use(json());
 
@@ -18,18 +25,17 @@ app.use(authServerRouter);
 app.use(cartServerRouter);
 app.use(shopServerRouter)
 
-const MONGO_PORT = 27017;
-
-mongoose.connect(`mongodb://localhost:${MONGO_PORT}/computer-parts-store`, {
+// Connect to local Mongo DB.
+mongoose.connect(`mongodb://localhost:${mongoPort}/computer-parts-store`, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, () => {
-    // console.log('connected to database');
+    console.log('connected to database');
 });
 
-const NODE_PORT = 3000;
 
-app.listen(NODE_PORT, () => {
-    // console.log(`server is listening on port ${NODE_PORT}`);
+// Listen for traffic on NPM port.
+app.listen(serverPort, () => {
+    console.log(`server is listening on port ${serverPort}`);
 });
