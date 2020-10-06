@@ -8,6 +8,7 @@ import {cartServerRouter} from "./routes/cartServerRoutes";
 import {shopServerRouter} from "./routes/shopServerRoutes";
 import {accountServerRouter} from "./routes/accountServerRoutes";
 import dotenv from 'dotenv';
+import path from 'path';
 
 // Initialize configuration
 dotenv.config();
@@ -18,6 +19,14 @@ const mongoPort = process.env.MONGO_PORT;
 const app = express();
 app.use(json());
 
+// View Engine Setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../client/views'));
+
+// Setup Public Folder
+app.use(express.static('./public'));
+
+// Add Custom Routing
 app.use(shopClientRouter);
 app.use(accountClientRouter);
 app.use(accountServerRouter);
@@ -33,7 +42,6 @@ mongoose.connect(`mongodb://localhost:${mongoPort}/computer-parts-store`, {
 }, () => {
     console.log('connected to database');
 });
-
 
 // Listen for traffic on NPM port.
 app.listen(serverPort, () => {

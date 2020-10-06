@@ -8,7 +8,7 @@ router.get('/api/shop/items/all', [], (req: Request, res: Response) => {
     return res.send('SOME ACTION');
 });
 
-router.get('/api/shop/items/add', [], async (req: Request, res: Response) => {
+router.post('/api/shop/items/add', [], async (req: Request, res: Response) => {
     // Extract values from request body.
     const {title, description} = req.body;
 
