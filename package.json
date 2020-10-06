@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "ts-node-dev server/server.ts",
+    "start": "ts-node-dev server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

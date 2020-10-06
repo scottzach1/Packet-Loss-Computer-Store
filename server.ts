@@ -1,12 +1,12 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import {json} from 'body-parser';
-import {accountClientRouter} from "../client/routes/accountClientRoutes";
-import {shopClientRouter} from "../client/routes/shopClientRoutes";
-import {authServerRouter} from "./routes/authServerRoutes";
-import {cartServerRouter} from "./routes/cartServerRoutes";
-import {shopServerRouter} from "./routes/shopServerRoutes";
-import {accountServerRouter} from "./routes/accountServerRoutes";
+import {accountClientRouter} from "./client/routes/accountClientRoutes";
+import {shopClientRouter} from "./client/routes/shopClientRoutes";
+import {authServerRouter} from "./server/routes/authServerRoutes";
+import {cartServerRouter} from "./server/routes/cartServerRoutes";
+import {shopServerRouter} from "./server/routes/shopServerRoutes";
+import {accountServerRouter} from "./server/routes/accountServerRoutes";
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -21,7 +21,7 @@ app.use(json());
 
 // View Engine Setup
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../client/views'));
+app.set('views', path.join(__dirname, 'client/views'));
 
 // Setup Public Folder
 app.use(express.static('./public'));
@@ -34,7 +34,7 @@ app.use(authServerRouter);
 app.use(cartServerRouter);
 app.use(shopServerRouter)
 
-// Connect to local Mongo DB.
+// Connect to local Mongo DB
 mongoose.connect(`mongodb://localhost:${mongoPort}/computer-parts-store`, {
     useCreateIndex: true,
     useNewUrlParser: true,

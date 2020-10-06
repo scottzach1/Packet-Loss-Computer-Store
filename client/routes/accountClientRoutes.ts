@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import {render} from '../../server/utils';
+import {render} from '../utils';
 
 const router = express.Router();
 
