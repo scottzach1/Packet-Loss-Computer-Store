@@ -19,7 +19,7 @@ router.get('/api/shop/items/add', [], async (req: Request, res: Response) => {
     await shopListing.save();
 
     // Notify User of Response.
-    console.log('New item added!', shopListing);
+    // console.log('New item added!', shopListing);
     return res.status(201).send(shopListing);
 });
 

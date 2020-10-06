@@ -25,11 +25,11 @@ mongoose.connect(`mongodb://localhost:${MONGO_PORT}/computer-parts-store`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, () => {
-    console.log('connected to database');
+    // console.log('connected to database');
 });
 
 const NODE_PORT = 3000;
 
 app.listen(NODE_PORT, () => {
-    console.log(`server is listening on port ${NODE_PORT}`);
+    // console.log(`server is listening on port ${NODE_PORT}`);
 });
