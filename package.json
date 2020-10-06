@@ -1,5 +1,5 @@
 {
-  "name": "Computer-Parts-Store",
+  "name": "computer-parts-store",
   "version": "0.0.1",
   "description": "CRUD web store for NWEN 304",
   "main": "server.js",
@@ -13,10 +13,12 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "mongoose": "^5.10.8"
   },
   "devDependencies": {
+    "@types/ejs": "^3.0.4",
     "@types/express": "^4.17.8",
     "@types/mongoose": "^5.7.36",
     "@types/node": "^14.11.5",

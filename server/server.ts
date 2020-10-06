@@ -18,7 +18,9 @@ app.use(authServerRouter);
 app.use(cartServerRouter);
 app.use(shopServerRouter)
 
-mongoose.connect('mongodb://localhost:27017/computer-parts-store', {
+const MONGO_PORT = 27017;
+
+mongoose.connect(`mongodb://localhost:${MONGO_PORT}/computer-parts-store`, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -26,6 +28,8 @@ mongoose.connect('mongodb://localhost:27017/computer-parts-store', {
     console.log('connected to database');
 });
 
-app.listen(3000, () => {
-    console.log('server is listening on port 3000');
+const NODE_PORT = 3000;
+
+app.listen(NODE_PORT, () => {
+    console.log(`server is listening on port ${NODE_PORT}`);
 });
