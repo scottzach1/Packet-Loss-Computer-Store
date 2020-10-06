@@ -1,16 +1,16 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 
 const router = express.Router();
 
-router.get('/login', ((req, res) => {
+router.get('/login', [], ((req : Request, res: Response) => {
     return res.send('LOGIN PAGE');
 }));
 
-router.get('/signup', ((req, res) => {
+router.get('/signup', [], ((req : Request, res: Response) => {
     return res.send('SIGNUP PAGE');
 }));
 
-router.get('logout', ((req, res) => {
+router.get('logout', [], ((req : Request, res: Response) => {
     return res.send('LOGOUT PAGE');
 }));
 

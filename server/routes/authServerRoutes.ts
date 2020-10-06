@@ -1,18 +1,18 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 
 const router = express.Router();
 
-router.get('/api/auth/login', ((req, res) => {
+router.get('/api/auth/login', [], ((req : Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
 }));
 
-router.get('/api/auth/signup', ((req, res) => {
+router.get('/api/auth/signup', [], ((req : Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
 }));
 
-router.get('/api/auth/reset', ((req, res) => {
+router.get('/api/auth/reset', [], ((req : Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
 }));

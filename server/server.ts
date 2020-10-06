@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import {json} from 'body-parser';
 import {accountClientRouter} from "../client/routes/accountClientRoutes";
 import {shopClientRouter} from "../client/routes/shopClientRoutes";
