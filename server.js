@@ -6,14 +6,14 @@ const db = require('./server/controller/db')
 const path = require('path')
 
 
-const routes = require('./view_routes');
+const routes = require('./client/routes');
 const app = express();
 const store = require('connect-mongodb-session')(session);
 
 app.use(helmet());
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, '/client'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

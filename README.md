@@ -13,7 +13,9 @@ server/
 
 # Client
 client/
-    view/
+    views/
+        pages/
+        partials/
     routes/
 
 # All
