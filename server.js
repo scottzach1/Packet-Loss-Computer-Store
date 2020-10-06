@@ -2,14 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const helmet = require('helmet');
-const db = require('./src/db')
+const db = require('./server/controller/db')
 const path = require('path')
 
 
-const routes = require('./routes');
-
+const routes = require('./view_routes');
 const app = express();
-
 const store = require('connect-mongodb-session')(session);
 
 app.use(helmet());
@@ -40,7 +38,6 @@ app.use('/', routes);
 db.connectToServer((error) =>{
   if(error){
     console.log('could not connect to the database');
-    return;
   }else {
     console.log('Connected to database ')
   }
