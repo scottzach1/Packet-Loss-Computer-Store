@@ -5,6 +5,7 @@ import passport from "passport";
 import './server/controller/db';
 import {clientRouter} from "./client/routes";
 import {serverRouter} from "./server/routes";
+import PassportMiddleware from "./server/middleware/passport";
 
 // Initialize configuration
 dotenv.config();
@@ -19,6 +20,7 @@ app.set('port', serverPort);
 // Middlewares
 app.use(express.json());
 app.use(passport.initialize());
+passport.use(PassportMiddleware);
 
 // View Engine Setup
 app.set('view engine', 'ejs');
