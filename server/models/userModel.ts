@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 export interface UserInterface extends Document {
     email: string,
     password: string,
-    passwordConfirmation: string,
+    comparePassword: (passport: string) => Promise<boolean>,
 }
 
 const userSchema = new Schema({
@@ -27,9 +27,7 @@ userSchema.pre<UserInterface>('save', async function (next) {
     if (!user.isModified('password')) return next();
 
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(user.password, salt);
-
-    user.password = hash;
+    user.password = await bcrypt.hash(user.password, salt);
     next();
 });
 

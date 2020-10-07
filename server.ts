@@ -2,10 +2,10 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import passport from "passport";
-import './server/controller/db';
+import './server/db';
 import {clientRouter} from "./client/routes";
 import {serverRouter} from "./server/routes";
-import PassportMiddleware from "./server/middleware/passport";
+import PassportMiddleware from "./server/middleware/passportMiddleware";
 
 // Initialize configuration
 dotenv.config();

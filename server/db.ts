@@ -1,5 +1,5 @@
 import mongoose, {ConnectionOptions} from "mongoose";
-import config from "../config";
+import config from "./config";
 
 const mongoOptions: ConnectionOptions = {
     useNewUrlParser: true,
