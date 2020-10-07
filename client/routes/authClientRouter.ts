@@ -15,4 +15,4 @@ router.get('/logout', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/logout', 'Logout', {});
 }));
 
-export {router as accountClientRouter};
+export {router as authClientRouter};
