@@ -3,14 +3,13 @@ import {loginHandler, signupHandler} from "../controller/userController";
 
 const router = express.Router();
 
-
 router.get('/login', [], async (req: Request, res: Response) => {
     const {email, password} = req.body;
     // Try handler.
     const response = await loginHandler(email, password);
     const code = (response.success) ? 200 : 400;
     // Notify sender.
-    return res.send().status(code).json(response);
+    return res.status(code).json(response).send();
 });
 
 router.get(`/signup`, [], async (req: Request, res: Response) => {
@@ -19,7 +18,7 @@ router.get(`/signup`, [], async (req: Request, res: Response) => {
     const response = await signupHandler(email, password, passwordConfirmation);
     const code = (response.success) ? 201 : 400;
     // Notify sender.
-    return res.send().status(code).json(response);
+    return res.status(code).json(response).send();
 });
 
 router.get('/reset', [], (req: Request, res: Response) => {

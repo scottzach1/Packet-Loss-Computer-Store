@@ -5,10 +5,11 @@ const mongoOptions: ConnectionOptions = {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-    user: config.MONGO_DB.USERNAME,
-    pass: config.MONGO_DB.PASSWORD,
+//     user: config.MONGO_DB.USERNAME,
+//     pass: config.MONGO_DB.PASSWORD,
 }
 
+console.log('uri', config.MONGO_DB);
 mongoose.connect(config.MONGO_DB.URI, mongoOptions);
 
 const connection = mongoose.connection;
