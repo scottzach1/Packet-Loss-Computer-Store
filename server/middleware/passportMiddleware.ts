@@ -3,11 +3,12 @@ import {ExtractJwt, Strategy, StrategyOptions} from "passport-jwt";
 import config from "../config";
 
 const options: StrategyOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJwt.fromBodyField('token'),
     secretOrKey: config.JWT_SECRET
 };
 
-const PassportMiddleware = new Strategy(options, async (payload, done) => {
+export default new Strategy(options, async (payload, done) => {
+    console.log('payload', payload);
     try {
         const user = await User.findById(payload.id);
         if (user) return done(null, user);
@@ -16,5 +17,3 @@ const PassportMiddleware = new Strategy(options, async (payload, done) => {
         console.error('failed to find user', error);
     }
 });
-
-export default PassportMiddleware;

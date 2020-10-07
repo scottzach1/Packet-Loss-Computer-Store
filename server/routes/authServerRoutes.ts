@@ -13,9 +13,9 @@ router.get('/login', [], async (req: Request, res: Response) => {
 });
 
 router.get(`/signup`, [], async (req: Request, res: Response) => {
-    const {email, password, passwordConfirmation} = req.body;
+    const {email, password, displayName} = req.body;
     // Try handler.
-    const response = await signupHandler(email, password, passwordConfirmation);
+    const response = await signupHandler(email, password, displayName);
     const code = (response.success) ? 201 : 400;
     // Notify sender.
     return res.status(code).json(response).send();

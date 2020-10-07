@@ -5,6 +5,7 @@ export interface UserInterface extends Document {
     email: string,
     password: string,
     comparePassword: (passport: string) => Promise<boolean>,
+    displayName?: string,
 }
 
 const userSchema = new Schema({
@@ -18,6 +19,10 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
+    },
+    displayName: {
+        type: String,
+        required: false,
     }
 });
 

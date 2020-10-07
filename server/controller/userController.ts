@@ -68,10 +68,10 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
  *
  * @param email - users provided email.
  * @param password - users provided password.
- * @param passwordConfirmation - (optional) password confirmation.
+ * @param displayName - (optional) password confirmation.
  * @return AuthResponse containing success / failure and any error messages.
  */
-const signupHandler = async (email: string, password: string, passwordConfirmation?: string): Promise<AuthResponse> => {
+const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -86,12 +86,6 @@ const signupHandler = async (email: string, password: string, passwordConfirmati
         return response;
     }
 
-    // Passwords miss match (if param present).
-    if (passwordConfirmation && password !== passwordConfirmation) {
-        response.errors.push(`Passwords don't match!`);
-        return response;
-    }
-
     // Check if user exists.
     const userCheck = await User.findOne({'email': email});
     if (userCheck) {
@@ -103,6 +97,7 @@ const signupHandler = async (email: string, password: string, passwordConfirmati
     const userNew = new User({
         'email': email,
         'password': password,
+        'displayName': displayName,
     })
     await userNew.save();
 
