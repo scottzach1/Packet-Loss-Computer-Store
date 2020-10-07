@@ -32,15 +32,16 @@ app.use(accountClientRouter);
 app.use(accountServerRouter);
 app.use(authServerRouter);
 app.use(cartServerRouter);
-app.use(shopServerRouter)
+app.use(shopServerRouter);
 
 // Connect to local Mongo DB
 mongoose.connect(`mongodb://localhost:${mongoPort}/computer-parts-store`, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
-}, () => {
-    console.log('connected to database');
+}, (r) => {
+    if (r) console.error('failed to connect to database', r);
+    else console.log('connected to database');
 });
 
 // Listen for traffic on NPM port.

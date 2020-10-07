@@ -23,12 +23,12 @@ const shopListingSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-})
+});
 
 shopListingSchema.statics.build = (attr: ShopListingInterface) => {
     return new ShopListing(attr)
 }
 
-const ShopListing = mongoose.model<ShopListingDoc, ShopListingModelInterface>('ShopListing', shopListingSchema)
+const ShopListing = mongoose.model<ShopListingDoc, ShopListingModelInterface>('ShopListing', shopListingSchema);
 
 export {ShopListing}
