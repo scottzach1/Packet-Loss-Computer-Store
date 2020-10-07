@@ -1,0 +1,18 @@
+.page-section {
+    border-bottom: 3px solid #bbb;
+    padding: 10px;
+    margin: 10px;
+}
+
+.div-hscroll {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    overflow-x: hidden;
+}
+
+.card {
+    width: 80%;
+    min-width: 20%;
+    text-align: center;
+}

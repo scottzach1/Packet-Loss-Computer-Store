@@ -4,7 +4,7 @@ import {render} from '../utils';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    render(req, res, 'pages/index', 'Home', {});
+    render(req, res, 'pages/index', 'Store', {});
 });
 
 router.get('/checkout', [], ((req : Request, res: Response) => {

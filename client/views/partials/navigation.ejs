@@ -1,12 +1,19 @@
-<nav class="navbar navbar-expand-lg">
-    <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="/checkout">Cart</a></li>
-        <% if (user) { %>
-            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-        <% } else { %>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-        <% } %>
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"><b>Computer Parts Store</b></a>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+        </div>
+    </div>
+</nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="nav-link" href="/">Store</a>
+    <a class="nav-link" href="/about">About</a>
+    <a class="nav-link" href="/checkout">Checkout</a>
+    <% if (user) { %>
+        <a class="nav-link" href="/logout">Logout</a>
+    <% } else { %>
+        <a class="nav-link" href="/login">Login</a>
+    <% } %>
 </nav>
