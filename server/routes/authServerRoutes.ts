@@ -8,16 +8,18 @@ router.get('/login', [], async (req: Request, res: Response) => {
     const {email, password} = req.body;
     // Try handler.
     const response = await loginHandler(email, password);
+    const code = (response.success) ? 200 : 400;
     // Notify sender.
-    return res.send().status((response.success) ? 200 : 400).json(response);
+    return res.send().status(code).json(response);
 });
 
 router.get(`/signup`, [], async (req: Request, res: Response) => {
     const {email, password, passwordConfirmation} = req.body;
     // Try handler.
     const response = await signupHandler(email, password, passwordConfirmation);
+    const code = (response.success) ? 201 : 400;
     // Notify sender.
-    return res.send().status((response.success) ? 201 : 400).json(response);
+    return res.send().status(code).json(response);
 });
 
 router.get('/reset', [], (req: Request, res: Response) => {
