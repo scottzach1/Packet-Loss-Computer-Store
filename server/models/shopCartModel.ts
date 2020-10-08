@@ -1,9 +1,9 @@
-import {ShoppingCart, ShoppingCartInterface} from "./shoppingCartModel";
+import {ShopCart, ShopCartInterface} from "./shoppingCartModel";
 import {UserInterface} from "./userModel";
 import mongoose from "mongoose";
 
 interface ShopOrderInterface {
-    cart: ShoppingCartInterface,
+    cart: ShopCartInterface,
     user: UserInterface,
     orderDate: Date,
 }
@@ -17,7 +17,7 @@ interface ShopOrderModelInterface extends mongoose.Model<ShopOrderModelDoc> {
 
 const shopOrderSchema = new mongoose.Schema({
     cart: {
-        type: ShoppingCart,
+        type: ShopCart,
         required: true,
     },
     orderDate: {
