@@ -1,6 +1,6 @@
 import {ShoppingCart, ShoppingCartInterface} from "./shoppingCartModel";
 import {UserInterface} from "./userModel";
-import * as mongoose from "mongoose";
+import mongoose from "mongoose";
 
 interface ShopOrderInterface {
     cart: ShoppingCartInterface,
