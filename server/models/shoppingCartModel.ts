@@ -6,19 +6,19 @@ interface ShoppingCartEntryInterface {
     quantity: number,
 }
 
-export interface ShoppingCartInterface {
+export interface ShopCartInterface {
     items: ShoppingCartEntryInterface[],
     totalCost: number,
 }
 
-interface ShoppingCartModelDoc extends mongoose.Document, ShoppingCartInterface {
+interface ShopCartModelDoc extends mongoose.Document, ShopCartInterface {
 }
 
-interface ShoppingCartModelInterface extends mongoose.Model<ShoppingCartModelDoc> {
-    build(attr: ShoppingCartInterface): ShoppingCartModelDoc,
+interface ShopCartModelInterface extends mongoose.Model<ShopCartModelDoc> {
+    build(attr: ShopCartInterface): ShopCartModelDoc,
 }
 
-const shoppingCartSchema = new mongoose.Schema({
+const shopCartSchema = new mongoose.Schema({
     items: {
         type: Array,
         required: true,
@@ -30,10 +30,10 @@ const shoppingCartSchema = new mongoose.Schema({
     },
 });
 
-shoppingCartSchema.statics.build = (attr: ShoppingCartInterface) => {
-    return new ShoppingCart(attr);
+shopCartSchema.statics.build = (attr: ShopCartInterface) => {
+    return new ShopCart(attr);
 }
 
-const ShoppingCart = mongoose.model<ShoppingCartModelDoc, ShoppingCartModelInterface>('ShoppingCart', shoppingCartSchema);
+const ShopCart = mongoose.model<ShopCartModelDoc, ShopCartModelInterface>('ShoppingCart', shopCartSchema);
 
-export {ShoppingCart};
+export {ShopCart};
