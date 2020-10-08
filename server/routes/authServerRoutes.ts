@@ -1,20 +1,29 @@
 import express, {Request, Response} from 'express';
+import {loginHandler, signupHandler} from "../controller/userController";
 
 const router = express.Router();
 
-router.get('/api/auth/login', [], ((req : Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-}));
+router.get('/login', [], async (req: Request, res: Response) => {
+    const {email, password} = req.body;
+    // Try handler.
+    const response = await loginHandler(email, password);
+    const code = (response.success) ? 200 : 400;
+    // Notify sender.
+    return res.status(code).json(response).send();
+});
 
-router.get('/api/auth/signup', [], ((req : Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-}));
+router.get(`/signup`, [], async (req: Request, res: Response) => {
+    const {email, password, displayName} = req.body;
+    // Try handler.
+    const response = await signupHandler(email, password, displayName);
+    const code = (response.success) ? 201 : 400;
+    // Notify sender.
+    return res.status(code).json(response).send();
+});
 
-router.get('/api/auth/reset', [], ((req : Request, res: Response) => {
+router.get('/reset', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-}));
+    return res.send('TODO: Needs to be implemented!');
+});
 
 export {router as authServerRouter};

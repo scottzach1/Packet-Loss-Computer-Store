@@ -1,15 +1,23 @@
+import User from "../models/userModel";
 import express, {Request, Response} from 'express';
+import passport from "passport";
+
 
 const router = express.Router();
 
-router.get('/api/account/get', [], ((req : Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-}));
+router.get('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+    const {_id}: any = req.user;
 
-router.get('/api/account/update', [], ((req : Request, res: Response) => {
+    // User authenticated, find within MongoDB.
+    const user = await User.findById(_id);
+    const code = (user) ? 200 : 400;
+
+    return res.status(code).json(user).send();
+});
+
+router.get('/update', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
-}));
+});
 
 export {router as accountServerRouter};
