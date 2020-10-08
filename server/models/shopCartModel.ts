@@ -1,35 +1,39 @@
-import {ShopCart, ShopCartInterface} from "./shoppingCartModel";
-import {UserInterface} from "./userModel";
-import mongoose from "mongoose";
+import {ShopListingInterface} from "./shopListingModel";
+import * as mongoose from "mongoose";
 
-interface ShopOrderInterface {
-    cart: ShopCartInterface,
-    user: UserInterface,
-    orderDate: Date,
+interface ShoppingCartEntryInterface {
+    item: ShopListingInterface[]
+    quantity: number,
 }
 
-interface ShopOrderModelDoc extends mongoose.Document, ShopOrderInterface {
+export interface ShopCartInterface {
+    items: ShoppingCartEntryInterface[],
+    totalCost: number,
 }
 
-interface ShopOrderModelInterface extends mongoose.Model<ShopOrderModelDoc> {
-    build(attr: ShopOrderInterface): ShopOrderModelDoc,
+interface ShopCartModelDoc extends mongoose.Document, ShopCartInterface {
 }
 
-const shopOrderSchema = new mongoose.Schema({
-    cart: {
-        type: ShopCart,
+interface ShopCartModelInterface extends mongoose.Model<ShopCartModelDoc> {
+    build(attr: ShopCartInterface): ShopCartModelDoc,
+}
+
+const shopCartSchema = new mongoose.Schema({
+    items: {
+        type: Array,
         required: true,
+        default: [],
     },
-    orderDate: {
-        type: Date,
-        default: Date.now,
+    totalCost: {
+        type: Number,
+        required: true,
     },
 });
 
-shopOrderSchema.statics.build = (attr: ShopOrderInterface) => {
-    return new ShopOrder(attr);
+shopCartSchema.statics.build = (attr: ShopCartInterface) => {
+    return new ShopCart(attr);
 }
 
-const ShopOrder = mongoose.model<ShopOrderModelDoc, ShopOrderModelInterface>('ShopOrder', shopOrderSchema);
+const ShopCart = mongoose.model<ShopCartModelDoc, ShopCartModelInterface>('ShoppingCart', shopCartSchema);
 
-export {ShopOrder};
+export {ShopCart};
