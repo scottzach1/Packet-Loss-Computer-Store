@@ -8,7 +8,7 @@ export interface ShopListingInterface {
     cost: number,
     available: boolean,
     createdDate: Date,
-    updateDate: Date,
+    updateDate?: Date,
 }
 
 interface ShopListingModelInterface extends mongoose.Model<ShopListingDoc> {

@@ -9,18 +9,32 @@ router.get('/items/all', [], (req: Request, res: Response) => {
 });
 
 router.post('/items/add', [], async (req: Request, res: Response) => {
-    // Extract values from request body.
-    const {title, description} = req.body;
-
-    // Construct object using values.
-    const shopListing = ShopListing.build({title, description});
+    // // Extract values from request body.
+    const {title, description, available, cost, brand, category} = req.body;
 
     // Save Model within Mongodb.
-    await shopListing.save();
+    try {
+        // Construct object using values.
+        const shopListing = await ShopListing.build({
+            title,
+            description,
+            available,
+            cost,
+            brand,
+            category,
+            createdDate: new Date(),
+        }).save();
 
-    // Notify User of Response.
-    console.log('New item added!', shopListing);
-    return res.status(201).send(shopListing);
+        return res
+            .status(201)
+            .json({shopListing})
+            .send();
+    } catch (e) {
+        return res
+            .status(400)
+            .json(e)
+            .send();
+    }
 });
 
 router.get('/items/remove', [], (req: Request, res: Response) => {
