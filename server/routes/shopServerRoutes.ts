@@ -1,14 +1,14 @@
 import express, {Request, Response} from 'express';
-import {ShopListing} from "../models/shopModels";
+import {ShopListing} from "../models/shopModel";
 
 const router = express.Router();
 
-router.get('/api/shop/items/all', [], (req: Request, res: Response) => {
+router.get('/items/all', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
 });
 
-router.post('/api/shop/items/add', [], async (req: Request, res: Response) => {
+router.post('/items/add', [], async (req: Request, res: Response) => {
     // Extract values from request body.
     const {title, description} = req.body;
 
@@ -23,14 +23,14 @@ router.post('/api/shop/items/add', [], async (req: Request, res: Response) => {
     return res.status(201).send(shopListing);
 });
 
-router.get('/api/shop/items/remove', [], ((req: Request, res: Response) => {
+router.get('/items/remove', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
-}));
+});
 
-router.get('/api/shop/items/update', [], ((req: Request, res: Response) => {
+router.get('/items/update', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
-}));
+});
 
 export {router as shopServerRouter};
