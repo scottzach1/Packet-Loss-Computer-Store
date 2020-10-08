@@ -1,0 +1,40 @@
+.page-section {
+    padding: 10px;
+    margin: 10px;
+}
+
+.div-hscroll {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    overflow-x: auto;
+}
+
+.card {
+    min-width: 280px;
+    width: 50%;
+    text-align: center;
+}
+
+.login {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #f3f2f2;
+    margin: 90px 0 0 0;
+    padding: 10px;
+    width: 70%;
+    max-width: 800px;
+}
+
+nav {
+    background-color: #f3f2f2;
+}
+
+.box-shadow {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.link {
+    color: black;
+}

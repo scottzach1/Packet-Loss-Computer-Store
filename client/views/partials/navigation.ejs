@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#"><b>Computer Parts Store</b></a>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+        </div>
+    </div>
+</nav>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="nav-link" href="/">
+        <div class="link">
+            Store
+        </div>
+    </a>
+    <a class="nav-link" href="/shop/about">
+        <div class="link">
+            About
+        </div>
+    </a>
+    <a class="nav-link" href="/shop/checkout">
+        <div class="link">
+            Checkout
+        </div>
+    </a>
+    <% if (user) { %>
+        <a class="nav-link" href="/auth/logout">
+            <div class="link">
+                Logout
+            </div>
+        </a>
+    <% } else { %>
+        <a class="nav-link" href="/auth/login">
+            <div class="link">
+                Login
+            </div>
+        </a>
+    <% } %>
+</nav>
