@@ -3,7 +3,7 @@ import {loginHandler, signupHandler} from "../controller/userController";
 
 const router = express.Router();
 
-router.get('/login', [], async (req: Request, res: Response) => {
+router.post('/login', [], async (req: Request, res: Response) => {
     const {email, password} = req.body;
     // Try handler.
     const response = await loginHandler(email, password);
@@ -12,7 +12,7 @@ router.get('/login', [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.get(`/signup`, [], async (req: Request, res: Response) => {
+router.post(`/signup`, [], async (req: Request, res: Response) => {
     const {email, password, displayName} = req.body;
     // Try handler.
     const response = await signupHandler(email, password, displayName);
