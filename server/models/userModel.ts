@@ -6,6 +6,8 @@ export interface UserInterface extends Document {
     password: string,
     comparePassword: (passport: string) => Promise<boolean>,
     displayName?: string,
+    cartId?: string,
+    orderIds?: string[],
 }
 
 const userSchema = new Schema({
@@ -23,7 +25,17 @@ const userSchema = new Schema({
     displayName: {
         type: String,
         required: false,
-    }
+    },
+    cartId: {
+        type: Schema.Types.ObjectId,
+        ref: 'ShopCart',
+        required: false,
+    },
+    orderIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'ShopOrder',
+        required: true,
+    }],
 });
 
 userSchema.pre<UserInterface>('save', async function (next) {
