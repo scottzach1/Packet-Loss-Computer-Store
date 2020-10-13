@@ -1,6 +1,7 @@
 import {ShopCart, ShopCartDoc} from "../models/shopCartModel";
 import {UserDoc} from "../models/userModel";
 import {Types} from "mongoose";
+import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
 
 /**
  * Creates a new cart and associates it with the new `UserDoc`.
@@ -31,6 +32,24 @@ export const getCart = async (user: UserDoc): Promise<ShopCartDoc | null> => {
 
     const cart = await ShopCart.findById(cartId);
     return (cart) ? cart : await createCart(user);
+}
+
+/**
+ * Gets all items that are referenced within the provided cart. This function will return
+ * a fancy view where we see a list of hybrid items containing both the full doc for the
+ * list item as well as the corresponding quantity.
+ *
+ * @param cart - the cart to assemble a list of items from.
+ */
+export const getCartItems = async (cart: ShopCartDoc): Promise<any[]> => {
+    // Make requests for every item (will result in a list of 'promissible' objects).
+    const promises: any[] = cart.items.map((entry) => ShopListing.findById(entry.itemId));
+    // Await all promises, then filter out null entries (more verbose, but more efficient too).
+    const items = (await Promise.all(promises)).filter((doc: ShopListingDoc | null) => doc);
+    // Merge with item id's.
+    return items.map((item: ShopListingDoc, index: number) => (
+        {item, quantity: cart.items[index].quantity})
+    );
 }
 
 /**

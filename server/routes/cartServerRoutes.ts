@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import {addToCart, clearCart, getCart, removeFromCart} from "../controller/shopCartController";
+import {addToCart, clearCart, getCart, getCartItems, removeFromCart} from "../controller/shopCartController";
 import passport from "passport";
 import {User} from "../models/userModel";
 
@@ -22,6 +22,36 @@ router.get('/get', [passport.authenticate("jwt", {session: false})], async (req:
             .status(200)
             .json({cart})
             .send();
+    } catch (e) {
+        // Failure
+        return res
+            .status(400)
+            .json({errors: [e]})
+            .send();
+    }
+});
+
+router.get('/get/items', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+    const {_id}: any = req.user;
+
+    try {
+        // User authenticated, find within MongoDB.
+        const user = await User.findById(_id);
+        if (!user) throw 'Could not find user!';
+
+        // User found, obtain cart.
+        const cart = await getCart(user);
+        if (!cart) throw 'Failed to obtain cart for user';
+
+        // Get individual items within single object.
+        const items = await getCartItems(cart);
+        if (!items) throw 'Failed to assemble cart items';
+
+        // Success
+        return res
+            .status(200)
+            .json({items})
+            .send()
     } catch (e) {
         // Failure
         return res
