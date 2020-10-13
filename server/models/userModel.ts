@@ -1,11 +1,13 @@
-import {Document, model, Schema} from 'mongoose';
+import {Document, model, Schema, Types} from 'mongoose';
 import bcrypt from 'bcrypt';
 
-export interface UserInterface extends Document {
+export interface UserDoc extends Document {
     email: string,
     password: string,
     comparePassword: (passport: string) => Promise<boolean>,
     displayName?: string,
+    cartId?: Types.ObjectId,
+    orderIds?: Types.ObjectId[],
 }
 
 const userSchema = new Schema({
@@ -23,10 +25,22 @@ const userSchema = new Schema({
     displayName: {
         type: String,
         required: false,
-    }
+    },
+    // Foreign Key: ShopCart
+    cartId: {
+        type: Schema.Types.ObjectId,
+        ref: 'ShopCart',
+        required: false,
+    },
+    // Foreign Key: ShopOrder
+    orderIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'ShopOrder',
+        required: true,
+    }],
 });
 
-userSchema.pre<UserInterface>('save', async function (next) {
+userSchema.pre<UserDoc>('save', async function (next) {
     const user = this;
 
     if (!user.isModified('password')) return next();
@@ -40,4 +54,6 @@ userSchema.methods.comparePassword = async function (password: string): Promise<
     return await bcrypt.compare(password, this.password);
 };
 
-export default model<UserInterface>('User', userSchema);
+const User = model<UserDoc>('User', userSchema);
+
+export {User};
