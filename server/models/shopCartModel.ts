@@ -1,27 +1,20 @@
 import {ShopListing} from "./shopListingModel";
-import mongoose from "mongoose";
+import {Document, model, Schema, Types} from "mongoose";
 
 export interface ShopCartEntry {
-    itemId: string,
+    itemId: Types.ObjectId,
     quantity: number,
 }
 
-export interface ShopCartInterface {
-    userId: string,
+export interface ShopCartDoc extends Document {
+    userId: Types.ObjectId,
     items: ShopCartEntry[],
 }
 
-interface ShopCartModelDoc extends mongoose.Document, ShopCartInterface {
-}
-
-interface ShopCartModelInterface extends mongoose.Model<ShopCartModelDoc> {
-    build(attr: ShopCartInterface): ShopCartModelDoc,
-}
-
-const shopCartSchema = new mongoose.Schema({
+const shopCartSchema = new Schema({
     // Foreign Key: User
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
@@ -29,7 +22,7 @@ const shopCartSchema = new mongoose.Schema({
         type: [{
             // Foreign Key: ShopListing
             itemId: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: 'ShopListing',
                 required: true,
             },
@@ -40,10 +33,6 @@ const shopCartSchema = new mongoose.Schema({
     },
 });
 
-shopCartSchema.statics.build = (attr: ShopCartInterface) => {
-    return new ShopCart(attr);
-}
-
-const ShopCart = mongoose.model<ShopCartModelDoc, ShopCartModelInterface>('ShopCart', shopCartSchema);
+const ShopCart = model<ShopCartDoc>('ShopCart', shopCartSchema);
 
 export {ShopCart};

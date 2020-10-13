@@ -1,20 +1,20 @@
-import express, {Request, Response} from 'express';
+import express from 'express';
+import {
+    addToCartHandler,
+    clearCartHandler,
+    getCartHandler,
+    removeFromCartHandler
+} from "../controller/shopCartController";
+import passport from "passport";
 
 const router = express.Router();
 
-router.get('/add', [], (req: Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-});
+router.get('/get',  [passport.authenticate("jwt", {session: false})], getCartHandler);
 
-router.get('/remove', [], (req: Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-});
+router.get('/add', [passport.authenticate("jwt", {session: false})], addToCartHandler);
 
-router.get('/clear', [], (req: Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('SOME ACTION');
-});
+router.get('/remove', [passport.authenticate("jwt", {session: false})], removeFromCartHandler);
+
+router.get('/clear', [passport.authenticate("jwt", {session: false})], clearCartHandler);
 
 export {router as cartServerRouter};

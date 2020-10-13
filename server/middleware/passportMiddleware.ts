@@ -1,4 +1,4 @@
-import User from '../models/userModel';
+import {User} from '../models/userModel';
 import {ExtractJwt, Strategy, StrategyOptions} from "passport-jwt";
 import config from "../config";
 
