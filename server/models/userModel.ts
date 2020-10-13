@@ -6,6 +6,7 @@ export interface UserInterface extends Document {
     password: string,
     comparePassword: (passport: string) => Promise<boolean>,
     displayName?: string,
+    admin: boolean,
 }
 
 const userSchema = new Schema({
@@ -23,11 +24,16 @@ const userSchema = new Schema({
     displayName: {
         type: String,
         required: false,
+    },
+    admin: {
+        type: Boolean,
+        required: false,
     }
 });
 
 userSchema.pre<UserInterface>('save', async function (next) {
     const user = this;
+    user.admin = false;
 
     if (!user.isModified('password')) return next();
 
