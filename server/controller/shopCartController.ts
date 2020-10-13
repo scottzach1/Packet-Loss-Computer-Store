@@ -34,16 +34,18 @@ const clearCart = async (cart: ShopCartDoc): Promise<ShopCartDoc> => {
 
 const addToCart = async (cart: ShopCartDoc, itemId: string, quantity: number): Promise<ShopCartDoc> => {
     if (!quantity) return await removeFromCart(cart, itemId);
+    const objectId = new Types.ObjectId(itemId)
 
-    cart.items = cart.items.filter((item) => item.itemId.toString() !== itemId);
-    cart.items.push({itemId: new Types.ObjectId(itemId), quantity});
+    cart.items = cart.items.filter((item) => !objectId.equals(item.itemId));
+    cart.items.push({itemId: objectId, quantity});
     await cart.save();
 
     return cart;
 }
 
 const removeFromCart = async (cart: ShopCartDoc, itemId: string) => {
-    cart.items = cart.items.filter((item) => item.itemId.toString() !== itemId);
+    const objectId = new Types.ObjectId(itemId)
+    cart.items = cart.items.filter((item) => !objectId.equals(item.itemId));
     await cart.save();
 
     return cart;
