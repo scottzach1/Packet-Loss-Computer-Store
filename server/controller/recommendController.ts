@@ -19,7 +19,7 @@ const ipinfoWrapper = new IPinfoWrapper(`${process.env.IPINFO_API_KEY}`);
 export const getLocationFromIp = async (ip: string) => {
     // Contains 'hostname, city, loc, region, ...'
     // See attributes here: https://github.com/ipinfo/node
-    return await ipinfoWrapper.lookupIp(ip).loc;
+    return (await ipinfoWrapper.lookupIp(ip)).loc;
 }
 
 /**
