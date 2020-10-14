@@ -14,6 +14,7 @@ interface AuthResponse {
     displayName?: string,
     email?: string,
     admin?: boolean,
+    complexity?: 'weak' | 'medium' | 'strong',
 }
 
 /**
@@ -92,24 +93,10 @@ const signupHandler = async (email: string, password: string, displayName?: stri
         return response;
     }
 
-    // Check password complexity - check details here:
-    // <https://www.npmjs.com/package/check-password-strength>
-    const strength = passwordStrength(password);
+    const {errors, complexity} = checkPasswordComplexity(password);
+    response.errors.concat(errors);
+    response.complexity = complexity;
 
-    // Password length.
-    if (strength.length < 6) {
-        response.errors.push(`Password doesn't meet the minimum password length! (${strength.length}/${6})`);
-    }
-
-    // Password contents.
-    ['lowercase', 'uppercase', 'symbol', 'number']
-        .filter((req: string) => !strength.contains.find((entry: { message: string }) => req === entry.message))
-        .forEach((hit: string) => response.errors.push(`Password needs at least one ${hit}`));
-
-    // Password total complexity.
-    if (strength.id < 1) response.errors.push(`Password must be of minimum '2' complexity`);
-
-    // Errors present, don't persist.
     if (response.errors.length) {
         return response;
     }
@@ -135,6 +122,41 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     response.success = true;
     response.admin = userNew.admin;
     response.token = createToken(userNew);
+    return response;
+}
+
+/**
+ * Checks the current password for complexity, returning any errors within the AuthResponse.
+ *
+ * @param password - the password to check.
+ */
+export const checkPasswordComplexity = (password: string): AuthResponse => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    // Check password complexity - check details here:
+    // <https://www.npmjs.com/package/check-password-strength>
+    const strength = passwordStrength(password);
+
+    // @ts-ignore - TypeScript can't verify `strength.id` as a number [0, 2].
+    response.complexity = ['weak', 'medium', 'strong'][strength.id];
+
+    // Password length.
+    if (strength.length < 6) {
+        response.errors.push(`Password doesn't meet the minimum password length! (${strength.length}/${6})`);
+    }
+
+    // Password contents.
+    ['lowercase', 'uppercase', 'symbol', 'number']
+        .filter((req: string) => !strength.contains.find((entry: { message: string }) => req === entry.message))
+        .forEach((hit: string) => response.errors.push(`Password needs at least one ${hit}`));
+
+    // Password total complexity.
+    if (strength.id < 1) response.errors.push(`Password must be of minimum '2' complexity`);
+
+    response.success = response.errors.length === 0;
     return response;
 }
 
