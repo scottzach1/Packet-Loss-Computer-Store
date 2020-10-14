@@ -63,6 +63,34 @@ router.get('/items/search', [], async (req: Request, res: Response) => {
 });
 
 /**
+ * Gets a `ShopListItem` from MongoDB based off the provided id.
+ *
+ * Request Parameters:
+ * - itemdId (string) the id of the item.
+ */
+router.get('/items/:itemId', [], async (req: Request, res: Response) => {
+    const itemId = req.params.itemId;
+
+    try {
+        if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
+
+        const item = await getItemById(itemId);
+
+        if (!item) throw 'No item could be found with that particular id';
+
+        return res
+            .status(200)
+            .json({item})
+            .send();
+    } catch (e) {
+        return res
+            .status(400)
+            .json({errors: [e]})
+            .send();
+    }
+});
+
+/**
  * Creates a new item stored within the Mongo DB from values within the `req.body`.
  *
  * Body Parameters:
@@ -107,7 +135,7 @@ router.post('/items/add', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.post('/items/remove', [], async (req: Request, res: Response) => {
+router.delete('/items/remove', [], async (req: Request, res: Response) => {
     // Extract vales from request body.
     const {id} = req.body;
 
@@ -146,7 +174,7 @@ router.post('/items/remove', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.post('/items/update', [], async (req: Request, res: Response) => {
+router.patch('/items/update', [], async (req: Request, res: Response) => {
     // Extract values from request body.
     const {id} = req.body;
 
@@ -162,34 +190,6 @@ router.post('/items/update', [], async (req: Request, res: Response) => {
         return res
             .status(200)
             .json({items: shopListing})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: [e]})
-            .send();
-    }
-});
-
-/**
- * Gets a `ShopListItem` from MongoDB based off the provided id.
- *
- * Request Parameters:
- * - itemdId (string) the id of the item.
- */
-router.get('/items/:itemId', [], async (req: Request, res: Response) => {
-    const itemId = req.params.itemId;
-
-    try {
-        if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
-
-        const item = await getItemById(itemId);
-
-        if (!item) throw 'No item could be found with that particular id';
-
-        return res
-            .status(200)
-            .json({item})
             .send();
     } catch (e) {
         return res

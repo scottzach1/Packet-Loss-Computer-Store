@@ -6,7 +6,7 @@ import {getOrders, makeOrder} from "../controller/shopOrderController";
 
 const router = express.Router();
 
-router.get('/create', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.post('/create', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
 
     try {

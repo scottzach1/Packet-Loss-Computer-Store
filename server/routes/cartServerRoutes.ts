@@ -5,7 +5,7 @@ import {User} from "../models/userModel";
 
 const router = express.Router();
 
-router.get('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.post('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
 
     try {
@@ -31,7 +31,7 @@ router.get('/get', [passport.authenticate("jwt", {session: false})], async (req:
     }
 });
 
-router.get('/add', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.put('/add', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
     const {itemId, quantity} = req.body;
 
@@ -63,8 +63,7 @@ router.get('/add', [passport.authenticate("jwt", {session: false})], async (req:
     }
 });
 
-
-router.get('/remove', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.delete('/remove', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
     const {itemId} = req.body;
 
@@ -95,7 +94,7 @@ router.get('/remove', [passport.authenticate("jwt", {session: false})], async (r
     }
 });
 
-router.get('/clear', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.delete('/clear', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
 
     try {
