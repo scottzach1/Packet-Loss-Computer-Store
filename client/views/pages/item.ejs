@@ -1,3 +1,6 @@
+<div class="success box-shadow page-section" id="success-card"></div>
+<div class="error box-shadow page-section" id="error-card"></div>
+
 <div>
     <div class="box-shadow card page-section" id="item-content"></div>
 </div>
@@ -44,8 +47,8 @@
                     <div class="card box-shadow page-section">
                     <div>
                     <label>Quantity: </label>
-                    <input  class="quantity" id="quantity-amount" type="number"></input>
-                    <a class="btn btn-primary mr-auto inline-right" onclick="window.location.href = '/shop/items/${id}'">Add to cart</a>
+                    <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"></input>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
                     </div>
                     </div>`;
 
@@ -58,4 +61,38 @@
                 `;
             }
         })
+
+    function addToCart(id, itemTitle){
+        let addUrl = window.location.origin + "/api/v1/cart/add";
+        let doc = document.getElementById("quantity-amount");
+        let quantity = Number(doc.value);
+
+        if (isNaN(quantity) || !id){
+            // TODO: ERROR
+            return;
+        }
+
+        fetch(addUrl, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                token: token,
+                itemId: id,
+                quantity: quantity,
+            })
+        })
+        .then(() => {
+            if (!token){
+                let error = document.getElementById("error-card");
+                error.style.display = "block";
+                error.innerHTML = `<b>You must be logged in to add to your cart</b>`;
+                return;
+            }
+
+            let success = document.getElementById("success-card");
+            success.style.display = "block";
+            success.innerHTML = `<b>${quantity} x "${itemTitle}" successfully added to your cart</b>`;
+
+        })
+    }
 </script>

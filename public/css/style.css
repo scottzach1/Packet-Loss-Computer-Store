@@ -21,6 +21,11 @@
     background-color: #ff9494;
 }
 
+.success {
+    display: none;
+    background-color: #c1ff94;
+}
+
 .login {
     background-color: #f3f2f2;
 }
@@ -40,6 +45,8 @@
 .quantity {
     display: inline;
     border-width: medium;
+    text-align: right;
+    width: 10%;
 }
 
 .inline-right {
