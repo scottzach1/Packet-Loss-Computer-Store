@@ -39,16 +39,23 @@
                     <a class="card-text"><b>Description: </b>${description}<br/></a>
                     <a class="card-text"><b>Created: </b>${createdDate}<br/></a>
                     <a class="card-text"><b>Updated: </b>${updatedDate}<br/></a>
+                    </div>
+
+                    <div class="card box-shadow page-section">
+                    <div>
+                    <label>Quantity: </label>
+                    <input  class="quantity" id="quantity-amount" type="number"></input>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="window.location.href = '/shop/items/${id}'">Add to cart</a>
+                    </div>
                     </div>`;
 
             if (isAdmin){
                 contents.innerHTML += `
                     <div class="card-body">
-                    <a class="btn btn-primary" style="display: inline-block" onclick="window.location.href = '/shop/items/${id}'">Delete</a>
-                    <a class="btn btn-primary" style="display: inline-block" onclick="window.location.href = '/shop/items/${id}'">Update</a>
+                    <a class="btn btn-primary inline-block" onclick="window.location.href = '/shop/items/${id}'">Delete</a>
+                    <a class="btn btn-primary inline-block" onclick="window.location.href = '/shop/items/${id}'">Update</a>
                     </div>
                 `;
-
             }
         })
 </script>

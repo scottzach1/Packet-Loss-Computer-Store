@@ -17,6 +17,7 @@
 /*PAGE COMPONENTS*/
 
 .error {
+    display: none;
     background-color: #ff9494;
 }
 
@@ -36,6 +37,20 @@
     overflow-x: auto;
 }
 
+.quantity {
+    display: inline;
+    border-width: medium;
+}
+
+.inline-right {
+    display: inline;
+    float: right;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
 /*NAVIGATION COMPONENTS*/
 nav {
     background-color: #f3f2f2;
@@ -43,4 +58,8 @@ nav {
 
 .link {
     color: black;
+}
+
+.nav-right {
+
 }
