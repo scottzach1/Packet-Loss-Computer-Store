@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+import {Document, model, Schema} from 'mongoose'
 
-export interface ShopListingInterface {
+export interface ShopListingDoc extends Document {
     title: string,
     description: string,
     category: string,
@@ -11,14 +11,7 @@ export interface ShopListingInterface {
     updateDate?: Date,
 }
 
-interface ShopListingModelInterface extends mongoose.Model<ShopListingDoc> {
-    build(attr: ShopListingInterface): ShopListingDoc,
-}
-
-interface ShopListingDoc extends mongoose.Document, ShopListingInterface {
-}
-
-const shopListingSchema = new mongoose.Schema({
+const shopListingSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -56,10 +49,6 @@ const shopListingSchema = new mongoose.Schema({
     },
 });
 
-shopListingSchema.statics.build = (attr: ShopListingInterface) => {
-    return new ShopListing(attr);
-}
-
-const ShopListing = mongoose.model<ShopListingDoc, ShopListingModelInterface>('ShopListing', shopListingSchema);
+const ShopListing = model<ShopListingDoc>('ShopListing', shopListingSchema);
 
 export {ShopListing};

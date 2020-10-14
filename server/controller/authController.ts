@@ -1,4 +1,4 @@
-import User, {UserInterface} from "../models/userModel";
+import {User, UserDoc} from "../models/userModel";
 import jwt from "jsonwebtoken";
 import config from "../config";
 
@@ -9,13 +9,15 @@ interface AuthResponse {
     errors: string[],
     success: boolean,
     token?: string,
+    displayName?: string,
+    email?: string,
 }
 
 /**
  * Creates a JSON Web Token string for the provided users session.
  * @param user - user to create token for.
  */
-const createToken = (user: UserInterface) => {
+const createToken = (user: UserDoc) => {
     return jwt.sign({id: user.id, email: user.email}, config.JWT_SECRET, {
         expiresIn: '1h',
     });
@@ -33,6 +35,8 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
         errors: [],
         success: false,
         token: undefined,
+        email: undefined,
+        displayName: undefined,
     };
 
     // Missing email or password.
@@ -58,6 +62,8 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
     }
 
     // Success.
+    response.displayName = user.displayName;
+    response.email = user.email;
     response.success = true;
     response.token = createToken(user);
     return response;
@@ -76,6 +82,8 @@ const signupHandler = async (email: string, password: string, displayName?: stri
         errors: [],
         success: false,
         token: undefined,
+        email: undefined,
+        displayName: undefined,
     };
 
     // Missing email or password.
@@ -102,6 +110,8 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     await userNew.save();
 
     // Success.
+    response.displayName = userNew.displayName;
+    response.email = userNew.email;
     response.success = true;
     response.token = createToken(userNew);
     return response;

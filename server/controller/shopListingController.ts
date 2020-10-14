@@ -1,147 +1,110 @@
-import {ShopListing} from "../models/shopListingModel";
-import {Request, Response} from "express";
+import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
 
 /**
- * Creates a new item stored within the Mongo DB from values within the `req.body`.
+ * Creates a new item using the properties provided within the `value` passed from
+ * the properties of the `value` parameter. Note: If a given property does not exist
+ * on the object within the schema then the property will be ignored.
  *
- * Body Parameters:
- * - title (string) title of the listing.
- * - description (string) description of the listing.
- * - available (boolean) the availability status of the listing.
- * - cost (number) the prices of the listing.
- * - brand (string) the brand of the listing.
- * - category (string) the category of the listing.
- *
- * @param req - express request.
- * @param res - express response.
+ * @param value - containing the properties to create the new item.
  */
-export const createItemHandler = async (req: Request, res: Response) => {
-    // Extract values from request body.
-    const {title, description, available, cost, brand, category} = req.body;
+export const createItem = async (value: any) => {
+    if (typeof value !== 'object') return null;
 
-    // Save Model within Mongodb.
-    try {
-        // Construct object using values.
-        const shopListing = await ShopListing.build({
-            title,
-            description,
-            available,
-            cost,
-            brand,
-            category,
-            createdDate: new Date(),
-        }).save();
+    // Remove any dangerous values, (this should already be handled by Mongoose regardless).
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
-        // Success.
-        return res
-            .status(201)
-            .json({shopListing})
-            .send();
-    } catch (e) {
-        // Failure.
-        return res
-            .status(400)
-            .json(e)
-            .send();
-    }
+    // Construct object using values.
+    return await new ShopListing({
+        ...value,
+        createdDate: new Date(),
+    }).save();
 }
 
 /**
- * Removes an item stored within the Mongo DB based off its id parsed from the `req.body`.
+ * Removes an item reference from the `shoplisting` collection.
  *
- * Body Parameters:
- * - id (string) the monogodb id of the item.
- *
- * @param req - express request.
- * @param res - express response.
+ * @param item - `ShopListingDoc` reference to remove from MongoDB.
  */
-export const removeItemHandler = async (req: Request, res: Response) => {
+export const removeItem = async (item: ShopListingDoc) => {
     // Extract vales from request body.
-    const {id} = req.body;
+    const {id} = item;
 
-    try {
-        const item = await ShopListing.findById(id);
+    await item.remove();
 
-        if (!item) throw "Item could not be found";
-
-        item.remove();
-
-        return res
-            .status(200)
-            .json({response: 'Item Removed Successfully'})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: [e]})
-            .send();
-    }
+    return ShopListing.findById(id);
 }
 
 /**
- * Updates an item stored within the Mongo DB based off its id, with new values passed from `req.body`.
+ * Updates an item stored within the Mongo DB based off its id, with new values passed
+ * from the properties of the `value` parameter. Note: If a given property does not
+ * exist on the object within the schema then the property will be ignored.
  *
- * Body Parameters:
- * - id (string) the monogodb id of the item.
- * - title? (string) title of the listing.
- * - description? (string) description of the listing.
- * - available? (boolean) the availability status of the listing.
- * - cost? (number) the prices of the listing.
- * - brand? (string) the brand of the listing.
- * - category? (string) the category of the listing.
- *
- * @param req - express request.
- * @param res - express response.
+ * @param item - the `ShopListingDoc` to update.
+ * @param value - object containing all of the properties to update the item with.
  */
-export const updateItemHandler = async (req: Request, res: Response) => {
-    // Extract values from request body.
-    const {id} = req.body;
+export const updateItem = async (item: ShopListingDoc, value: any) => {
+    if (typeof value !== 'object') return null;
 
-    try {
-        const shopListing = await ShopListing.findById(id);
+    // Remove any dangerous values, (this should already be handled by Mongoose regardless).
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
-        if (!shopListing) throw "Item could not be found";
+    // Update values of the item (FIXME: this has been deprecated but works fine).
+    await item.update({
+        ...value,
+        updatedDate: new Date(),
+    });
 
-        req.body.id = undefined;
-
-        await shopListing.update({
-            ...req.body,
-            updatedDate: new Date(),
-        });
-
-        const updatedShopListing = await ShopListing.findById(id);
-
-        return res
-            .status(200)
-            .json({items: updatedShopListing})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: [e]})
-            .send();
-    }
+    // Search for the updated doc.
+    return ShopListing.findById(item.id);
 }
 
 /**
- * Gets all `ShopListItem` items stored within the Mongo DB based.
- *
- * @param req - express request.
- * @param res - express response.
+ * Gets all `ShopListItem` items stored within the `shoplistings` MongoDB collection.
  */
-export const getAllItemsHandler = async (req: Request, res: Response) => {
-    try {
-        const listings = await ShopListing.find();
-
-        return res
-            .status(200)
-            .json({item: listings})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: [e]})
-            .send();
-    }
+export const getAllItems = async () => {
+    return ShopListing.find();
 }
 
+/**
+ * Gets the `ShopListItem` with the corresponding itemId.
+ *
+ * @param itemId - the id reference of the item to find.
+ */
+export const getItemById = async (itemId: string) => {
+    return ShopListing.findById(itemId);
+}
+
+/**
+ * Searches the entire collection for any items that match a given string. The matching
+ * results are then returned within an array sorted by their `title`'s alphabetically.
+ *
+ * @param query - the query to run over all items.
+ */
+export const searchItemByString = async (query: string) => {
+    const allItems = await getAllItems();
+    const q = query.toLocaleLowerCase();
+
+    return allItems
+        // First we string filter based off any `string` properties of item.
+        .filter((item: ShopListingDoc) => {
+            // Extract the underlying doc. (This took a while to debug - it is hidden).
+            const {_doc}: any = item;
+
+            for (const key in _doc) {
+                // Standard safety type checking.
+                if (!_doc.hasOwnProperty(key) || typeof _doc[key] !== 'string')
+                    continue;
+
+                // Lowercase Compare.
+                const v = _doc[key].toLocaleLowerCase();
+
+                // Hit
+                if (v.includes(q))
+                    return true;
+            }
+            // No Hit.
+            return false;
+        })
+        // Second we order by product titles alphabetically.
+        .sort((a, b) => a.title.localeCompare(b.title));
+}
