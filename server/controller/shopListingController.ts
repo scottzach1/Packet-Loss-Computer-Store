@@ -71,3 +71,38 @@ export const getAllItems = async () => {
 export const getItemById = async (itemId: string) => {
     return ShopListing.findById(itemId);
 }
+
+/**
+ * Searches the entire collection for any items that match a given string. The matching
+ * results are then returned within an array sorted by their `title`'s alphabetically.
+ *
+ * @param query - the query to run over all items.
+ */
+export const searchItemByString = async (query: string) => {
+    const allItems = await getAllItems();
+    const q = query.toLocaleLowerCase();
+
+    return allItems
+        // First we string filter based off any `string` properties of item.
+        .filter((item: ShopListingDoc) => {
+            // Extract the underlying doc. (This took a while to debug - it is hidden).
+            const {_doc}: any = item;
+
+            for (const key in _doc) {
+                // Standard safety type checking.
+                if (!_doc.hasOwnProperty(key) || typeof _doc[key] !== 'string')
+                    continue;
+
+                // Lowercase Compare.
+                const v = _doc[key].toLocaleLowerCase();
+
+                // Hit
+                if (v.includes(q))
+                    return true;
+            }
+            // No Hit.
+            return false;
+        })
+        // Second we order by product titles alphabetically.
+        .sort((a, b) => a.title.localeCompare(b.title));
+}
