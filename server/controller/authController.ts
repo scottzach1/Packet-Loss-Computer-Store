@@ -1,6 +1,8 @@
 import {User, UserDoc} from "../models/userModel";
 import jwt from "jsonwebtoken";
 import config from "../config";
+// @ts-ignore - valid library, no type definitions available anywhere.
+import passwordStrength from 'check-password-strength';
 
 /**
  * Interface defining the object structure of a response from this file.
@@ -86,6 +88,28 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     if (!email) response.errors.push(`Email attribute missing`);
     if (!password) response.errors.push(`Password attribute missing!`);
 
+    if (response.errors.length) {
+        return response;
+    }
+
+    // Check password complexity - check details here:
+    // <https://www.npmjs.com/package/check-password-strength>
+    const strength = passwordStrength(password);
+
+    // Password length.
+    if (strength.length < 6) {
+        response.errors.push(`Password doesn't meet the minimum password length! (${strength.length}/${6})`);
+    }
+
+    // Password contents.
+    ['lowercase', 'uppercase', 'symbol', 'number']
+        .filter((req: string) => !strength.contains.find((entry: { message: string }) => req === entry.message))
+        .forEach((hit: string) => response.errors.push(`Password needs at least one ${hit}`));
+
+    // Password total complexity.
+    if (strength.id < 1) response.errors.push(`Password must be of minimum '2' complexity`);
+
+    // Errors present, don't persist.
     if (response.errors.length) {
         return response;
     }
