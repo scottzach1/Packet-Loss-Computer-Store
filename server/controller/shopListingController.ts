@@ -8,8 +8,10 @@ import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
  * @param value - containing the properties to create the new item.
  */
 export const createItem = async (value: any) => {
+    if (typeof value !== 'object') return null;
+
     // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    value = Object.assign(value, {id: undefined, _id: undefined, __v: undefined});
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
     // Construct object using values.
     return await new ShopListing({
@@ -44,7 +46,7 @@ export const updateItem = async (item: ShopListingDoc, value: any) => {
     if (typeof value !== 'object') return null;
 
     // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    value = Object.assign(value, {id: undefined, _id: undefined, __v: undefined});
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
     // Update values of the item (FIXME: this has been deprecated but works fine).
     await item.update({
@@ -70,4 +72,39 @@ export const getAllItems = async () => {
  */
 export const getItemById = async (itemId: string) => {
     return ShopListing.findById(itemId);
+}
+
+/**
+ * Searches the entire collection for any items that match a given string. The matching
+ * results are then returned within an array sorted by their `title`'s alphabetically.
+ *
+ * @param query - the query to run over all items.
+ */
+export const searchItemByString = async (query: string) => {
+    const allItems = await getAllItems();
+    const q = query.toLocaleLowerCase();
+
+    return allItems
+        // First we string filter based off any `string` properties of item.
+        .filter((item: ShopListingDoc) => {
+            // Extract the underlying doc. (This took a while to debug - it is hidden).
+            const {_doc}: any = item;
+
+            for (const key in _doc) {
+                // Standard safety type checking.
+                if (!_doc.hasOwnProperty(key) || typeof _doc[key] !== 'string')
+                    continue;
+
+                // Lowercase Compare.
+                const v = _doc[key].toLocaleLowerCase();
+
+                // Hit
+                if (v.includes(q))
+                    return true;
+            }
+            // No Hit.
+            return false;
+        })
+        // Second we order by product titles alphabetically.
+        .sort((a, b) => a.title.localeCompare(b.title));
 }

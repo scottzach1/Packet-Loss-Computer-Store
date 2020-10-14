@@ -3,7 +3,7 @@ import {loginHandler, signupHandler} from "../controller/authController";
 
 const router = express.Router();
 
-router.get('/login', [], async (req: Request, res: Response) => {
+router.post('/login', [], async (req: Request, res: Response) => {
     const {email, password} = req.body;
     // Try handler.
     const response = await loginHandler(email, password);
@@ -12,7 +12,7 @@ router.get('/login', [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.get(`/signup`, [], async (req: Request, res: Response) => {
+router.post(`/signup`, [], async (req: Request, res: Response) => {
     const {email, password, displayName} = req.body;
     // Try handler.
     const response = await signupHandler(email, password, displayName);
@@ -21,7 +21,7 @@ router.get(`/signup`, [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.get('/reset', [], (req: Request, res: Response) => {
+router.post('/reset', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('TODO: Needs to be implemented!');
 });

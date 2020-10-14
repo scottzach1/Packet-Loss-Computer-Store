@@ -1,5 +1,12 @@
 import express, {Request, Response} from 'express';
-import {createItem, getAllItems, getItemById, removeItem, updateItem} from "../controller/shopListingController";
+import {
+    createItem,
+    getAllItems,
+    getItemById,
+    removeItem,
+    searchItemByString,
+    updateItem
+} from "../controller/shopListingController";
 import {ShopListing} from "../models/shopListingModel";
 
 const router = express.Router();
@@ -15,6 +22,65 @@ router.get('/items/all', [], async (req: Request, res: Response) => {
         return res
             .status(200)
             .json({item: listings})
+            .send();
+    } catch (e) {
+        return res
+            .status(400)
+            .json({errors: [e]})
+            .send();
+    }
+});
+
+/**
+ * Searches the entire collection for any items that match a given string. The matching
+ * results are then returned within an array sorted by their `title`'s alphabetically.
+ *
+ * Query Params
+ * - q (string) the string query to run over all items in MongoDB collection.
+ *
+ * @param req - express request.
+ * @param res - express response.
+ */
+router.get('/items/search', [], async (req: Request, res: Response) => {
+    const {q}: any = req.query;
+
+    try {
+        if (!q) throw 'Was expecting string query parameter `q`: `/api/v1/items/search?q=amd`'
+
+        const items = await searchItemByString(q);
+        if (!items) throw 'Failed to search for query';
+
+        return res
+            .status(200)
+            .json({items})
+            .send();
+    } catch (e) {
+        return res
+            .status(400)
+            .json({errors: [e]})
+            .send();
+    }
+});
+
+/**
+ * Gets a `ShopListItem` from MongoDB based off the provided id.
+ *
+ * Request Parameters:
+ * - itemdId (string) the id of the item.
+ */
+router.get('/items/:itemId', [], async (req: Request, res: Response) => {
+    const itemId = req.params.itemId;
+
+    try {
+        if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
+
+        const item = await getItemById(itemId);
+
+        if (!item) throw 'No item could be found with that particular id';
+
+        return res
+            .status(200)
+            .json({item})
             .send();
     } catch (e) {
         return res
@@ -69,7 +135,7 @@ router.post('/items/add', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.post('/items/remove', [], async (req: Request, res: Response) => {
+router.delete('/items/remove', [], async (req: Request, res: Response) => {
     // Extract vales from request body.
     const {id} = req.body;
 
@@ -108,7 +174,7 @@ router.post('/items/remove', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.post('/items/update', [], async (req: Request, res: Response) => {
+router.patch('/items/update', [], async (req: Request, res: Response) => {
     // Extract values from request body.
     const {id} = req.body;
 
@@ -124,34 +190,6 @@ router.post('/items/update', [], async (req: Request, res: Response) => {
         return res
             .status(200)
             .json({items: shopListing})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: [e]})
-            .send();
-    }
-});
-
-/**
- * Gets a `ShopListItem` from MongoDB based off the provided id.
- *
- * Request Parameters:
- * - itemdId (string) the id of the item.
- */
-router.get('/items/:itemId', [], async (req: Request, res: Response) => {
-    const itemId = req.params.itemId;
-
-    try {
-        if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
-
-        const item = await getItemById(itemId);
-
-        if (!item) throw 'No item could be found with that particular id';
-
-        return res
-            .status(200)
-            .json({item})
             .send();
     } catch (e) {
         return res
