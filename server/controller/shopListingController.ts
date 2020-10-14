@@ -8,8 +8,10 @@ import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
  * @param value - containing the properties to create the new item.
  */
 export const createItem = async (value: any) => {
+    if (typeof value !== 'object') return null;
+
     // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    value = Object.assign(value, {id: undefined, _id: undefined, __v: undefined});
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
     // Construct object using values.
     return await new ShopListing({
@@ -44,7 +46,7 @@ export const updateItem = async (item: ShopListingDoc, value: any) => {
     if (typeof value !== 'object') return null;
 
     // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    value = Object.assign(value, {id: undefined, _id: undefined, __v: undefined});
+    ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
     // Update values of the item (FIXME: this has been deprecated but works fine).
     await item.update({
