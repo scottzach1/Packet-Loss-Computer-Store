@@ -1,0 +1,25 @@
+<div>
+    <div class="card box-shadow page-section" id="account-contents"></div>
+    <div class="card box-shadow page-section" id="account-orders"></div>
+</div>
+
+<script>
+    let accountContents = document.getElementById("account-contents");
+    let contentsURL = window.location.origin + "/api/v1/account/get"
+
+    fetch(contentsURL, {
+        method: 'POSt',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            token: token
+        })
+    })
+        .then(data => data.json())
+        .then(info => {
+            let email = info.email;
+            let displayName = info.displayName;
+            let orders = info.orderIds;
+
+
+        })
+</script>

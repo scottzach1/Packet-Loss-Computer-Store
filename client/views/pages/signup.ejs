@@ -1,1 +1,69 @@
-<p>This is the signup page!</p>
+<div class="error box-shadow error" id="error-card"></div>
+
+<div class="login box-shadow">
+    <div class="form-group">
+        <label for="email">Email address</label>
+        <input id="email" type="email" class="form-control">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group">
+        <label for="display">Display Name (Optional)</label>
+        <input id="display" type="text" class="form-control">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password-confirm">Confirm Password</label>
+        <input id="password-confirm" type="password" class="form-control">
+    </div>
+    <button id="create-btn" class="btn btn-primary">Create Account</button>
+</div>
+
+
+<script>
+    document.getElementById("create-btn").addEventListener("click", function () {
+        let email = document.getElementById("email")?.value;
+        let pass = document.getElementById("password")?.value;
+        let passConfirm = document.getElementById("password-confirm")?.value;
+        let display = document.getElementById("display")?.value;
+        let url = window.location.origin + "/api/v1/auth/signup";
+
+        if (pass !== passConfirm) {
+            document.getElementById("error-card").style.display = "block";
+            document.getElementById("error-card").innerHTML = ""
+            document.getElementById("error-card").innerHTML += `<b> - \tPasswords are not the same<br/></b>`;
+            return;
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: pass,
+                displayName: display
+            })
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                if (!data.success) {
+                    document.getElementById("error-card").style.display = "block";
+                    document.getElementById("error-card").innerHTML = ""
+                    data.errors.forEach(error => {
+                        document.getElementById("error-card").innerHTML += `<b> - \t${error}<br/></b>`;
+                    });
+                } else {
+                    window.localStorage.setItem("token", data.token);
+                    window.location.href = "/auth/login"
+                }
+            });
+    })
+</script>

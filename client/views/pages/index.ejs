@@ -1,12 +1,43 @@
+<div>
+    <h1>Recommended: </h1>
+    <div id="recommended"></div>
 
-<!-- RECOMMENDED CONTENT -->
-<%- include('../partials/store/ScrollView', {data: {divText: "Recommended for you:"}}) %>
+    <h1>Store Items: </h1>
+    <div id="store-contents"></div>
+</div>
 
-<!-- NEW CONTENT -->
-<%- include('../partials/store/ScrollView', {data: {divText: "New This Week:"}}) %>
+<script>
+    //TODO: Implement Recommended
+    let contents = document.getElementById("store-contents");
+    let contentsURL = window.location.origin + "/api/v1/shop/items/all"
 
-<!-- SPECIAL DEALS -->
-<%- include('../partials/store/ScrollView', {data: {divText: "Best Deals:"}}) %>
+    // Alter all the components on the page
+    fetch(contentsURL, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(response => response.json())
+        .then(data => {
+            data.item.forEach(item => {
+                let brand = item.brand;
+                let category = item.category;
+                let cost = item.cost;
+                let description = item.description;
+                let title = item.title;
+                let id = item._id;
 
-<!-- TOP SELLERS -->
-<%- include('../partials/store/ScrollView', {data: {divText: "Top Selling:"}}) %>
+                contents.innerHTML += `
+                    <div class="card box-shadow page-section">
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>Cost: </b>$${cost.toFixed(2)}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${id}'">Go to item page</a>
+                    </div>
+                    </div>`;
+            })
+        });
+
+</script>

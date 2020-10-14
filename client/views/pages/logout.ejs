@@ -1,1 +1,11 @@
-<p>This is the signup page!</p>
+<div class="logout box-shadow page-section">
+    <h4>You have been logged out.</h4>
+</div>
+
+<script>
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("admin");
+    if (document.getElementById("log-in-text").innerText === "Log out"){
+        window.location.reload();
+    }
+</script>
