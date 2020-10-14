@@ -26,13 +26,11 @@
                 let title = item.title;
                 let id = item._id;
 
-                console.log(item);
-
                 contents.innerHTML += `
                     <div class="card box-shadow page-section">
                     <div class="card-body">
                     <h5 class="card-title">${title}</h5>
-                    <a class="card-text"><b>Cost: </b>$${cost}<br/></a>
+                    <a class="card-text"><b>Cost: </b>$${cost.toFixed(2)}<br/></a>
                     <a class="card-text"><b>Category: </b>${category}<br/></a>
                     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
                     <a class="card-text"><b>Description: </b>${description}<br/></a>

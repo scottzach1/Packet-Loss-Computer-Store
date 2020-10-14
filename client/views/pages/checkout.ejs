@@ -1,39 +1,57 @@
 <div>
-    <div id="checkout-contents"></div>
+    <div class="card box-shadow page-section" id="checkout-contents"></div>
+    <div class="card card-small page-section box-shadow" id="total-amount" style="display: none">Total: ...</div>
 </div>
 
 <script>
-    //TODO: Implement Recommended
     let contents = document.getElementById("checkout-contents");
+    let totalAmount = document.getElementById("total-amount");
     let contentsURL = window.location.origin + "/api/v1/cart/get/items"
+    let total = 0;
 
-    // Alter all the components on the page
-    fetch(contentsURL, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-    })
-        .then(response => response.json())
-        .then(data => {
-            let total = 0;
-            data.item.forEach(item => {
-                console.log(item);
-                // let brand = item.brand;
-                // let category = item.category;
-                // let cost = item.cost;
-                // let description = item.description;
-                // let title = item.title;
-
-                // contents.innerHTML += `
-                //     <div class="card box-shadow page-section">
-                //     <div class="card-body">
-                //     <h5 class="card-title">${title}</h5>
-                //     <a class="card-text"><b>Cost: </b>$${cost}<br/></a>
-                //     <a class="card-text"><b>Category: </b>${category}<br/></a>
-                //     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
-                //     <a class="card-text"><b>Description: </b>${description}<br/></a>
-                //     <a class="btn btn-primary">Go to item page</a>
-                //     </div>
-                //     </div>`;
+    if (!token) {
+        contents.className = "logout box-shadow page-section"
+        contents.innerHTML = `
+                <h4>You must be logged in to access your cart.</h4>`
+    } else {
+        fetch(contentsURL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                token: token
             })
-        });
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.items.forEach(i => {
+                    console.log(i);
+                    let item = i.item;
+                    let quantity = i.quantity;
+                    let brand = item.brand;
+                    let category = item.category;
+                    let cost = item.cost;
+                    let description = item.description;
+                    let title = item.title;
+                    let id = item._id;
+
+                    total += (cost * quantity)
+
+
+                    contents.innerHTML += `
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>Quantity:</b>${quantity}<br/></a>
+                    <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${id}'"><span>Go to item page</span></a>
+                    </div>`;
+
+
+                    totalAmount.innerHTML = "Total: $" + total.toFixed(2);
+                    totalAmount.style.display = "";
+                })
+            })
+    }
 </script>
