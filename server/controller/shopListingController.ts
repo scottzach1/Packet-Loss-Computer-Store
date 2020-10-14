@@ -22,7 +22,7 @@ export const createItemHandler = async (req: Request, res: Response) => {
     // Save Model within Mongodb.
     try {
         // Construct object using values.
-        const shopListing = await ShopListing.build({
+        const shopListing = await new ShopListing({
             title,
             description,
             available,
@@ -41,7 +41,7 @@ export const createItemHandler = async (req: Request, res: Response) => {
         // Failure.
         return res
             .status(400)
-            .json(e)
+            .json({errors: [e]})
             .send();
     }
 }

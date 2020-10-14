@@ -12,6 +12,9 @@ To install a dependency, type `yarn add $PACKAGE_NAME`. Note: to specify
 installation as a development dependency, use the `-D` argument. Eg.
 `yarn add -D typescript`.
 
+Alternatively, you can delete the `yarn.lock` file and run `npm install`
+with the [npm](https://www.npmjs.com/) package manager.
+
 ## Coding Conventions
 
 As we are using TypeScript for this project, we are going to be
@@ -39,6 +42,49 @@ server/
 tests/
 public/
 ```
+
+## Database Schema
+
+To handle the database logic of our application, we have chosen to work
+with [MongoDB](https://www.mongodb.com/). For our instance, we have
+chosen to use mongoDB Atlas as it allows all developers to share a
+common instance of the database. The logic of how we have organised our
+schemas should be unaffected if you choose to replicate this project
+locally.
+
+MongoDB behaves a bit differently to your typical Database service.
+Instead of containing tables of fixed fields, the data is expressed and
+stored by a JSON schema. Collections of these instances are known as a
+`collection`. A single instance within a collection is known as a
+`document`. By following this type of structure, this allows us to be
+able to be more creative with how we index and store our data. Where
+typical relationship databases cannot store collections of data, we can
+define a JSON schema that can. What this means for our schema design is
+that we do not need to save cart and order mappings to shop listing
+items within a separate table. This is both more efficient and creates a
+much simpler design.
+
+For our structure our two main types of data sources are our `User` and
+`ShopListing` collections. As this is an online commerce site, there is
+naturally going to mappings between documents in these collections. For
+our structure, we have chosen to create our mappings via two different
+collections named `ShopCart` and `Order`. At a given time a `User` may
+only have a single `ShopCart` of items and quantities, however it may
+have any number of previous orders. It is critical that the user may not
+update any previous orders, or any other users shopping cart. So instead
+of providing the `User.id` within the request payload, it is important
+to extract the `User.id` from the JWT payload to perform these
+operations.
+
+One thing to note, is that our `ShopCart` collection type does not have
+the total price attribute. Our reasoning for this, as it is more dynamic
+and prevents sync issues as it allows the total price to dynamically
+update when the price of an individual `ShopListing` changes price. The
+`Order` collection on the other hand will contain a price, as it is a
+representation of an instance of a cart payment at a given time. When
+the user makes a purchase, the price must never retrospectively change.
+
+![Database Schema](./docs/assets/DbSchema.png)
 
 ## Authors
 
