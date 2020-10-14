@@ -47,7 +47,6 @@ export const getGoogleRecommendations = async (location: string): Promise<Google
         // See params here: https://developers.google.com/places/web-service/search
         ['input', 'computer'],
         ['location', location],
-
         ['radius', '50000'],
         ['type', 'electronics_store'],
         ['keyword', 'computer'],
