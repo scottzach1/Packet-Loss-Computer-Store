@@ -1,13 +1,38 @@
 <div>
-    <!-- RECOMMENDED CONTENT -->
-    <%- include('../partials/store/ScrollView', {data: {divText: "Recommended for you:"}}) %>
-
-    <!-- NEW CONTENT -->
-    <%- include('../partials/store/ScrollView', {data: {divText: "New This Week:"}}) %>
-
-    <!-- SPECIAL DEALS -->
-    <%- include('../partials/store/ScrollView', {data: {divText: "Best Deals:"}}) %>
-
-    <!-- TOP SELLERS -->
-    <%- include('../partials/store/ScrollView', {data: {divText: "Top Selling:"}}) %>
+    <div id="recommended"></div>
+    <div id="store-contents"></div>
 </div>
+
+<script>
+    //TODO: Implement Recommended
+    let contents = document.getElementById("store-contents");
+    let contentsURL = window.location.origin + "/api/v1/shop/items/all"
+
+    // Alter all the components on the page
+    fetch(contentsURL, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(response => response.json())
+        .then(data => {
+            data.item.forEach(item => {
+                let brand = item.brand;
+                let category = item.category;
+                let cost = item.cost;
+                let description = item.description;
+                let title = item.title;
+
+                contents.innerHTML += `
+                    <div class="card box-shadow page-section">
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>Cost: </b>$${cost}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="btn btn-primary">Go to item page</a>
+                    </div>
+                    </div>`;
+            })
+        });
+</script>

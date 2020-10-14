@@ -1,5 +1,6 @@
+<div class="error box-shadow" id="error-card" style="background-color: darksalmon; display: none"></div>
+
 <div class="login box-shadow">
-    <!--    <form> TODO: Uncomment when ready to refresh on button press-->
     <div class="form-group">
         <label for="email">Email address</label>
         <input id="email" type="email" class="form-control">
@@ -19,7 +20,6 @@
         <input id="password-confirm" type="password" class="form-control">
     </div>
     <button id="create-btn" class="btn btn-primary">Create Account</button>
-    <!--    </form>  TODO: Uncomment when ready to refresh on button press-->
 </div>
 
 
@@ -32,7 +32,9 @@
         let url = window.location.origin + "/api/v1/auth/signup";
 
         if (pass !== passConfirm) {
-            alert("Passwords don't match");
+            document.getElementById("error-card").style.display = "block";
+            document.getElementById("error-card").innerHTML = ""
+            document.getElementById("error-card").innerHTML += `<b> - \tPasswords are not the same<br/></b>`;
             return;
         }
 
@@ -48,7 +50,20 @@
                 displayName: display
             })
         })
-            .then(response => response.json())
-            .then(data => console.log(data));
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                if (!data.success) {
+                    document.getElementById("error-card").style.display = "block";
+                    document.getElementById("error-card").innerHTML = ""
+                    data.errors.forEach(error => {
+                        document.getElementById("error-card").innerHTML += `<b> - \t${error}<br/></b>`;
+                    });
+                } else {
+                    window.localStorage.setItem("token", data.token);
+                    window.location.href = "/auth/login"
+                }
+            });
     })
 </script>

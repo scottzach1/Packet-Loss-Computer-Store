@@ -1,5 +1,6 @@
-<div class="login box-shadow">
-    <!--    <form> TODO: Uncomment when ready to refresh on button press-->
+<div class="error box-shadow page-section" id="error-card" style="background-color: #e9967a; display: none"></div>
+
+<div class="login box-shadow page-section">
     <div class="form-group">
         <label>Email address</label>
         <input id="email" type="email" class="form-control">
@@ -14,7 +15,6 @@
         <label class="form-check-label">Remember Me</label>
     </div>
     <button id="login-btn" class="btn btn-primary">Login</button>
-    <!--    </form>  TODO: Uncomment when ready to refresh on button press-->
 
     <a href="/auth/signup">
         <button id="signup-btn" class="btn btn-primary">Signup?</button>
@@ -28,9 +28,6 @@
         let remember = document.getElementById("remember")?.checked;
         let url = window.location.origin + "/api/v1/auth/login"
         let success = window.location.origin + "/"
-        console.log(success);
-
-
 
         fetch(url, {
             method: 'POST',
@@ -41,11 +38,19 @@
                 expires: !remember
             })
         })
-            .then(response => {
-                return response.json()
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log(data)
+                if (!data.success) {
+                    document.getElementById("error-card").style.display = "block";
+                    document.getElementById("error-card").innerHTML = ""
+                    data.errors.forEach(error => {
+                        document.getElementById("error-card").innerHTML += `<b> - \t${error}<br/></b>`;
+                    });
+
+                } else {
+                    window.location.href = success
+                    window.localStorage.setItem("token", data.token);
+                }
             });
     })
 </script>
