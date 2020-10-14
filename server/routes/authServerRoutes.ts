@@ -21,7 +21,7 @@ router.post(`/signup`, [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.get('/reset', [], (req: Request, res: Response) => {
+router.post('/reset', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('TODO: Needs to be implemented!');
 });

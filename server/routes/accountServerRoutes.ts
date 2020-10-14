@@ -5,7 +5,7 @@ import passport from "passport";
 
 const router = express.Router();
 
-router.get('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.post('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
 
     // User authenticated, find within MongoDB.
@@ -15,7 +15,7 @@ router.get('/get', [passport.authenticate("jwt", {session: false})], async (req:
     return res.status(code).json(user).send();
 });
 
-router.get('/update', [], (req: Request, res: Response) => {
+router.patch('/update', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('SOME ACTION');
 });
