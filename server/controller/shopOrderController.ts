@@ -1,7 +1,7 @@
 import {UserDoc} from "../models/userModel";
 import {ShopOrder, ShopOrderDoc} from "../models/shopOrderModel";
 import {ShopCartDoc} from "../models/shopCartModel";
-import {clearCart} from "./shopCartController";
+import {clearCart, getCartItems} from "./shopCartController";
 
 /**
  * Creates an order for the given user using the provided cart. Note: if the `user._id` and `cart.userId`
@@ -53,4 +53,8 @@ export const getOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null> =
     if (!user.orderIds) return [];
 
     return ShopOrder.find({userId: _id});
+}
+
+export const getOrderItems = async (order: ShopOrderDoc): Promise<any> => {
+    return {items: await getCartItems(order)};
 }

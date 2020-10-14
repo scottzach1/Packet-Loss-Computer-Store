@@ -1,7 +1,7 @@
-import {ShopCartEntry} from "./shopCartModel";
+import {ShopCartDoc, ShopCartEntry} from "./shopCartModel";
 import {Document, model, Schema, Types} from 'mongoose';
 
-export interface ShopOrderDoc extends Document {
+export interface ShopOrderDoc extends ShopCartDoc, Document {
     userId: Types.ObjectId,
     items: ShopCartEntry[],
     orderDate: Date,
