@@ -1,0 +1,54 @@
+<div>
+    <div class="box-shadow card page-section" id="item-content"></div>
+</div>
+
+<script>
+    let urlContents = window.location.href.split("/");
+    let itemId = urlContents[urlContents.length - 1];
+
+    let contents = document.getElementById("item-content");
+    let url = window.location.origin + "/api/v1/shop/items/" + itemId;
+    let isAdmin = window.localStorage.getItem("admin");
+
+    fetch(url, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(data => data.json())
+        .then(item => {
+            let i = item.item;
+            let id = i._id;
+            let available = i.available;
+            let brand = i.brand;
+            let category = i.category;
+            let cost = i.cost;
+            let description = i.description;
+            let title = i.title;
+            let createdDate = new Date(i.createdDate);
+            let updatedDate = new Date(i.updatedDate);
+
+
+            contents.innerHTML += `
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>ID: </b>${id}<br/></a>
+                    <a class="card-text"><b>Available: </b>${available}<br/></a>
+                    <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="card-text"><b>Created: </b>${createdDate}<br/></a>
+                    <a class="card-text"><b>Updated: </b>${updatedDate}<br/></a>
+                    </div>`;
+
+            if (isAdmin){
+                contents.innerHTML += `
+                    <div class="card-body">
+                    <a class="btn btn-primary" style="display: inline-block" onclick="window.location.href = '/shop/items/${id}'">Delete</a>
+                    <a class="btn btn-primary" style="display: inline-block" onclick="window.location.href = '/shop/items/${id}'">Update</a>
+                    </div>
+                `;
+
+            }
+        })
+</script>

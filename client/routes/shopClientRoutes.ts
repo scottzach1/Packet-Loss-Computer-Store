@@ -16,4 +16,8 @@ router.get('/about', [], (req: Request, res: Response) => {
     render(req, res, 'pages/about', 'About us', {});
 });
 
+router.get('/items/:itemId', [], (req: Request, res: Response) => {
+    render(req, res, 'pages/item', 'About us', {});
+});
+
 export {router as shopClientRouter};
