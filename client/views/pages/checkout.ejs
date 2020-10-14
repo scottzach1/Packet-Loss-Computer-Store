@@ -1,1 +1,39 @@
-<p>This is the checkout page!</p>
+<div>
+    <div id="checkout-contents"></div>
+</div>
+
+<script>
+    //TODO: Implement Recommended
+    let contents = document.getElementById("checkout-contents");
+    let contentsURL = window.location.origin + "/api/v1/cart/get/items"
+
+    // Alter all the components on the page
+    fetch(contentsURL, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(response => response.json())
+        .then(data => {
+            let total = 0;
+            data.item.forEach(item => {
+                console.log(item);
+                // let brand = item.brand;
+                // let category = item.category;
+                // let cost = item.cost;
+                // let description = item.description;
+                // let title = item.title;
+
+                // contents.innerHTML += `
+                //     <div class="card box-shadow page-section">
+                //     <div class="card-body">
+                //     <h5 class="card-title">${title}</h5>
+                //     <a class="card-text"><b>Cost: </b>$${cost}<br/></a>
+                //     <a class="card-text"><b>Category: </b>${category}<br/></a>
+                //     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                //     <a class="card-text"><b>Description: </b>${description}<br/></a>
+                //     <a class="btn btn-primary">Go to item page</a>
+                //     </div>
+                //     </div>`;
+            })
+        });
+</script>

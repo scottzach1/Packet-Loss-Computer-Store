@@ -1,5 +1,8 @@
 <div>
+    <h1>Recommended: </h1>
     <div id="recommended"></div>
+
+    <h1>Store Items: </h1>
     <div id="store-contents"></div>
 </div>
 
@@ -21,6 +24,9 @@
                 let cost = item.cost;
                 let description = item.description;
                 let title = item.title;
+                let id = item._id;
+
+                console.log(item);
 
                 contents.innerHTML += `
                     <div class="card box-shadow page-section">
@@ -30,7 +36,7 @@
                     <a class="card-text"><b>Category: </b>${category}<br/></a>
                     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
                     <a class="card-text"><b>Description: </b>${description}<br/></a>
-                    <a class="btn btn-primary">Go to item page</a>
+                    <a class="btn btn-primary" onclick="function goTo(){window.location.href = '/shop/items/${id}'}">Go to item page</a>
                     </div>
                     </div>`;
             })

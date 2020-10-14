@@ -18,10 +18,13 @@
             About
         </div>
     </a>
-    <a class="nav-link" href="/shop/checkout">
+    <a class="nav-link mr-auto" href="/shop/checkout">
         <div class="link">
             Checkout
         </div>
+    </a>
+    <a class="nav-link ml-auto" id="account-link">
+        <div class="link" id="account-text">Account</div>
     </a>
     <a class="nav-link" id="log-in-link">
         <div class="link" id="log-in-text"></div>
@@ -30,8 +33,17 @@
 
 <script>
     let token = window.localStorage.getItem("token");
+    let logoutRef = "/auth/logout"
+    let loginRef = "/auth/login"
+    let accountRef = "/account/get"
+
     let link = document.getElementById("log-in-link");
     let text = document.getElementById("log-in-text");
-    link.href = token ? "/auth/logout" : "/auth/login";
+    link.href = token ? logoutRef : loginRef;
     text.innerHTML = token ? "Log out" : "Log in";
+
+    let accLink = document.getElementById("account-link");
+    let accText = document.getElementById("account-text");
+    accLink.style.display = token ? "inline-block" : "none";
+    accLink.href = accountRef;
 </script>
