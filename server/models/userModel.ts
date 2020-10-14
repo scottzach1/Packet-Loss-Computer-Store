@@ -8,6 +8,7 @@ export interface UserDoc extends Document {
     displayName?: string,
     cartId?: Types.ObjectId,
     orderIds?: Types.ObjectId[],
+    admin: boolean,
 }
 
 const userSchema = new Schema({
@@ -38,10 +39,16 @@ const userSchema = new Schema({
         ref: 'ShopOrder',
         required: true,
     }],
+    admin: {
+        type: Boolean,
+        required: false,
+        default: false,
+    }
 });
 
 userSchema.pre<UserDoc>('save', async function (next) {
     const user = this;
+    user.admin = false;
 
     if (!user.isModified('password')) return next();
 

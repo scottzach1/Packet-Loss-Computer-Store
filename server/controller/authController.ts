@@ -11,6 +11,7 @@ interface AuthResponse {
     token?: string,
     displayName?: string,
     email?: string,
+    admin?: boolean,
 }
 
 /**
@@ -34,9 +35,6 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
     const response: AuthResponse = {
         errors: [],
         success: false,
-        token: undefined,
-        email: undefined,
-        displayName: undefined,
     };
 
     // Missing email or password.
@@ -64,6 +62,7 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
     // Success.
     response.displayName = user.displayName;
     response.email = user.email;
+    response.admin = user.admin;
     response.success = true;
     response.token = createToken(user);
     return response;
@@ -81,9 +80,6 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     const response: AuthResponse = {
         errors: [],
         success: false,
-        token: undefined,
-        email: undefined,
-        displayName: undefined,
     };
 
     // Missing email or password.
@@ -113,6 +109,7 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     response.displayName = userNew.displayName;
     response.email = userNew.email;
     response.success = true;
+    response.admin = userNew.admin;
     response.token = createToken(userNew);
     return response;
 }

@@ -8,6 +8,7 @@ import {
     updateItem
 } from "../controller/shopListingController";
 import {ShopListing} from "../models/shopListingModel";
+import passport from "passport";
 
 const router = express.Router();
 
@@ -104,10 +105,12 @@ router.get('/items/:itemId', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.post('/items/add', [], async (req: Request, res: Response) => {
-    const {body} = req;
+router.post('/items/add', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+    const {body, user}: any = req;
 
     try {
+        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+
         // Save Model within Mongodb.
         const item = await createItem(body);
         if (!item) throw 'Failed to create new item';
@@ -135,12 +138,14 @@ router.post('/items/add', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.delete('/items/remove', [], async (req: Request, res: Response) => {
+router.delete('/items/remove', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     // Extract vales from request body.
-    const {id} = req.body;
+    const {body, user}: any = req;
 
     try {
-        let item = await getItemById(id);
+        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+
+        let item = await getItemById(body.id);
         if (!item) throw 'Item could not be found';
 
         item = await removeItem(item);
@@ -174,12 +179,14 @@ router.delete('/items/remove', [], async (req: Request, res: Response) => {
  * @param req - express request.
  * @param res - express response.
  */
-router.patch('/items/update', [], async (req: Request, res: Response) => {
+router.patch('/items/update', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     // Extract values from request body.
-    const {id} = req.body;
+    const {user, body}: any = req;
 
     try {
-        let shopListing = await ShopListing.findById(id);
+        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+
+        let shopListing = await ShopListing.findById(body.id);
 
         if (!shopListing) throw 'Item could not be found';
 
