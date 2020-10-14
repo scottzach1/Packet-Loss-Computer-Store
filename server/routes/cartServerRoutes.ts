@@ -31,7 +31,7 @@ router.post('/get', [passport.authenticate("jwt", {session: false})], async (req
     }
 });
 
-router.get('/get/items', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+router.post('/get/items', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
 
     try {

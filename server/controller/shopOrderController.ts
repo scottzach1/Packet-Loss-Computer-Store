@@ -46,7 +46,7 @@ export const makeOrder = async (user: UserDoc, cart: ShopCartDoc): Promise<ShopO
  *
  * @param user - the user to retrieve all orders for.
  */
-export const getOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null> => {
+export const getAllOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null> => {
     const {_id} = user;
 
     if (!_id) return null;
@@ -55,6 +55,23 @@ export const getOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null> =
     return ShopOrder.find({userId: _id});
 }
 
+/**
+ * Gets all items, and injects results into a new object representing the order.
+ *
+ * @param order - the order to get all items for.
+ */
 export const getOrderItems = async (order: ShopOrderDoc): Promise<any> => {
-    return {items: await getCartItems(order)};
+    const {_doc}: any = order;
+
+    return {..._doc, items: await getCartItems(order)};
+}
+
+/**
+ * Runs `getOrdersItems` across all provided orders and collects into an array.
+ *
+ * @param orders - `ShopOrderDoc`'s to map to detail views.
+ */
+export const getAllOrderItems = async (orders: ShopOrderDoc[]): Promise<any> => {
+    const promises: Promise<any>[] = orders.map((order) => getOrderItems(order));
+    return await Promise.all(promises);
 }
