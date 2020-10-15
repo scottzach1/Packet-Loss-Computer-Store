@@ -45,18 +45,15 @@ router.get('/login/google/callback', passport.authenticate('google', {failureRed
     return res.status(code).json(response).send();
 });
 
-/**
- *
- */
 router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
-    const {password, passwordConfirmation} = req.body;
+    const {password} = req.body;
 
     // User authenticated, find within MongoDB.
     const user = await User.findById(_id);
 
     // Update password and get response.
-    const resp = await updatePasswordHandler(user, password, passwordConfirmation);
+    const resp = await updatePasswordHandler(user, password);
     const code = (resp.success) ? 200 : 400;
 
     return res.status(code).json(resp).send();
