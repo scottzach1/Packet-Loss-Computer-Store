@@ -5,7 +5,7 @@ import config from "../config";
 /**
  * Interface defining the object structure of a response from this file.
  */
-interface AuthResponse {
+export interface AuthResponse {
     errors: string[],
     success: boolean,
     token?: string,
@@ -31,7 +31,7 @@ const createToken = (user: UserDoc) => {
  * @param password - users provided password.
  * @return AuthResponse containing success / failure and any error messages.
  */
-const loginHandler = async (email: string, password: string): Promise<AuthResponse> => {
+export const loginHandler = async (email: string, password: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -76,7 +76,7 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
  * @param displayName - (optional) password confirmation.
  * @return AuthResponse containing success / failure and any error messages.
  */
-const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
+export const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -98,11 +98,7 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     }
 
     // Create user.
-    const userNew = new User({
-        'email': email,
-        'password': password,
-        'displayName': displayName,
-    })
+    const userNew = new User({email, password, displayName});
     await userNew.save();
 
     // Success.
@@ -114,4 +110,24 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     return response;
 }
 
-export {AuthResponse, loginHandler, signupHandler};
+/**
+ * Handler function to create user Jwt token after OAuth2 authentication.
+ *
+ * @param user - the user to create account for. Post middleware this should be a `UserDoc` encapsulated within `Express.User`.
+ */
+export const signinWithGoogleHandler = async (user: Express.User | UserDoc | any): Promise<AuthResponse> => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    if (!(user && user.id && user.email)) {
+        response.errors.push('no valid user could be found for the request.');
+        return response;
+    }
+
+    response.token = createToken(user);
+    response.success = true;
+
+    return response;
+};
