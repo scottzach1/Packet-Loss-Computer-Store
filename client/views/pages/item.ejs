@@ -47,12 +47,12 @@
                     <div class="card box-shadow page-section">
                     <div>
                     <label>Quantity: </label>
-                    <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"></input>
+                    <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"/>
                     <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
                     </div>
                     </div>`;
 
-            if (isAdmin){
+            if (isAdmin === "true"){
                 contents.innerHTML += `
                     <div class="card-body">
                     <a class="btn btn-primary inline-block" onclick="window.location.href = '/shop/items/${id}'">Delete</a>

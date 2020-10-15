@@ -50,6 +50,9 @@
                 } else {
                     window.location.href = success
                     window.localStorage.setItem("token", data.token);
+                    window.localStorage.setItem("admin", data.admin);
+                    data.displayName ? window.localStorage.setItem("displayName", data.displayName) :
+                        null;
                 }
             });
     })

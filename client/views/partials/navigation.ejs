@@ -24,7 +24,7 @@
         </div>
     </a>
     <a class="nav-link ml-auto" id="account-link">
-        <div class="link" id="account-text">Account</div>
+        <div class="link" id="account-text"></div>
     </a>
     <a class="nav-link" id="log-in-link">
         <div class="link" id="log-in-text"></div>
@@ -46,4 +46,6 @@
     let accText = document.getElementById("account-text");
     accLink.style.display = token ? "inline-block" : "none";
     accLink.href = accountRef;
+    let displayName = window.localStorage.getItem("displayName");
+    accText.innerText = displayName ? displayName : "Account"
 </script>
