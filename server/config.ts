@@ -13,5 +13,11 @@ export default {
     GOOGLE_OAUTH2: {
         CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID || 'INVALID',
         CLIENT_SECRET: process.env.GOOGLE_OAUTH2_CLIENT_SECRET || 'INVALID'
-    }
+    },
+    GOOGLE_PLACES: {
+        API_KEY: process.env.GOOGLE_PLACES_API_KEY || 'INVALID',
+    },
+    IP_INFO: {
+        API_KEY: process.env.IPINFO_API_KEY || 'INVALID',
+    },
 };

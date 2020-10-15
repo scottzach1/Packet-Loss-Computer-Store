@@ -1,13 +1,11 @@
 // @ts-ignore - Although ES Module definitions are present, won't work with TypeScript (even if they say so!).
 import IPinfoWrapper from "node-ipinfo";
-import dotenv from "dotenv";
 import {URLSearchParams} from "url";
 import fetch from "node-fetch";
-
-dotenv.config();
+import config from "../config";
 
 // Supposedly required as a wrapper for TypeScript.
-const ipinfoWrapper = new IPinfoWrapper(`${process.env.IPINFO_API_KEY}`);
+const ipinfoWrapper = new IPinfoWrapper(config.IP_INFO.API_KEY);
 
 /**
  * Gets the location coordinates from a provided IP address via
@@ -51,7 +49,7 @@ export const getGoogleRecommendations = async (location: string): Promise<Google
         ['type', 'electronics_store'],
         ['keyword', 'computer'],
         ['rankby', 'prominence'],
-        ['key', `${process.env.GOOGLE_PLACES_API_KEY}`],
+        ['key', config.GOOGLE_PLACES.API_KEY],
     ]);
 
     try {
