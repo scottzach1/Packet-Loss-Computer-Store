@@ -1,6 +1,12 @@
 import express, {Request, Response} from 'express';
-import {loginHandler, signinWithGoogleHandler, signupHandler} from "../controller/authController";
+import {
+    loginHandler,
+    signinWithGoogleHandler,
+    signupHandler,
+    updatePasswordHandler
+} from "../controller/authController";
 import passport from "passport";
+import {User} from "../models/userModel";
 
 const router = express.Router();
 
@@ -36,6 +42,23 @@ router.get('/login/google/callback', passport.authenticate('google', {failureRed
     const code = (response.success) ? 200 : 400;
 
     return res.status(code).json(response).send();
+});
+
+/**
+ *
+ */
+router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+    const {_id}: any = req.user;
+    const {password, passwordConfirmation} = req.body;
+
+    // User authenticated, find within MongoDB.
+    const user = await User.findById(_id);
+
+    // Update password and get response.
+    const resp = await updatePasswordHandler(user, password, passwordConfirmation);
+    const code = (resp.success) ? 200 : 400;
+
+    return res.status(code).json(resp).send();
 });
 
 export {router as authServerRouter};

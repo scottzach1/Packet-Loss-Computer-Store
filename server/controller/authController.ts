@@ -131,3 +131,30 @@ export const signinWithGoogleHandler = async (user: Express.User | UserDoc | any
 
     return response;
 };
+
+export const updatePasswordHandler = async (user: UserDoc | null, password: string, passwordConfirmation: string): Promise<AuthResponse> => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    if (!user) {
+        response.errors.push('no user could be found for the request');
+        return response;
+    }
+
+    if (password !== passwordConfirmation) {
+        response.errors.push(`passwords don't match!`);
+        return response;
+    }
+
+    user.password = password;
+    user = await user.save();
+    if (!user) {
+        response.errors.push('failed to save changes for user');
+        return response;
+    }
+
+    response.success = true;
+    return response;
+}
