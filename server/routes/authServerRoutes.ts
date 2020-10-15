@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express';
 import {
+    checkPasswordComplexity,
     loginHandler,
     signinWithGoogleHandler,
     signupHandler,
@@ -59,6 +60,14 @@ router.patch('/update/password', [passport.authenticate("jwt", {session: false})
     const code = (resp.success) ? 200 : 400;
 
     return res.status(code).json(resp).send();
+});
+
+router.post('/complexity', [], (req: Request, res: Response) => {
+    const {password} = req.body;
+    // Check password.
+    const response = checkPasswordComplexity(password);
+    // Notify sender.
+    return res.status(200).json(response).send();
 });
 
 export {router as authServerRouter};
