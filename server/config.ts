@@ -6,6 +6,7 @@ export default {
     JWT_SECRET: process.env.JWT_SECRET || 'jwtSampleSecretToken15%^$8',
     MONGO_DB: {
         URI: process.env.MONGO_URI || `mongodb://localhost/computer-parts-store`,
+        DEBUG: false,
     },
     SERVER: {
         PORT: 3000
