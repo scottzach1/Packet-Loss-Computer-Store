@@ -1,17 +1,20 @@
 import {User, UserDoc} from "../models/userModel";
 import jwt from "jsonwebtoken";
 import config from "../config";
+// @ts-ignore - valid library, no type definitions available anywhere.
+import passwordStrength from 'check-password-strength';
 
 /**
  * Interface defining the object structure of a response from this file.
  */
-interface AuthResponse {
+export interface AuthResponse {
     errors: string[],
     success: boolean,
     token?: string,
     displayName?: string,
     email?: string,
     admin?: boolean,
+    complexity?: 'weak' | 'medium' | 'strong',
 }
 
 /**
@@ -31,7 +34,7 @@ const createToken = (user: UserDoc) => {
  * @param password - users provided password.
  * @return AuthResponse containing success / failure and any error messages.
  */
-const loginHandler = async (email: string, password: string): Promise<AuthResponse> => {
+export const loginHandler = async (email: string, password: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -76,7 +79,7 @@ const loginHandler = async (email: string, password: string): Promise<AuthRespon
  * @param displayName - (optional) password confirmation.
  * @return AuthResponse containing success / failure and any error messages.
  */
-const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
+export const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -90,6 +93,14 @@ const signupHandler = async (email: string, password: string, displayName?: stri
         return response;
     }
 
+    // Validate password.
+    const {errors, complexity, success} = checkPasswordComplexity(password);
+    errors.forEach((err) => response.errors.push(err));
+    response.complexity = complexity;
+    if (response.errors.length || !success) {
+        return response;
+    }
+
     // Check if user exists.
     const userCheck = await User.findOne({'email': email});
     if (userCheck) {
@@ -98,11 +109,7 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     }
 
     // Create user.
-    const userNew = new User({
-        'email': email,
-        'password': password,
-        'displayName': displayName,
-    })
+    const userNew = new User({email, password, displayName});
     await userNew.save();
 
     // Success.
@@ -114,4 +121,106 @@ const signupHandler = async (email: string, password: string, displayName?: stri
     return response;
 }
 
-export {AuthResponse, loginHandler, signupHandler};
+/**
+ * Handler function to create user Jwt token after OAuth2 authentication.
+ *
+ * @param user - the user to create account for. Post middleware this should be a `UserDoc` encapsulated within `Express.User`.
+ */
+export const signinWithGoogleHandler = async (user: Express.User | UserDoc | any): Promise<AuthResponse> => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    if (!(user && user.id && user.email)) {
+        response.errors.push('no valid user could be found for the request.');
+        return response;
+    }
+
+    response.token = createToken(user);
+    response.success = true;
+
+    return response;
+};
+
+/**
+ * Updates the password for the provided user. Note: This function also validates the password, and will return
+ * unsuccessful if it does not meet the required complexity.
+ *
+ * @param user - the target user.
+ * @param password - the new plaintext password.
+ */
+export const updatePasswordHandler = async (user: UserDoc | null, password: string): Promise<AuthResponse> => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    // Validate user exists.
+    if (!user) {
+        response.errors.push('no user could be found for the request');
+        return response;
+    }
+
+    // Validate the password.
+    const {errors, complexity, success} = checkPasswordComplexity(password);
+    errors.forEach((err) => response.errors.push(err));
+    response.complexity = complexity;
+    if (response.errors.length || !success) {
+        return response;
+    }
+
+    // Make changes.
+    user.password = password;
+    user = await user.save();
+    if (!user) {
+        response.errors.push('failed to save changes for user');
+        return response;
+    }
+
+    // Return result.
+    response.success = true;
+    return response;
+}
+
+
+/**
+ * Checks the current password for complexity, returning any errors within the AuthResponse.
+ *
+ * @param password - the password to check.
+ */
+export const checkPasswordComplexity = (password: string): AuthResponse => {
+    const response: AuthResponse = {
+        errors: [],
+        success: false,
+    };
+
+    // `passwordStrength` can error on empty password.
+    if (!password || !password.length) {
+        response.errors.push('Password is empty!');
+        return response;
+    }
+
+    // Check password complexity - check details here:
+    // <https://www.npmjs.com/package/check-password-strength>
+    const strength = passwordStrength(password);
+
+    // @ts-ignore - TypeScript can't verify `strength.id` as a number [0, 2].
+    response.complexity = ['weak', 'medium', 'strong'][strength.id];
+
+    // Password length.
+    if (strength.length < 6) {
+        response.errors.push(`Password doesn't meet the minimum password length! (${strength.length}/${6})`);
+    }
+
+    // Password contents.
+    ['lowercase', 'uppercase', 'symbol', 'number']
+        .filter((req: string) => !strength.contains.find((entry: { message: string }) => req === entry.message))
+        .forEach((hit: string) => response.errors.push(`Password needs at least one ${hit}`));
+
+    // Password total complexity.
+    if (strength.id < 1) response.errors.push(`Password must be of minimum '2' complexity`);
+
+    response.success = response.errors.length === 0;
+    return response;
+}
