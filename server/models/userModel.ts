@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 
 export interface UserDoc extends Document {
     email: string,
-    password: string,
-    comparePassword: (passport: string) => Promise<boolean>,
+    password?: string,
+    comparePassword: (password: string) => Promise<boolean>,
     displayName?: string,
     cartId?: Types.ObjectId,
     orderIds?: Types.ObjectId[],
@@ -21,7 +21,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     },
     displayName: {
         type: String,
@@ -46,6 +46,11 @@ const userSchema = new Schema({
     }
 });
 
+/**
+ * Enforce a pre-action to occur on the document save operation to check for any changes
+ * the the password, hashing the new password if applicable. This approach means that at
+ * no point does any plaintext password touch the database.
+ */
 userSchema.pre<UserDoc>('save', async function (next) {
     const user = this;
     user.admin = false;
@@ -57,8 +62,11 @@ userSchema.pre<UserDoc>('save', async function (next) {
     next();
 });
 
-userSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
-    return await bcrypt.compare(password, this.password);
+/**
+ * Ensure user has a password, before performing hash and compare.
+ */
+userSchema.methods.comparePassword = async function (password?: string): Promise<boolean> {
+    return (this.password) && await bcrypt.compare(password, this.password);
 };
 
 const User = model<UserDoc>('User', userSchema);

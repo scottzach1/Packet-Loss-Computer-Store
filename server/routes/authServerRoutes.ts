@@ -1,5 +1,13 @@
 import express, {Request, Response} from 'express';
-import {loginHandler, signupHandler} from "../controller/authController";
+import {
+    checkPasswordComplexity,
+    loginHandler,
+    signinWithGoogleHandler,
+    signupHandler,
+    updatePasswordHandler
+} from "../controller/authController";
+import passport from "passport";
+import {User} from "../models/userModel";
 
 const router = express.Router();
 
@@ -24,6 +32,39 @@ router.post(`/signup`, [], async (req: Request, res: Response) => {
 router.post('/reset', [], (req: Request, res: Response) => {
     // TODO: This will need to be implemented in much more depth.
     return res.send('TODO: Needs to be implemented!');
+});
+
+router.get('/login/google', passport.authenticate('google', {scope: ['email profile']}));
+
+router.get('/login/google/callback', passport.authenticate('google', {failureRedirect: '/api/v1/auth/login'}), async (req: Request, res: Response) => {
+    const {user} = req;
+
+    const response = await signinWithGoogleHandler(user);
+    const code = (response.success) ? 200 : 400;
+
+    return res.status(code).json(response).send();
+});
+
+router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+    const {_id}: any = req.user;
+    const {password} = req.body;
+
+    // User authenticated, find within MongoDB.
+    const user = await User.findById(_id);
+
+    // Update password and get response.
+    const resp = await updatePasswordHandler(user, password);
+    const code = (resp.success) ? 200 : 400;
+
+    return res.status(code).json(resp).send();
+});
+
+router.post('/complexity', [], (req: Request, res: Response) => {
+    const {password} = req.body;
+    // Check password.
+    const response = checkPasswordComplexity(password);
+    // Notify sender.
+    return res.status(200).json(response).send();
 });
 
 export {router as authServerRouter};
