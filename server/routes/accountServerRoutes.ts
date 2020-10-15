@@ -2,7 +2,6 @@ import {User} from "../models/userModel";
 import express, {Request, Response} from 'express';
 import passport from "passport";
 
-
 const router = express.Router();
 
 router.post('/get', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {

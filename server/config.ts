@@ -9,5 +9,9 @@ export default {
     },
     SERVER: {
         PORT: 3000
+    },
+    GOOGLE_OAUTH2: {
+        CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID || 'INVALID',
+        CLIENT_SECRET: process.env.GOOGLE_OAUTH2_CLIENT_SECRET || 'INVALID'
     }
 };
