@@ -8,7 +8,7 @@
     let contentsURL = window.location.origin + "/api/v1/account/get"
 
     fetch(contentsURL, {
-        method: 'POSt',
+        method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             token: token
@@ -19,7 +19,5 @@
             let email = info.email;
             let displayName = info.displayName;
             let orders = info.orderIds;
-
-
         })
 </script>
