@@ -20,7 +20,7 @@ router.post('/login', [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.post(`/signup`, [], async (req: Request, res: Response) => {
+router.post('/signup', [], async (req: Request, res: Response) => {
     const {email, password, displayName} = req.body;
     // Try handler.
     const response = await signupUser(email, password, displayName);

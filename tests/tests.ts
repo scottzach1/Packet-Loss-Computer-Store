@@ -1,4 +1,3 @@
-import '../server/db';
 import app from '../server';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -12,11 +11,11 @@ const api = '/api/v1';
 describe('API Tests', function () {
 
         before((done) => {
-            require('../server/db');
             done();
         });
 
         describe('Get all items request', () => {
+
             it('Should return a list of items on call', () => {
                 return chai.request(app).get(`${api}/shop/items/all`)
                     .then((res) => {
@@ -38,4 +37,4 @@ describe('API Tests', function () {
             mongoose.disconnect(done);
         });
     }
-)
+);
