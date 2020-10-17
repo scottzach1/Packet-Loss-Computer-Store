@@ -4,6 +4,8 @@ import chaiHttp from 'chai-http';
 import 'mocha';
 import mongoose from "mongoose";
 import {ShopListing} from "../server/models/shopListingModel";
+import {assertTypeT} from "./assertType";
+import {assertEquals} from "./assertEquals";
 
 chai.use(chaiHttp);
 
@@ -33,32 +35,34 @@ describe('API Tests', function () {
         });
 
         describe('Get all items request 1', function () {
-
-            before(function () {
-                new ShopListing({
+            const targResp = {
+                item: [{
                     title: 'Item A title',
                     description: 'Item A description',
                     category: 'TestItem',
                     brand: 'N/A',
                     cost: 50,
                     available: true,
-                }).save();
+                }, {
+                    title: 'Item B title',
+                    description: 'Item B description',
+                    category: 'TestItem',
+                    brand: 'N/A',
+                    cost: 10,
+                    available: true,
+                }],
+            }
+
+            before(function () {
+                targResp.item.forEach((i) => {
+                    new ShopListing(i).save();
+                });
             });
 
             it('Should return a list of items on call', function () {
                 return chai.request(app).get(`${api}/shop/items/all`)
-                    .then((res) => {
-                        console.log(res.text);
-                        chai.expect(res.text).to.contain('[');
-                    });
-            });
-        });
-
-        describe('Get all items request 2', () => {
-            it('Should return a list of items on call', () => {
-                return chai.request(app).get(`${api}/shop/items/all`)
-                    .then((res) => {
-                        chai.expect(res.text).to.contain('[');
+                    .then((res: any) => {
+                        chai.expect(() => assertEquals(res.body, targResp)).to.not.throw();
                     });
             });
         });
