@@ -27,7 +27,7 @@ router.get('/items/all', [], async (req: Request, res: Response) => {
     } catch (e) {
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
@@ -58,7 +58,7 @@ router.get('/items/search', [], async (req: Request, res: Response) => {
     } catch (e) {
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
@@ -86,7 +86,7 @@ router.get('/items/:itemId', [], async (req: Request, res: Response) => {
     } catch (e) {
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
@@ -125,7 +125,7 @@ router.post('/items/add', [passport.authenticate("jwt", {session: false})], asyn
         // Failure.
         return res
             .status(400)
-            .json({errors: (typeof e === "string") ? [e] : e})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
@@ -159,7 +159,7 @@ router.delete('/items/remove', [passport.authenticate("jwt", {session: false})],
     } catch (e) {
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
@@ -201,7 +201,7 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
     } catch (e) {
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (Array.isArray(e)) ? e : [e]})
             .send();
     }
 });
