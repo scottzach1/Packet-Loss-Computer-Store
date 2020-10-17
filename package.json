@@ -9,7 +9,9 @@
   "private": false,
   "scripts": {
     "start": "ts-node-dev server.ts",
-    "test": "env MONGO_TEST=1 TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts' --exit"
+    "dev": "env NOODE_ENV=development ts-node-dev server.ts",
+    "prod": "env NODE_ENV=production ts-node-dev server.ts",
+    "test": "env NODE_ENV=testing TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts' --exit"
   },
   "dependencies": {
     "@types/cors": "^2.8.7",
