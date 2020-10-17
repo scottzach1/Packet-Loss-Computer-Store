@@ -7,7 +7,7 @@ import {
     searchItemByString,
     updateItem
 } from "../controller/shopListingController";
-import {ShopListing} from "../models/shopListingModel";
+import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
 import passport from "passport";
 
 const router = express.Router();
@@ -112,7 +112,8 @@ router.post('/items/add', [passport.authenticate("jwt", {session: false})], asyn
         if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
         // Save Model within Mongodb.
-        const item = await createItem(body);
+        let item: null | ShopListingDoc;
+        item = await createItem(body).catch((e) => extractErrorsAndThrow(e));
         if (!item) throw 'Failed to create new item';
 
         // Success.
@@ -124,7 +125,7 @@ router.post('/items/add', [passport.authenticate("jwt", {session: false})], asyn
         // Failure.
         return res
             .status(400)
-            .json({errors: [e]})
+            .json({errors: (typeof e === "string") ? [e] : e})
             .send();
     }
 });
@@ -145,10 +146,10 @@ router.delete('/items/remove', [passport.authenticate("jwt", {session: false})],
     try {
         if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
-        let item = await getItemById(body.id);
+        let item = await getItemById(body.id).catch((e) => extractErrorsAndThrow(e));
         if (!item) throw 'Item could not be found';
 
-        item = await removeItem(item);
+        item = await removeItem(item).catch((e) => extractErrorsAndThrow(e));
         if (item) throw 'Item could not be removed';
 
         return res
@@ -190,8 +191,7 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
 
         if (!shopListing) throw 'Item could not be found';
 
-        shopListing = await updateItem(shopListing, req.body);
-
+        shopListing = await updateItem(shopListing, req.body).catch((e) => extractErrorsAndThrow(e));
         if (!shopListing) throw 'Failed to update item';
 
         return res
@@ -205,5 +205,21 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
             .send();
     }
 });
+
+/**
+ * A small helper function to extract deeply nested errors from mongoose into a usable
+ * array of error strings. This function will throw an exception.
+ *
+ * @param doc - the potentially erroneous document.
+ */
+const extractErrorsAndThrow = (doc: any): never => {
+    if (doc.errors)
+        throw Object.keys(doc.errors).map((i: any) => doc.errors[i].message);
+
+    if (doc.message)
+        throw (doc.message);
+
+    throw 'Failed to perform action.';
+}
 
 export {router as shopServerRouter};
