@@ -1,4 +1,11 @@
 <div class="error box-shadow page-section error" id="error-card"></div>
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
 
 <div class="login box-shadow page-section">
     <div class="form-group">
@@ -34,6 +41,9 @@
         let url = window.location.origin + "/api/v1/auth/login"
         let success = window.location.origin + "/"
 
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
+
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -45,6 +55,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                loadingCard.style.display = "none";
                 if (!data.success) {
                     document.getElementById("error-card").style.display = "block";
                     document.getElementById("error-card").innerHTML = ""
@@ -69,6 +80,9 @@
         let url = window.location.origin + "/api/v1/auth/login"
         let success = window.location.origin + "/"
 
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
+
         fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -80,6 +94,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                loadingCard.style.display = "none";
                 if (!data.success) {
                     document.getElementById("error-card").style.display = "block";
                     document.getElementById("error-card").innerHTML = ""
