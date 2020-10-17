@@ -1,3 +1,11 @@
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 <div>
     <h1>Recommended: </h1>
     <div id="recommended"></div>
@@ -9,17 +17,11 @@
 <script>
     //TODO: Implement Recommended
     let contents = document.getElementById("store-contents");
-    contents.innerHTML = `
-                <div style="display: flex; justify-content: center">
-                <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-                </div>
-                </div>
-    `
-
 
     let contentsURL = window.location.origin + "/api/v1/shop/items/all"
 
+    let loadingCard = document.getElementById("loading-card");
+    loadingCard.style.display = "flex";
 
     // Alter all the components on the page
     fetch(contentsURL, {
@@ -28,7 +30,8 @@
     })
         .then(response => response.json())
         .then(data => {
-            contents.innerHTML = "";
+            loadingCard.style.display = "none";
+
             data.item.forEach(item => {
                 let brand = item.brand;
                 let category = item.category;
