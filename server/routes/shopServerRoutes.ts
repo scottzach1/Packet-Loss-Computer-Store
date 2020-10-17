@@ -208,7 +208,7 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
 
 /**
  * A small helper function to extract deeply nested errors from mongoose into a usable
- * array of error strings. This function will throw an exception.
+ * error string, or array of error strings. This function will ALWAYS throw an exception.
  *
  * @param doc - the potentially erroneous document.
  */
