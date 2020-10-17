@@ -8,7 +8,7 @@
 
 <div>
     <h1>Recommended: </h1>
-    <div id="recommended"></div>
+    <div id="recommended" class="div-hscroll"></div>
 
     <h1>Store Items: </h1>
     <div id="store-contents"></div>
@@ -17,11 +17,40 @@
 <script>
     //TODO: Implement Recommended
     let contents = document.getElementById("store-contents");
+    let recommended = document.getElementById("recommended");
 
+    let recommendedURL = window.location.origin + "/api/v1/recommend/nearby"
     let contentsURL = window.location.origin + "/api/v1/shop/items/all"
 
     let loadingCard = document.getElementById("loading-card");
     loadingCard.style.display = "flex";
+
+    if (recommended.innerHTML === "") {
+        fetch(recommendedURL, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then(res => res.json())
+            .then(res => {
+                res.recommendations.forEach(rec => {
+                    recommended.innerHTML += `
+                        <div class="card-small box-shadow">
+                        <div class="card-body">
+                        <h5 class="card-title">${rec.name}<br/></h5>
+                        </div>
+                        <div class="card-body">
+                        <label><b>User Rating:</b></label>
+                        <label>${rec.userRatingsTotal}</label>
+                        </div>
+                        <div class="card-body">
+                        <label><b>Location: </b></label>
+                        <label>${rec.vicinity}</label>
+                        </div>
+                        </div>
+                `
+                })
+            })
+    }
 
     // Alter all the components on the page
     fetch(contentsURL, {

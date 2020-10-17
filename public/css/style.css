@@ -9,7 +9,7 @@
 }
 
 .card-small {
-    align-self: center;
+    display: inline-block;
     min-width: 280px;
     width: 50%;
 }
@@ -41,10 +41,10 @@
 }
 
 .div-hscroll {
-    display: flex;
-    align-items: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
     background-color: transparent;
-    overflow-x: auto;
 }
 
 .quantity {
