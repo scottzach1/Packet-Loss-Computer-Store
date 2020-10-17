@@ -1,5 +1,13 @@
 <div class="success box-shadow page-section" id="success-card"></div>
 <div class="error box-shadow page-section" id="error-card"></div>
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 
 <div>
     <div class="box-shadow card page-section" id="item-content"></div>
@@ -153,16 +161,21 @@
         // SUCCESS CARD
         let successCard = document.getElementById("success-card");
         successCard.style.display = "none";
+        successCard.innerHTML = "";
 
         // ERROR CARD
         let errorCard = document.getElementById("error-card");
         errorCard.style.display = "none";
+        errorCard.innerHTML ="";
 
         if (isNaN(quantity) || quantity < 1 || !id) {
             errorCard.style.display = "block";
             errorCard.innerHTML = `<b>${quantity} is not a valid amount</b>`;
             return;
         }
+
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
 
         fetch(addUrl, {
             method: 'PUT',
@@ -173,7 +186,15 @@
                 quantity: quantity,
             })
         })
-            .then(() => {
+            .then(res => {
+                loadingCard.style.display = "none";
+
+                if (!res) {
+                    errorCard.style.display = "block"
+                    errorCard.innerHTML += `<b>- Unable to add item to cart</b>`;
+                    return;
+                }
+
                 if (!token) {
                     errorCard.style.display = "block";
                     errorCard.innerHTML = `<b>You must be logged in to add to your cart</b>`;
@@ -195,12 +216,18 @@
         // SUCCESS CARD
         let successCard = document.getElementById("success-card");
         successCard.style.display = "none";
+        successCard.innerHTML = "";
 
         // ERROR CARD
         let errorCard = document.getElementById("error-card");
         errorCard.style.display = "none";
+        errorCard.innerHTML ="";
 
         let deleteUrl = window.location.origin + "/api/v1/shop/items/remove";
+
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
+
         fetch(deleteUrl, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
@@ -211,6 +238,15 @@
         })
             .then(res => res.json())
             .then(res => {
+                loadingCard.style.display = "none";
+
+                if (!res) {
+                    errorCard.style.display = "block"
+                    errorCard.innerHTML += `<b>- Unable to make delete request</b>`;
+                    return;
+                }
+
+
                 if (res.errors) {
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
@@ -240,10 +276,16 @@
         // SUCCESS CARD
         let successCard = document.getElementById("success-card");
         successCard.style.display = "none";
+        successCard.innerHTML = "";
+
+        // LOADING CARD
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
 
         // ERROR CARD
         let errorCard = document.getElementById("error-card");
         errorCard.style.display = "none";
+        errorCard.innerHTML ="";
 
         let updateUrl = window.location.origin + "/api/v1/shop/items/update";
 
@@ -255,8 +297,6 @@
         let category = document.getElementById("update-category").value;
         let brand = document.getElementById("update-brand").value;
         let description = document.getElementById("update-description").value;
-
-        console.log(title, available, cost, category, brand, description)
 
 
         fetch(updateUrl, {
@@ -275,11 +315,15 @@
         })
             .then(res => res.json())
             .then(res => {
+                loadingCard.style.display = "none";
                 if (!res) {
+                    errorCard.style.display = "block"
+                    errorCard.innerHTML += `<b>- Unable to make update request</b>`;
                     return;
                 }
 
                 if (res.errors) {
+                    // Show errors
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
                         errorCard.innerHTML += `<b>- ${error}</b>`;
@@ -291,8 +335,5 @@
                 }
                 window.scrollTo(0, 0);
             })
-        .catch(error => {
-            console.log("HERE", error);
-        })
     }
 </script>

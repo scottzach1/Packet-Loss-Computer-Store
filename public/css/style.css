@@ -26,6 +26,11 @@
     background-color: #c1ff94;
 }
 
+.loading {
+    display: none;
+    justify-content: center;
+}
+
 .login {
     background-color: #f3f2f2;
 }
