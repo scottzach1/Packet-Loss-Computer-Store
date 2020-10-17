@@ -20,6 +20,10 @@
         <input id="password" type="password" class="form-control">
     </div>
     <div class="form-group form-check">
+        <input id="show-password" type="checkbox" class="form-check-input">
+        <label class="form-check-label">Show Password</label>
+    </div>
+    <div class="form-group form-check">
         <input id="remember" type="checkbox" class="form-check-input">
         <label class="form-check-label">Remember Me</label>
     </div>
@@ -40,7 +44,18 @@
 </div>
 
 <script>
-    document.getElementById("login-btn").addEventListener("click", function () {
+    document.getElementById("show-password").addEventListener('change', showPassword);
+    document.getElementById("login-btn").addEventListener("click", login);
+    document.getElementById("google-btn").addEventListener("click", googleLogin);
+    document.getElementById("reset-btn").addEventListener("click", resetPassword);
+
+
+    function showPassword() {
+        let value = document.getElementById("password").type;
+        document.getElementById("password").type = value === "password" ? "text" : "password";
+    }
+
+    function login() {
         let email = document.getElementById("email")?.value;
         let pass = document.getElementById("password")?.value;
         let remember = document.getElementById("remember")?.checked;
@@ -77,32 +92,13 @@
                         null;
                 }
             });
-    })
+    }
 
-    document.getElementById("google-btn").addEventListener("click", function () {
-        let url = window.location.origin + "/api/v1/auth/login/google";
+    function googleLogin() {
 
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
+    }
 
-        // TODO: Implement Google Login (NOT CURRENTLY WORKING)
-        fetch(url, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                loadingCard.style.display = "none";
-            })
-    })
+    function resetPassword () {
 
-    document.getElementById("reset-btn").addEventListener("click", function () {
-        let url = window.location.origin + "/api/v1/auth/login/google";
-
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
-
-        // TODO: Implement Reset Password
-    })
+    }
 </script>
