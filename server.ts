@@ -16,7 +16,7 @@ dotenv.config();
 
 // Create App.
 const app = express();
-const serverPort = process.env.SERVER_PORT || 3000;
+const serverPort = process.env.PORT || process.env.SERVER_PORT || 3000;
 
 // Configurations
 app.set('port', serverPort);
@@ -25,7 +25,7 @@ app.set('port', serverPort);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use('/api/v1/', timeout('7s'));
+app.use('/api/v1/', timeout('10s'));
 app.use(passport.initialize());
 passport.use(JwtEmailPasswordMiddleware);
 passport.use(GoogleOAuth2Middleware);
