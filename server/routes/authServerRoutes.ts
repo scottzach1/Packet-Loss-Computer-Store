@@ -2,7 +2,9 @@ import express, {Request, Response} from 'express';
 import {
     checkPasswordComplexity,
     createToken,
+    generateResetLinkHandler,
     loginUser,
+    redeemResetLinkHandler,
     signinWithGoogleHandler,
     signupUser,
     updatePasswordHandler
@@ -30,9 +32,24 @@ router.post('/signup', [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-router.post('/reset', [], (req: Request, res: Response) => {
-    // TODO: This will need to be implemented in much more depth.
-    return res.send('TODO: Needs to be implemented!');
+router.post('/reset', [], async (req: Request, res: Response) => {
+    const {email} = req.body;
+    const user = await User.findOne({email});
+
+    if (user) {
+        await generateResetLinkHandler(user);
+    }
+
+    return res
+        .status(200)
+        .json({'message': 'If the email address matches a given account, then you will receive an email within the next 5 minutes.'})
+        .send();
+});
+
+router.post('/reset/redeem', [], async (req: Request, res: Response) => {
+    const {seed, password} = req.body;
+    const resp = await redeemResetLinkHandler(seed, password);
+    return res.status(200).json(resp).send();
 });
 
 router.get('/login/google', passport.authenticate('google', {scope: ['email profile']}));
@@ -40,25 +57,24 @@ router.get('/login/google', passport.authenticate('google', {scope: ['email prof
 router.get('/login/google/callback', passport.authenticate('google', {failureRedirect: '/api/v1/auth/login'}), async (req: Request, res: Response) => {
     const {user} = req;
 
-    const response = await signinWithGoogleHandler(user);
-    const status = response.success ? 200 : 400;
+    const resp = await signinWithGoogleHandler(user);
+    const status = (resp.success) ? 200 : 400;
 
     res.status(status).send(`
-                <script>
-                    let token = "${response.token}"
-                    let displayName = "${response.displayName}"
-                    let admin = ${response.admin}
-                    let success = ${response.success}
-                    
-                    if (success) {
-                        window.localStorage.setItem("token", token);
-                        window.localStorage.setItem("admin", admin);
-                        displayName ? window.localStorage.setItem("displayName", displayName) : null;
-                    }
-                    window.location.href = window.location.origin + "/"
-                </script>
-            `
-    )
+        <script>
+            let token = "${resp.token}"
+            let displayName = "${resp.displayName}"
+            let admin = ${resp.admin}
+            let success = ${resp.success}
+
+            if (success) {
+                window.localStorage.setItem("token", token);
+                window.localStorage.setItem("admin", admin);
+                displayName ? window.localStorage.setItem("displayName", displayName) : null;
+            }
+            window.location.href = window.location.origin + "/"
+        </script>
+    `);
 });
 
 router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
