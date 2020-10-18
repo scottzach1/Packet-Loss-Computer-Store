@@ -7,6 +7,8 @@ import {User} from "../server/models/userModel";
 import {ShopListing} from "../server/models/shopListingModel";
 import {assertType} from "./assertType";
 import mongoose from "mongoose";
+import {signupUser} from "../server/controller/authController";
+import {createItem} from "../server/controller/shopListingController";
 
 chai.use(chaiHttp);
 
@@ -188,7 +190,6 @@ describe('API Tests', function () {
                 it('Should successfully signup the user', function (done) {
                     chai.request(app)
                         .post(`${api}/auth/signup`)
-                        .set('Content-Type', 'application/json')
                         .send(account)
                         .end(function (err, res) {
                             chai.expect(err).to.be.null;
@@ -202,7 +203,6 @@ describe('API Tests', function () {
                 it('Should fail to signup as account exists', function (done) {
                     chai.request(app)
                         .post(`${api}/auth/login`)
-                        .set('Content-Type', 'application/json')
                         .send(account)
                         .end(function (err, res) {
                             chai.expect(err).to.be.null;
@@ -229,7 +229,6 @@ describe('API Tests', function () {
                 it('Should successfully authenticate user', function (done) {
                     chai.request(app)
                         .post(`${api}/auth/login`)
-                        .set('Content-Type', 'application/json')
                         .send(account)
                         .end(function (err, res) {
                             chai.expect(err).to.be.null;
@@ -243,8 +242,79 @@ describe('API Tests', function () {
                 it('Should fail to authenticate user (bad pass)', function (done) {
                     chai.request(app)
                         .post(`${api}/auth/login`)
-                        .set('Content-Type', 'application/json')
                         .send({...account, password: 'meep'})
+                        .end(function (err, res) {
+                            chai.expect(err).to.be.null;
+                            chai.expect(res).to.have.status(400);
+                            chai.expect(() => assertType(res.body, {errors: ['']})).to.not.throw();
+                            done();
+                        });
+                })
+            });
+        });
+
+        describe('Shop Cart', function () {
+            const account = {
+                email: 'testing.cart1@gmail.com',
+                password: 'R&nd0mP@$$w0rd',
+                displayName: 'Testing Account',
+            };
+
+            const others = [{
+                title: '1. Item A title',
+                description: 'Item A description',
+                category: 'TestItem',
+                brand: 'N/A',
+                cost: 50,
+                available: true,
+            }, {
+                title: '2. Item B title',
+                description: 'Item B description',
+                category: 'TestItem',
+                brand: 'N/A',
+                cost: 10,
+                available: true,
+            }];
+
+            const itemIds: string[] = [];
+            let token: string | undefined;
+
+            before(function () {
+                const promises: Promise<any>[] = [
+                    ...others.map((item) => createItem(item).then((res) => itemIds.push(res!.id))),
+                    signupUser(account.email, account.password, account.displayName).then((res) => {
+                        token = res.token
+                    }),
+                ];
+                return Promise.all(promises);
+            });
+
+            describe('1. Add to cart', function () {
+                it('Should add to cart', function (done) {
+                    const targResp = {
+                        cart: {
+                            items: [{
+                                itemId: itemIds[0],
+                                quantity: 16
+                            }],
+                        },
+                    };
+
+                    chai.request(app)
+                        .put(`${api}/cart/add`)
+                        .send({token, itemId: itemIds[0], quantity: targResp.cart.items[0].quantity})
+                        .end(function (err, res) {
+                            chai.expect(err).to.be.null;
+                            chai.expect(res).to.have.status(201);
+                            chai.expect(() => assertEquals(res.body, targResp)).to.not.throw();
+                            done();
+                        });
+                });
+
+                it('Should fail to add to cart', function (done) {
+                    chai.request(app)
+                        .put(`${api}/cart/add`)
+                        .send({token, itemId: 'invalid item id', quantity: 16})
                         .end(function (err, res) {
                             chai.expect(err).to.be.null;
                             chai.expect(res).to.have.status(400);

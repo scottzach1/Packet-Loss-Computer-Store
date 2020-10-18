@@ -71,4 +71,5 @@ export default {
     IP_INFO: {
         API_KEY: process.env.IPINFO_API_KEY || 'INVALID',
     },
+    NODE_ENV: process.env.NODE_ENV || 'development',
 };
