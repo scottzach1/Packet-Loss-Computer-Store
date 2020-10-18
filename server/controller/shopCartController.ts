@@ -50,6 +50,7 @@ export const getCartItems = async (cart: ShopCartDoc): Promise<any[]> => {
     return cart.items.map((entry, index) => {
         const item = items[index];
         return {
+            id: entry.itemId,
             quantity: entry.quantity,
             item: (item) ? item : {error: 'This item is no longer available'}
         };
