@@ -58,7 +58,8 @@ router.get('/login/google/callback', passport.authenticate('google', {failureRed
                     window.location.href = window.location.origin + "/"
                 </script>
             `
-    )});
+    )
+});
 
 router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
     const {_id}: any = req.user;
