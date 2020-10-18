@@ -1,9 +1,8 @@
 import express, {Request, Response} from 'express';
 import {
     checkPasswordComplexity,
-    loginUser,
     createToken,
-    loginHandler,
+    loginUser,
     signinWithGoogleHandler,
     signupUser,
     updatePasswordHandler
