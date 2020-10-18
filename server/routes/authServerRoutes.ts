@@ -37,10 +37,13 @@ router.post('/reset', [], async (req: Request, res: Response) => {
     const user = await User.findOne({email});
 
     if (user) {
-        return res.status(200).json(await generateResetLinkHandler(user)).send();
+        await generateResetLinkHandler(user);
     }
 
-    return res.send('TODO: Needs to be implemented!');
+    return res
+        .status(200)
+        .json({'message': 'If the email address matches a given account, then you will receive an email within the next 5 minutes.'})
+        .send();
 });
 
 router.post('/reset/redeem', [], async (req: Request, res: Response) => {
