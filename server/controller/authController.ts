@@ -21,7 +21,7 @@ export interface AuthResponse {
  * Creates a JSON Web Token string for the provided users session.
  * @param user - user to create token for.
  */
-const createToken = (user: UserDoc) => {
+export const createToken = (user: UserDoc) => {
     return jwt.sign({id: user.id, email: user.email}, config.JWT_SECRET, {
         expiresIn: '1h',
     });
