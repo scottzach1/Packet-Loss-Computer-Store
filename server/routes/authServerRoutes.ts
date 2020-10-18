@@ -9,6 +9,7 @@ import {
 } from "../controller/authController";
 import passport from "passport";
 import {User} from "../models/userModel";
+import {render} from "../../client/utils";
 
 const router = express.Router();
 
@@ -41,9 +42,9 @@ router.get('/login/google/callback', passport.authenticate('google', {failureRed
     const {user} = req;
 
     const response = await signinWithGoogleHandler(user);
-    const code = (response.success) ? 200 : 400;
 
-    return res.status(code).json(response).send();
+    // return res.status(code).json(response).send();
+    render(req, res, 'pages/autoLogin', 'Auto Login', {response});
 });
 
 router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {

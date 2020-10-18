@@ -139,6 +139,9 @@ export const signinWithGoogleHandler = async (user: Express.User | UserDoc | any
 
     response.token = createToken(user);
     response.success = true;
+    response.displayName = user.displayName;
+    response.email = user.email;
+    response.admin = user.admin;
 
     return response;
 };
