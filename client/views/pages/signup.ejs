@@ -33,6 +33,7 @@
     function showPassword() {
         let value = document.getElementById("password").type;
         document.getElementById("password").type = value === "password" ? "text" : "password";
+        document.getElementById("password-confirm").type = value === "password" ? "text" : "password";
     }
 
     function passwordComplexity() {
