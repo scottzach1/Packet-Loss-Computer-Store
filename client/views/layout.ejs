@@ -3,6 +3,13 @@
 <%- include('partials/head') %>
 <body>
 <%- include('partials/navigation', {user}) %>
+<div class="success box-shadow page-section" id="success-card"></div>
+<div class="error box-shadow page-section" id="error-card"></div>
+<div class="loading box-shadow page-section" id="loading-card">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
 <%- include(page) %>
 </body>
 </html>

@@ -1,13 +1,3 @@
-<div class="success box-shadow page-section" id="success-card"></div>
-<div class="error box-shadow page-section" id="error-card"></div>
-<div class="loading box-shadow page-section" id="loading-card">
-    <div style="display: block; justify-content: center">
-        <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-</div>
-
 <div>
     <div id="checkout-contents"></div>
     <div class="card card-small page-section box-shadow" id="order-now" style="display: none">Order: ...</div>
@@ -17,8 +7,9 @@
 <script>
     let contents = document.getElementById("checkout-contents");
     let totalAmount = document.getElementById("total-amount");
+
     let contentsURL = window.location.origin + "/api/v1/cart/get/items"
-    let removeUrl = window.location.origin + "/api/v1/cart/remove"
+
     let total = 0;
 
     if (!token) {
@@ -28,7 +19,7 @@
                 `
     } else {
         let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
+        resetCards();
 
         fetch(contentsURL, {
             method: 'POST',
@@ -39,8 +30,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                loadingCard.style.display = "none";
-
                 if (!data.items.length) {
                     contents.innerHTML = `
                             <div class="logout box-shadow page-section">
@@ -98,12 +87,16 @@
                         }
                     )
                 }
+                loadingCard.style.display = "none";
             })
     }
 
     function removeItem(id, title, quantity) {
         let answer = window.confirm(`Are you sure you want to remove all ${quantity} of ${title}: ${id}`);
         if (answer) {
+            resetCards();
+            let removeUrl = window.location.origin + "/api/v1/cart/remove"
+
             fetch(removeUrl, {
                 method: 'DELETE',
                 headers: {'Content-Type': 'application/json'},
@@ -122,9 +115,8 @@
     function clearCart() {
         let answer = window.confirm("Are you sure you want to clear your entire cart?");
         if (answer) {
+            resetCards();
             let clearCartUrl = window.location.origin + "/api/v1/cart/clear"
-            let loadingCard = document.getElementById("loading-card");
-            loadingCard.style.display = "flex";
 
             fetch(clearCartUrl, {
                 method: 'DELETE',
@@ -135,8 +127,8 @@
             })
                 .then(res => res.json())
                 .then(() => {
-                    loadingCard.style.display = "none";
                     window.location.reload();
+                    loadingCard.style.display = "none";
                 })
         }
     }
@@ -144,9 +136,8 @@
     function placeOrder(total) {
         let answer = window.confirm(`Confirm Purchase for $${total.toFixed(2)}?`);
         if (answer) {
+            resetCards();
             let createOrder = window.location.origin + "/api/v1/orders/create"
-            let loadingCard = document.getElementById("loading-card");
-            loadingCard.style.display = "flex";
 
             fetch(createOrder, {
                 method: 'POST',
@@ -157,8 +148,8 @@
             })
                 .then(res => res.json())
                 .then(() => {
-                    loadingCard.style.display = "none";
                     window.location.reload();
+                    loadingCard.style.display = "none";
                 })
         }
     }
