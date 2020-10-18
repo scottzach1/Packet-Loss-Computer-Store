@@ -1,0 +1,54 @@
+<div>
+    <div class="card-body">
+        <h1 id="search-result-text"></h1>
+        <div id="search-result-contents"></div>
+    </div>
+</div>
+
+<script>
+    resetCards();
+
+    let searchResultContents = document.getElementById("search-result-contents");
+    searchResultContents.innerHTML = "";
+
+    let searchParams = window.location.href.replaceAll(window.location.origin, "");
+    let searchUrl = window.location.origin + "/api/v1/" + searchParams;
+    let searchQuery = searchParams.replaceAll("/shop/items/search?q=", "");
+
+    fetch(searchUrl, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.errors || !data.items.length) {
+                errorCard.style.display = "block"
+                errorCard.innerHTML += `<b> - No Search Results for "${searchQuery}"<br/></b>`;
+            } else {
+
+                document.getElementById("search-result-text").innerHTML = `
+                    <h5 class="card-title"><b>Search Results For:</b> "${searchQuery}"</h5>
+                `
+
+
+                data.items.forEach(item => {
+                    const {brand, category, cost, description, title, _id} = item;
+
+                    searchResultContents.innerHTML += `
+                    <div class="card box-shadow page-section">
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>Cost: </b>$${cost.toFixed(2)}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'">Go to item page</a>
+                    </div>
+                    </div>`;
+                })
+            }
+            loadingCard.style.display = "none";
+        })
+
+</script>

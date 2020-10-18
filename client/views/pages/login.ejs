@@ -28,7 +28,7 @@
         <a href="/auth/signup">
             <button id="signup-btn" class="btn btn-primary">Signup?</button>
         </a>
-        <a href="/auth/signup">
+        <a href="/auth/forgot">
             <button id="reset-btn" class="btn btn-primary">Reset Password?</button>
         </a>
     </div>
@@ -38,7 +38,6 @@
     document.getElementById("show-password").addEventListener('change', showPassword);
     document.getElementById("login-btn").addEventListener("click", login);
     document.getElementById("google-btn").addEventListener("click", googleLogin);
-    document.getElementById("reset-btn").addEventListener("click", resetPassword);
 
 
     function showPassword() {
@@ -66,15 +65,13 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (!data.success) {
                     errorCard.style.display = "block";
                     data.errors.forEach(error => {
                         errorCard.innerHTML += `<b> - \t${error}<br/></b>`;
                     });
                 } else {
-
-                    // window.location.href = success
+                    window.location.href = success
                     window.localStorage.setItem("token", data.token);
                     window.localStorage.setItem("admin", data.admin);
                     data.displayName ? window.localStorage.setItem("displayName", data.displayName) :
@@ -86,10 +83,6 @@
     }
 
     function googleLogin() {
-
-    }
-
-    function resetPassword () {
 
     }
 </script>
