@@ -7,6 +7,7 @@ import cors from 'cors';
 import {clientRouter} from "./client/routes";
 import {serverRouter} from "./server/routes";
 import {JwtEmailPasswordMiddleware, GoogleOAuth2Middleware} from "./server/middleware/passportMiddleware";
+import timeout from 'connect-timeout';
 
 // Initialize configuration
 dotenv.config();
@@ -22,6 +23,7 @@ app.set('port', serverPort);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use('/api/v1/', timeout('7s'));
 app.use(passport.initialize());
 passport.use(JwtEmailPasswordMiddleware);
 passport.use(GoogleOAuth2Middleware);

@@ -77,7 +77,7 @@ router.post('/renew', [passport.authenticate("jwt", {session: false})], (req: Re
     }
 
     // Renew user token
-    let token = createToken(user);
+    const token = createToken(user);
 
     // Notify sender
     return res.status(200).json({token}).send()
