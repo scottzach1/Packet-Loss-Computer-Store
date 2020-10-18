@@ -234,12 +234,19 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
 export const redeemResetLinkHandler = async (seed: string, password: string) => {
     let user = await User.findOne({resetSeed: seed});
 
-    if (!user) return {errors: ['invalid reset link!']};
+    if (!user) return {errors: ['invalid reset link!'], success: false};
+
+    const resp = checkPasswordComplexity(password);
+
+    if (!resp.success)
+        return resp;
 
     user.resetSeed = '';
     user.password = password;
 
     user = await user.save();
+
+    resp.success = true;
 
     return user;
 }
