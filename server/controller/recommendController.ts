@@ -15,20 +15,20 @@ const ipinfoWrapper = new IPinfoWrapper(config.IP_INFO.API_KEY);
  * @param ip - the ip to find location for.
  */
 export const getLocationFromIp = async (ip: string) => {
-    // Contains 'hostname, city, loc, region, ...'
-    // See attributes here: https://github.com/ipinfo/node
-    return (await ipinfoWrapper.lookupIp(ip)).loc;
+  // Contains 'hostname, city, loc, region, ...'
+  // See attributes here: https://github.com/ipinfo/node
+  return (await ipinfoWrapper.lookupIp(ip)).loc;
 }
 
 /**
  * Interface describing a parsed item from the nearby Google Places response.
  */
 export interface GooglePlaceLocation {
-    name: string, // Name of place.
-    vicinity: string, // Common location.
-    types: { [index: string]: string } // Dict of different categories.
-    userRatingsTotal: number, // Number of ratings.
-    open?: boolean, // (opt) Whether store is open.
+  name: string, // Name of place.
+  vicinity: string, // Common location.
+  types: { [index: string]: string } // Dict of different categories.
+  userRatingsTotal: number, // Number of ratings.
+  open?: boolean, // (opt) Whether store is open.
 }
 
 /**
@@ -38,38 +38,38 @@ export interface GooglePlaceLocation {
  * @param location - location in the form `lat,lng` to perform recommendations.
  */
 export const getGoogleRecommendations = async (location: string): Promise<GooglePlaceLocation[] | null> => {
-    // Base Google Places API path.
-    const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+  // Base Google Places API path.
+  const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
 
-    const params = new URLSearchParams([
-        // See params here: https://developers.google.com/places/web-service/search
-        ['input', 'computer'],
-        ['location', location],
-        ['radius', '50000'],
-        ['type', 'electronics_store'],
-        ['keyword', 'computer'],
-        ['rankby', 'prominence'],
-        ['key', config.GOOGLE_PLACES.API_KEY],
-    ]);
+  const params = new URLSearchParams([
+    // See params here: https://developers.google.com/places/web-service/search
+    ['input', 'computer'],
+    ['location', location],
+    ['radius', '50000'],
+    ['type', 'electronics_store'],
+    ['keyword', 'computer'],
+    ['rankby', 'prominence'],
+    ['key', config.GOOGLE_PLACES.API_KEY],
+  ]);
 
-    try {
-        // Construct query from parameters.
-        const query = `${url}?${params.toString()}`;
+  try {
+    // Construct query from parameters.
+    const query = `${url}?${params.toString()}`;
 
-        // Query Google Places API for nearby tech shops.
-        const resp: any = await (await fetch(query)).json();
+    // Query Google Places API for nearby tech shops.
+    const resp: any = await (await fetch(query)).json();
 
-        // Parse the Google response into `GooglePlaceLocation` interface for easy client-side parsing.
-        return resp.results.map((rec: any): GooglePlaceLocation => {
-            const {name, vicinity, types, user_ratings_total, opening_hours} = rec;
+    // Parse the Google response into `GooglePlaceLocation` interface for easy client-side parsing.
+    return resp.results.map((rec: any): GooglePlaceLocation => {
+      const {name, vicinity, types, user_ratings_total, opening_hours} = rec;
 
-            return {
-                name, vicinity, types,
-                userRatingsTotal: user_ratings_total,
-                open: opening_hours?.open_now
-            };
-        });
-    } catch (e) {
-        return null;
-    }
+      return {
+        name, vicinity, types,
+        userRatingsTotal: user_ratings_total,
+        open: opening_hours?.open_now
+      };
+    });
+  } catch (e) {
+    return null;
+  }
 }

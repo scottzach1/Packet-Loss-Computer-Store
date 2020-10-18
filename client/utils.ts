@@ -10,7 +10,7 @@ import {Request, Response} from 'express';
  * @param data - Any additional data passed to the EJS webpage.
  */
 const render = (req: Request, res: Response, page: string, title: string, data: any) => {
-    res.render('layout', {page, title, data, user: null});
+  res.render('layout', {page, title, data, user: null});
 };
 
 export {render};

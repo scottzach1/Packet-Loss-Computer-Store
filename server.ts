@@ -43,7 +43,7 @@ app.use('/api/v1', serverRouter);
 
 // Listen for traffic on NPM port.
 app.listen(serverPort, () => {
-    console.log(`server is listening on port ${serverPort}`);
+  console.log(`server is listening on port ${serverPort}`);
 });
 
 export default app;

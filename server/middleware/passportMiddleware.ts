@@ -18,8 +18,8 @@ import passport from "passport";
  * ```
  */
 const jwtOptions: JwtStrategyOptions = {
-    jwtFromRequest: ExtractJwt.fromBodyField('token'),
-    secretOrKey: config.JWT_SECRET
+  jwtFromRequest: ExtractJwt.fromBodyField('token'),
+  secretOrKey: config.JWT_SECRET
 };
 
 /**
@@ -28,16 +28,16 @@ const jwtOptions: JwtStrategyOptions = {
  * (from token).
  */
 export const JwtEmailPasswordMiddleware = new JwtStrategy(jwtOptions, async (payload, done) => {
-    if (config.NODE_ENV !== 'testing') {
-        console.log('authenticated token with payload', payload);
-    }
-    try {
-        const user = await User.findById(payload.id);
-        if (user) return done(null, user);
-        else return done(null, false);
-    } catch (error) {
-        console.error('failed to find user', error);
-    }
+  if (config.NODE_ENV !== 'testing') {
+    console.log('authenticated token with payload', payload);
+  }
+  try {
+    const user = await User.findById(payload.id);
+    if (user) return done(null, user);
+    else return done(null, false);
+  } catch (error) {
+    console.error('failed to find user', error);
+  }
 });
 
 /**
@@ -49,9 +49,9 @@ export const JwtEmailPasswordMiddleware = new JwtStrategy(jwtOptions, async (pay
  * query params, but this should be handled by Passport.js Gooogle OAuth2.
  */
 const oauth2Options: GoogleStrategyOptions = {
-    clientID: config.GOOGLE_OAUTH2.CLIENT_ID,
-    clientSecret: config.GOOGLE_OAUTH2.CLIENT_SECRET,
-    callbackURL: '/api/v1/auth/login/google/callback',
+  clientID: config.GOOGLE_OAUTH2.CLIENT_ID,
+  clientSecret: config.GOOGLE_OAUTH2.CLIENT_SECRET,
+  callbackURL: '/api/v1/auth/login/google/callback',
 };
 
 /**
@@ -61,33 +61,33 @@ const oauth2Options: GoogleStrategyOptions = {
  * verify a Jwt token and is only used upon initial authorization of user.
  */
 export const GoogleOAuth2Middleware = new GoogleStrategy(oauth2Options, async (accessToken, refreshToken, profile, done) => {
-    console.log('authenticated google profile');
-    try {
-        const {name, email} = profile._json;
+  console.log('authenticated google profile');
+  try {
+    const {name, email} = profile._json;
 
-        let user = await User.findOne({email});
-        if (!user) {
-            // Create user.
-            user = new User({email, displayName: name, hasPassword: false});
-            await user.save();
-        }
-
-        return done(undefined, user);
-    } catch (error) {
-        console.error('failed to login google user', error);
+    let user = await User.findOne({email});
+    if (!user) {
+      // Create user.
+      user = new User({email, displayName: name, hasPassword: false});
+      await user.save();
     }
+
+    return done(undefined, user);
+  } catch (error) {
+    console.error('failed to login google user', error);
+  }
 });
 
 /**
  * Default: Serializes the user such that it can be passed through callback.
  */
 passport.serializeUser((user, done) => {
-    done(null, user);
+  done(null, user);
 });
 
 /**
  * Default: Deserializes the user such that it can be used within authentication handlers.
  */
 passport.deserializeUser((user, done) => {
-    done(null, user);
+  done(null, user);
 });
