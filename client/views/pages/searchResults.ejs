@@ -15,21 +15,27 @@
     let searchUrl = window.location.origin + "/api/v1/" + searchParams;
     let searchQuery = searchParams.replaceAll("/shop/items/search?q=", "");
 
-
-    document.getElementById("search-result-text").innerHTML = `
-    <h5 class="card-title"><b>Search Results For:</b> "${searchQuery}"</h5>
-    `
-
     fetch(searchUrl, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     })
-    .then(res => res.json())
-    .then(data => {
-        data.items.forEach(item => {
-            const {brand, category, cost, description, title, _id} = item;
+        .then(res => res.json())
+        .then(data => {
 
-            searchResultContents.innerHTML += `
+            if (data.errors || !data.items.length) {
+                errorCard.style.display = "block"
+                errorCard.innerHTML += `<b> - No Search Results for "${searchQuery}"<br/></b>`;
+            } else {
+
+                document.getElementById("search-result-text").innerHTML = `
+                    <h5 class="card-title"><b>Search Results For:</b> "${searchQuery}"</h5>
+                `
+
+
+                data.items.forEach(item => {
+                    const {brand, category, cost, description, title, _id} = item;
+
+                    searchResultContents.innerHTML += `
                     <div class="card box-shadow page-section">
                     <div class="card-body">
                     <h5 class="card-title">${title}</h5>
@@ -40,8 +46,9 @@
                     <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'">Go to item page</a>
                     </div>
                     </div>`;
+                })
+            }
+            loadingCard.style.display = "none";
         })
-        loadingCard.style.display = "none";
-    })
 
 </script>
