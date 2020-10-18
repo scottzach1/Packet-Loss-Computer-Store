@@ -13,17 +13,17 @@ console.log(`connecting to '${config.MONGO_DB.URI}'`);
 const connection = mongoose.connection;
 
 connection.once('open', () => {
-    // if (!process.env.MONGO_TEST)
+    if (process.env.NODE_ENV !== 'testing')
         console.log('connected to database');
 });
 
 connection.on('error', (err) => {
-    // if (!process.env.MONGO_TEST)
+    if (process.env.NODE_ENV !== 'testing')
         console.error('failed to connect to database', err);
     process.exit();
 });
 
 connection.once('close', () => {
-    // if (!process.env.MONGO_TEST)
+    if (process.env.NODE_ENV !== 'testing')
         console.log('disconnected from database');
 });

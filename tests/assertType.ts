@@ -2,11 +2,11 @@
  * Full credit to 'ChriwW' from StackOverflow. I really liked his approach as I thought it would
  * produce the tidiest test cases by providing expected values.
  *
- * @param loaded - TODO
- * @param wanted - TODO
- * @param optional - TODO
+ * @param subject - the subject to be testing.
+ * @param example - the example of a valid instance.
+ * @param optional - any optional properties.
  */
-export function assertTypeT<T>(loaded: any, wanted: T, optional?: Set<string>): T {
+export function assertType<T>(subject: any, example: T, optional?: Set<string>): T {
     // this is called recursively to compare each element
     // tslint:disable-next-line:no-shadowed-variable
     function assertType(found: any, wanted: any, keyNames?: string): void {
@@ -61,6 +61,6 @@ export function assertTypeT<T>(loaded: any, wanted: T, optional?: Set<string>): 
         }
     }
 
-    assertType(loaded, wanted);
-    return loaded as T;
+    assertType(subject, example);
+    return subject as T;
 }
