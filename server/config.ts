@@ -29,10 +29,16 @@ if (!mongoUrl) {
 /**
  * Select correct server port.
  */
-let serverPort = process.env.SERVER_PORT;
+let serverPort = process.env.PORT;
 if (!serverPort) {
   serverPort = "3000";
   console.warn(`No server port was specified, defaulting to ${serverPort}`)
+}
+
+let origin = process.env.ORIGIN;
+if (!origin) {
+  origin = 'localhost';
+  console.warn(`No origin variable was specified, defaulting to ${origin}`);
 }
 
 /**
@@ -72,6 +78,7 @@ export default {
   },
   SERVER: {
     PORT: serverPort,
+    ORIGIN: origin,
   },
   GOOGLE_OAUTH2: {
     CLIENT_ID: process.env.GOOGLE_OAUTH2_CLIENT_ID || 'INVALID',

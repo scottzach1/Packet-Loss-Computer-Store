@@ -51,7 +51,7 @@ export const JwtEmailPasswordMiddleware = new JwtStrategy(jwtOptions, async (pay
 const oauth2Options: GoogleStrategyOptions = {
   clientID: config.GOOGLE_OAUTH2.CLIENT_ID,
   clientSecret: config.GOOGLE_OAUTH2.CLIENT_SECRET,
-  callbackURL: '/api/v1/auth/login/google/callback',
+  callbackURL: `${config.SERVER.ORIGIN}/api/v1/auth/login/google/callback`,
 };
 
 /**

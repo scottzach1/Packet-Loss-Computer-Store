@@ -8,7 +8,7 @@ import {clientRouter} from "./client/routes";
 import {serverRouter} from "./server/routes";
 import {GoogleOAuth2Middleware, JwtEmailPasswordMiddleware} from "./server/middleware/passportMiddleware";
 import timeout from 'connect-timeout';
-
+import config from "./server/config";
 import './server/emails';
 
 // Initialize configuration
@@ -16,7 +16,7 @@ dotenv.config();
 
 // Create App.
 const app = express();
-const serverPort = process.env.PORT || process.env.SERVER_PORT || 3000;
+const serverPort = config.SERVER.PORT;
 
 // Configurations
 app.set('port', serverPort);
