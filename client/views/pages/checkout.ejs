@@ -1,3 +1,5 @@
+<div class="success box-shadow page-section" id="success-card"></div>
+<div class="error box-shadow page-section" id="error-card"></div>
 <div class="loading box-shadow page-section" id="loading-card">
     <div style="display: block; justify-content: center">
         <div class="spinner-border" role="status">
@@ -49,11 +51,8 @@
                     data.items.forEach(i => {
                             // GET i.item details
                             let item = i.item;
-                            console.log(i);
 
                             if (item.error) {
-
-
                                 contents.innerHTML += `
                                 <div class="card box-shadow page-section">
                                 <div class="card-body">
@@ -93,10 +92,12 @@
                             </div>
                             </div>`;
 
-                            totalAmount.innerHTML = "Total: $" + total.toFixed(2);
-                            totalAmount.style.display = "";
-
-                            totalAmount.innerHTML = "Total: $" + total.toFixed(2);
+                            totalAmount.innerHTML = `
+                            <div>
+                            <a>Total: $${total.toFixed(2)}</a>
+                            <a class="btn btn-primary mr-auto inline-right" onclick="clearCart()">Clear cart</a>
+                            </div>
+                            `;
                             totalAmount.style.display = "";
                         }
                     )
@@ -105,7 +106,6 @@
     }
 
     function removeItem(id) {
-        console.log(id, token)
         fetch(removeUrl, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
@@ -114,8 +114,31 @@
                 itemId: id
             })
         })
-            .then(response => {
+            .then(() => {
                 window.location.reload();
             });
+    }
+
+
+    function clearCart() {
+        let answer = window.confirm("Are you sure you want to clear your entire cart?");
+        if (answer) {
+            let clearCartUrl = window.location.origin + "/api/v1/cart/clear"
+            let loadingCard = document.getElementById("loading-card");
+            loadingCard.style.display = "flex";
+
+            fetch(clearCartUrl, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    token: token,
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    loadingCard.style.display = "none";
+                    window.location.reload();
+                })
+        }
     }
 </script>

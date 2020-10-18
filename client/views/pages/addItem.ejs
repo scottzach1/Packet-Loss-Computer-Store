@@ -111,7 +111,6 @@
                     errorCard.style.display = "block"
                     errorCard.innerHTML = ""
                     res.errors.forEach(error => {
-                        console.log(error);
                         errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
                 } else {
