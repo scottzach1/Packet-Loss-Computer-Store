@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light">
     <a class="navbar-brand" href="#"><b>Computer Parts Store</b></a>
     <label class="input-group">
-        <input type="text" class="form-control" placeholder="Search">
-        <div class="input-group-append">
+        <input type="text" class="form-control" placeholder="Search" id="search-bar">
+        <div class="input-group-append" id="search-btn">
             <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
         </div>
     </label>
@@ -36,6 +36,8 @@
 </nav>
 
 <script>
+    document.getElementById("search-btn").addEventListener("click", doSearch);
+
     let logoutRef = "/auth/logout"
     let loginRef = "/auth/login"
     let accountRef = "/account/get"
@@ -56,5 +58,12 @@
         let addItem = document.getElementById("add-link");
         addItem.style.display = "inline-block";
         addItem.href = addRef;
+    }
+
+    function doSearch(){
+        let searchText = document.getElementById("search-bar").value;
+        let searchQueryUrl = new URL(window.location.origin + "/shop/items/search");
+        searchQueryUrl.searchParams.append("q", searchText);
+        window.location.href = searchQueryUrl.href;
     }
 </script>
