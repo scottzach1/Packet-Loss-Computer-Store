@@ -7,6 +7,7 @@
         </div>
     </label>
 </nav>
+
 <nav class="navbar navbar-expand-lg navbar-light">
     <a class="nav-link" href="/">
         <div class="link">
@@ -23,8 +24,11 @@
             Cart
         </div>
     </a>
-    <a class="nav-link ml-auto" id="account-link">
-        <div class="link" id="account-text">Account</div>
+    <a class="nav-link btn btn-warning ml-auto" id="add-link" style="display: none">
+        <div class="link" id="add-text">Add Items</div>
+    </a>
+    <a class="nav-link" id="account-link">
+        <div class="link" id="account-text"></div>
     </a>
     <a class="nav-link" id="log-in-link">
         <div class="link" id="log-in-text"></div>
@@ -36,6 +40,7 @@
     let logoutRef = "/auth/logout"
     let loginRef = "/auth/login"
     let accountRef = "/account/get"
+    let addRef = "/shop/add"
 
     let link = document.getElementById("log-in-link");
     let text = document.getElementById("log-in-text");
@@ -46,4 +51,12 @@
     let accText = document.getElementById("account-text");
     accLink.style.display = token ? "inline-block" : "none";
     accLink.href = accountRef;
+    let displayName = window.localStorage.getItem("displayName");
+    accText.innerText = displayName ? displayName : "Account"
+
+    if (window.localStorage.getItem("admin") === "true"){
+        let addItem = document.getElementById("add-link");
+        addItem.style.display = "inline-block";
+        addItem.href = addRef;
+    }
 </script>

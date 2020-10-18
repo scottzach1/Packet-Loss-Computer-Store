@@ -1,3 +1,11 @@
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 <div>
     <div class="card box-shadow page-section" id="account-contents"></div>
     <div class="card box-shadow page-section" id="account-orders"></div>
@@ -6,9 +14,11 @@
 <script>
     let accountContents = document.getElementById("account-contents");
     let contentsURL = window.location.origin + "/api/v1/account/get"
+    let loadingCard = document.getElementById("loading-card");
+    loadingCard.style.display = "flex";
 
     fetch(contentsURL, {
-        method: 'POSt',
+        method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             token: token
@@ -16,10 +26,9 @@
     })
         .then(data => data.json())
         .then(info => {
+            loadingCard.style.display = "none";
             let email = info.email;
             let displayName = info.displayName;
             let orders = info.orderIds;
-
-
         })
 </script>

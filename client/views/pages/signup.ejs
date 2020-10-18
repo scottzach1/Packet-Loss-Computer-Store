@@ -1,6 +1,13 @@
-<div class="error box-shadow error" id="error-card"></div>
+<div class="error box-shadow page-section" id="error-card"></div>
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
 
-<div class="login box-shadow">
+<div class="login box-shadow page-section">
     <div class="form-group">
         <label for="email">Email address</label>
         <input id="email" type="email" class="form-control">
@@ -9,27 +16,81 @@
     <div class="form-group">
         <label for="display">Display Name (Optional)</label>
         <input id="display" type="text" class="form-control">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
     <div class="form-group">
         <label for="password">Password</label>
+        <label for="password" id="password-security" class="text-muted"></label>
         <input id="password" type="password" class="form-control">
     </div>
     <div class="form-group">
         <label for="password-confirm">Confirm Password</label>
         <input id="password-confirm" type="password" class="form-control">
     </div>
+    <div class="form-group form-check">
+        <input id="show-password" type="checkbox" class="form-check-input">
+        <label class="form-check-label">Show Password</label>
+    </div>
     <button id="create-btn" class="btn btn-primary">Create Account</button>
 </div>
 
-
 <script>
-    document.getElementById("create-btn").addEventListener("click", function () {
+    document.getElementById("show-password").addEventListener('change', showPassword);
+    document.getElementById("password").addEventListener("input", () => passwordComplexity());
+    document.getElementById("create-btn").addEventListener("click", createAccount)
+
+
+    function showPassword() {
+        let value = document.getElementById("password").type;
+        document.getElementById("password").type = value === "password" ? "text" : "password";
+    }
+
+    function passwordComplexity() {
+        let pw = document.getElementById("password").value;
+        let url = window.location.origin + "/api/v1/auth/complexity";
+
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                password: pw,
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                let value = res.complexity;
+                let complexity = document.getElementById("password-security");
+
+                if (value === "strong"){
+                    complexity.innerHTML = `
+                        <div>
+                        <span class="badge badge-success">STRONG</span>
+                        </div>
+                    `
+                } else if (value === "medium"){
+                    complexity.innerHTML = `
+                        <div>
+                        <span class="badge badge-warning">MEDIUM</span>
+                        </div>
+                    `
+                } else {
+                    complexity.innerHTML = `
+                        <div>
+                        <span class="badge badge-danger">WEAK</span>
+                        </div>
+                    `
+                }
+            })
+
+    }
+
+
+    function createAccount() {
         let email = document.getElementById("email")?.value;
         let pass = document.getElementById("password")?.value;
         let passConfirm = document.getElementById("password-confirm")?.value;
         let display = document.getElementById("display")?.value;
         let url = window.location.origin + "/api/v1/auth/signup";
+
 
         if (pass !== passConfirm) {
             document.getElementById("error-card").style.display = "block";
@@ -37,6 +98,9 @@
             document.getElementById("error-card").innerHTML += `<b> - \tPasswords are not the same<br/></b>`;
             return;
         }
+
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
 
         fetch(url, {
             method: 'POST',
@@ -50,10 +114,9 @@
                 displayName: display
             })
         })
-            .then(response => {
-                return response.json()
-            })
+            .then(response => response.json())
             .then(data => {
+                loadingCard.style.display = "none";
                 if (!data.success) {
                     document.getElementById("error-card").style.display = "block";
                     document.getElementById("error-card").innerHTML = ""
@@ -65,5 +128,5 @@
                     window.location.href = "/auth/login"
                 }
             });
-    })
+    }
 </script>
