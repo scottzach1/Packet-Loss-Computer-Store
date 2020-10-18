@@ -41,9 +41,24 @@ router.get('/login/google/callback', passport.authenticate('google', {failureRed
     const {user} = req;
 
     const response = await signinWithGoogleHandler(user);
-    const code = (response.success) ? 200 : 400;
+    const status = response.success ? 200 : 400;
 
-    return res.status(code).json(response).send();
+    res.status(status).send(`
+                <script>
+                    let token = "${response.token}"
+                    let displayName = "${response.displayName}"
+                    let admin = ${response.admin}
+                    let success = ${response.success}
+                    
+                    if (success) {
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("admin", admin);
+                        displayName ? window.localStorage.setItem("displayName", displayName) : null;
+                    }
+                    window.location.href = window.location.origin + "/"
+                </script>
+            `
+    )
 });
 
 router.patch('/update/password', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
