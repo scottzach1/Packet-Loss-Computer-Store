@@ -6,8 +6,10 @@ import './server/db';
 import cors from 'cors';
 import {clientRouter} from "./client/routes";
 import {serverRouter} from "./server/routes";
-import {JwtEmailPasswordMiddleware, GoogleOAuth2Middleware} from "./server/middleware/passportMiddleware";
+import {GoogleOAuth2Middleware, JwtEmailPasswordMiddleware} from "./server/middleware/passportMiddleware";
 import timeout from 'connect-timeout';
+
+import './server/emails';
 
 // Initialize configuration
 dotenv.config();
