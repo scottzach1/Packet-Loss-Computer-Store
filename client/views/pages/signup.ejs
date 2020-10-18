@@ -106,11 +106,11 @@
         })
             .then(response => response.json())
             .then(data => {
-                if (!data.success) {
-                    document.getElementById("error-card").style.display = "block";
-                    document.getElementById("error-card").innerHTML = ""
+                if (data.errors) {
+                    errorCard.style.display = "block";
+                    errorCard.innerHTML = ""
                     data.errors.forEach(error => {
-                        document.getElementById("error-card").innerHTML += `<b> - \t${error}<br/></b>`;
+                        errorCard.innerHTML += `<b> - \t${error}<br/></b>`;
                     });
                 } else {
                     window.localStorage.setItem("token", data.token);

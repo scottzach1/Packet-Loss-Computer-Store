@@ -36,6 +36,18 @@ if (!serverPort) {
 }
 
 /**
+ * Node mailer configs
+ */
+if (!process.env.EMAIL_ADDR)
+    console.warn('No email address could be found!')
+
+if (!process.env.EMAIL_HOST)
+    console.warn('No email host could be found!')
+
+if (!process.env.EMAIL_PASS)
+    console.warn('No email password could be found!')
+
+/**
  * Warn for other missing variables.
  */
 if (!process.env.JWT_SECRET)
@@ -70,6 +82,11 @@ export default {
     },
     IP_INFO: {
         API_KEY: process.env.IPINFO_API_KEY || 'INVALID',
+    },
+    NODE_MAILER: {
+        HOST: process.env.EMAIL_HOST || 'INVALID',
+        EMAIL: process.env.EMAIL_ADDR || 'INVALID',
+        PASS: process.env.EMAIL_PASS || 'INVALID',
     },
     NODE_ENV: process.env.NODE_ENV || 'development',
 };

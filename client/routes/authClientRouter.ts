@@ -16,7 +16,12 @@ router.get('/signup', [], ((req : Request, res: Response) => {
 }));
 
 router.get('/forgot', [], ((req : Request, res: Response) => {
-    render(req, res, 'pages/forgotPassword', 'Signup', {});
+    render(req, res, 'pages/forgotPassword', 'Forgot', {});
+}));
+
+router.get('/reset', [], ((req : Request, res: Response) => {
+    const {seed} = req.query;
+    render(req, res, 'pages/passwordReset', 'Reset', {seed});
 }));
 
 router.get('/logout', [], ((req : Request, res: Response) => {
