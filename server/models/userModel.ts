@@ -43,7 +43,8 @@ const userSchema = new Schema({
         type: Boolean,
         required: false,
         default: false,
-    }
+    },
+    token: {type: String},
 });
 
 userSchema.pre<UserDoc>('save', async function (next) {

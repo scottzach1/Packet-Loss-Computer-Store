@@ -1,0 +1,15 @@
+<form action="/reset" onsubmit="checkPass()" method="POST" >
+    <label for="username">New Password: </label>
+    <input id="newPass1" name="newPass1" type="password" required />
+
+    <label for="username">New Password again: </label>
+    <input id="newPass2" name="newPass2" type="password" required />
+    <input type="submit" value="submit" />
+    <input name="token" type="hidden" value=<%= data.token %> />
+</form>
+
+<script>
+    const checkPass = () => {
+        return document.getElementById("newPass1").value ===  document.getElementById("newPass2").value;
+    }
+</script>

@@ -23,11 +23,6 @@ router.post(`/signup`, [], async (req: Request, res: Response) => {
     return res.status(code).json(response).send();
 });
 
-// router.post('/reset', [], (req: Request, res: Response) => {
-//     // TODO: This will need to be implemented in much more depth.
-//     return res.send('TODO: Needs to be implemented!');
-// });
-
 router.get('/forgot', [], async (req: Request, res: Response) => {
     if(req.query.token) {
         User.findOne({token: req.query.token}).then((output) => {
@@ -36,7 +31,7 @@ router.get('/forgot', [], async (req: Request, res: Response) => {
                 return render(req, res, 'reset', 'Reset Password', {token: req.query.token});
             }
             return renderError(req, res, 400, 'Invalid reset token');
-        }).catch((error) => {
+        }).catch((error: any) => {
             log('error', error);
             return renderError(req, res, 500, 'Something went wrong');
         });
@@ -50,7 +45,7 @@ router.get('/forgot', [], async (req: Request, res: Response) => {
  * @param {string} level the level to log
  * @param {any} message message to log
  */
-const log = (level: any, message: any) => logger.log(level, message);
+const log = (level: string, message: string | undefined) => logger.log(level, message);
 
 module.exports = {
     render,
@@ -131,11 +126,10 @@ router.post('/reset', (req, res) => {
             output.save(); // save the user
             return res.redirect('/login');
         }).catch((error: any) => {
-            log(error);
+            log(error, "Something went wrong");
             return renderError(req, res, 500, 'Something went wrong');
         });
     });
 });
-
 
 export {router as authServerRouter};
