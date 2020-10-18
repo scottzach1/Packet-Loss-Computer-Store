@@ -28,7 +28,7 @@
     })
         .then(response => response.json())
         .then(data => {
-            data.item.forEach(item => {
+            data.items.forEach(item => {
                 const {brand, category, cost, description, title, _id} = item;
 
                 contents.innerHTML += `
