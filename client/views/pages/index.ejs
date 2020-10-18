@@ -7,15 +7,18 @@
 </div>
 
 <div>
-    <h1>Recommended: </h1>
-    <div id="recommended" class="div-hscroll"></div>
+    <div class="card-body">
+        <h1>Recommended: </h1>
+        <div id="recommended" class="div-hscroll"></div>
+    </div>
 
-    <h1>Store Items: </h1>
-    <div id="store-contents"></div>
+    <div class="card-body">
+        <h1>Store Items: </h1>
+        <div id="store-contents"></div>
+    </div>
 </div>
 
 <script>
-    //TODO: Implement Recommended
     let contents = document.getElementById("store-contents");
     let recommended = document.getElementById("recommended");
 
@@ -62,12 +65,7 @@
             loadingCard.style.display = "none";
 
             data.item.forEach(item => {
-                let brand = item.brand;
-                let category = item.category;
-                let cost = item.cost;
-                let description = item.description;
-                let title = item.title;
-                let id = item._id;
+                const {brand, category, cost, description, title, _id} = item;
 
                 contents.innerHTML += `
                     <div class="card box-shadow page-section">
@@ -77,7 +75,7 @@
                     <a class="card-text"><b>Category: </b>${category}<br/></a>
                     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
                     <a class="card-text"><b>Description: </b>${description}<br/></a>
-                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${id}'">Go to item page</a>
+                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'">Go to item page</a>
                     </div>
                     </div>`;
             })

@@ -65,12 +65,7 @@
                             }
 
 
-                            let brand = item.brand;
-                            let category = item.category;
-                            let cost = item.cost;
-                            let description = item.description;
-                            let title = item.title;
-                            let id = item._id;
+                            const {brand, category, cost, description, title, _id} = item;
 
                             // Get i.quantity
                             let quantity = Number(i.quantity);
@@ -87,15 +82,16 @@
                             <a class="card-text"><b>Category: </b>${category}<br/></a>
                             <a class="card-text"><b>Brand: </b>${brand}<br/></a>
                             <a class="card-text"><b>Description: </b>${description}<br/></a>
-                            <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${id}'"><span>Go to item page</span></a>
-                            <a class="btn btn-primary" onclick="removeItem('${id}', '${title}', '${quantity}')"><span>Remove item</span></a>
+                            <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'"><span>Go to item page</span></a>
+                            <a class="btn btn-warning" onclick="removeItem('${_id}', '${title}', '${quantity}')"><span>Remove item</span></a>
                             </div>
                             </div>`;
 
                             totalAmount.innerHTML = `
                             <div>
-                            <a>Total: $${total.toFixed(2)}</a>
-                            <a class="btn btn-primary mr-auto inline-right" onclick="clearCart()">Clear cart</a>
+                            <a>Total: $${total.toFixed(2)}<br/></a>
+                            <a class="btn btn-success" onclick="placeOrder(${total})">Place order</a>
+                            <a class="btn btn-danger" onclick="clearCart()">Clear cart</a>
                             </div>
                             `;
                             totalAmount.style.display = "";
@@ -132,6 +128,28 @@
 
             fetch(clearCartUrl, {
                 method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    token: token,
+                })
+            })
+                .then(res => res.json())
+                .then(() => {
+                    loadingCard.style.display = "none";
+                    window.location.reload();
+                })
+        }
+    }
+
+    function placeOrder(total) {
+        let answer = window.confirm(`Confirm Purchase for $${total.toFixed(2)}?`);
+        if (answer) {
+            let createOrder = window.location.origin + "/api/v1/orders/create"
+            let loadingCard = document.getElementById("loading-card");
+            loadingCard.style.display = "flex";
+
+            fetch(createOrder, {
+                method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     token: token,

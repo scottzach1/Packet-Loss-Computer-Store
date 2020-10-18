@@ -31,13 +31,7 @@
         .then(item => {
             loadingCard.style.display = "none";
             let i = item.item;
-            let id = i._id;
-            let available = i.available;
-            let brand = i.brand;
-            let category = i.category;
-            let cost = i.cost;
-            let description = i.description;
-            let title = i.title;
+            const {_id, available, brand, category, cost, description, title} = i;
             let createdDate = new Date(i.createdDate);
             let updatedDate = new Date(i.updatedDate);
 
@@ -48,7 +42,7 @@
                 contents.innerHTML += `
                     <div class="card-body">
                     <h5 class="card-title">${title}</h5>
-                    <a class="card-text"><b>ID: </b>${id}<br/></a>
+                    <a class="card-text"><b>ID: </b>${_id}<br/></a>
                     <a class="card-text"><b>Available: </b>${available}<br/></a>
                     <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
                     <a class="card-text"><b>Category: </b>${category}<br/></a>
@@ -62,7 +56,7 @@
                     <div>
                     <label>Quantity: </label>
                     <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"/>
-                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${_id}', '${title}')">Add to cart</a>
                     </div>
                     </div>`;
             }
@@ -74,7 +68,7 @@
 
                     <div class="form-group">
                     <label><b>ID:</b></label>
-                    <input class="form-control form-control-sm" id="update-id" value="${id}" disabled>
+                    <input class="form-control form-control-sm" id="update-id" value="${_id}" disabled>
                     </div>
 
                     <div class="form-group">
@@ -121,12 +115,12 @@
                     <div>
                     <label>Quantity: </label>
                     <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"/>
-                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${_id}', '${title}')">Add to cart</a>
                     </div>
                     </div>
                     <div class="card-body">
-                    <a class="btn btn-warning inline-block" onclick="adminDelete('${id}')">Delete</a>
-                    <a class="btn btn-warning inline-block" onclick="adminUpdate('${id}')">Update</a>
+                    <a class="btn btn-warning inline-block" onclick="adminDelete('${_id}')">Delete</a>
+                    <a class="btn btn-warning inline-block" onclick="adminUpdate('${_id}')">Update</a>
                     </div>
                 `;
 

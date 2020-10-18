@@ -13,7 +13,11 @@
 
 <script>
     let accountContents = document.getElementById("account-contents");
+    let accountOrders = document.getElementById("account-orders");
+
     let contentsURL = window.location.origin + "/api/v1/account/get"
+    let orderURL = window.location.origin + "/api/v1/orders/get/all/details"
+
     let loadingCard = document.getElementById("loading-card");
     loadingCard.style.display = "flex";
 
@@ -26,9 +30,79 @@
     })
         .then(data => data.json())
         .then(info => {
-            loadingCard.style.display = "none";
             let email = info.email;
             let displayName = info.displayName;
-            let orders = info.orderIds;
+            let id = info._id;
+
+            accountContents.innerHTML = `
+                    <div class="card-body">
+                    <h5 class="card-title">Account Information:</h5>
+                    <a class="card-text"><b>Email: </b>${email}<br/></a>
+                    <a class="card-text"><b>Name: </b>${displayName}<br/></a>
+                    <a class="card-text"><b>Id: </b>${id}<br/></a>
+                    </div>
+            `
+
+            fetch(orderURL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    token: token
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                accountOrders.innerHTML = ""
+
+                if (res.orders.length === 0){
+                    accountOrders.innerHTML = `
+                    <div class="card-body">
+                    <h5 class="card-title">No orders yet</h5>
+                    </div>
+                    `
+                    return;
+                }
+
+                res.orders.forEach(order => {
+                    let orderId = order._id;
+                    let date = order.orderDate;
+                    let items = order.items;
+                    let total = 0;
+
+                    // Title
+                    accountOrders.innerHTML += `
+                    <div class="card-body" style="background-color: #f3f2f2">
+                    <h5 class="card-title">Order: ${orderId}</h5>
+                    <a class="card-text"><b>Date Ordered: </b>${date}<br/><br/></a>
+                    </div>
+                    `
+
+                    items.forEach(i => {
+                        let item = i.item;
+                        let quantity = Number(i.quantity);
+                        if (!item.error){
+                            const {title, brand, category, cost} = item;
+                            total += (Number(cost) * quantity)
+
+                            accountOrders.innerHTML += `
+                                    <div class="card-body">
+                                    <h6 class="card-subtitle text-muted">Item: X${quantity}<br/></h6>
+                                    <a class="card-text"><b>Title: </b>${title}<br/></a>
+                                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                                    </div>
+                                    `
+                        }
+                    })
+
+                    // Close title
+                    accountOrders.innerHTML += `
+                                    <div class="card-body">
+                                    <h5 class="card-title">Total: $${total.toFixed(2)}</h5>
+                                    </div><br/>`
+                })
+
+                loadingCard.style.display = "none";
+            })
         })
 </script>
