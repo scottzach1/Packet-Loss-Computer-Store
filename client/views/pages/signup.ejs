@@ -106,7 +106,8 @@
         })
             .then(response => response.json())
             .then(data => {
-                if (data.errors) {
+                console.log(data);
+                if (data.errors.length) {
                     errorCard.style.display = "block";
                     errorCard.innerHTML = ""
                     data.errors.forEach(error => {
@@ -114,7 +115,7 @@
                     });
                 } else {
                     window.localStorage.setItem("token", data.token);
-                    window.location.href = "/auth/login"
+                    window.location.href = window.location.origin + "/auth/login"
                 }
                 loadingCard.style.display = "none";
             });
