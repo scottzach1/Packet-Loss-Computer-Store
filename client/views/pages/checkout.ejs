@@ -49,6 +49,23 @@
                     data.items.forEach(i => {
                             // GET i.item details
                             let item = i.item;
+                            console.log(i);
+
+                            if (item.error) {
+
+
+                                contents.innerHTML += `
+                                <div class="card box-shadow page-section">
+                                <div class="card-body">
+                                <h5 class="card-title"><b>ERROR: </b>${item.error}</h5>
+                                <a class="card-text"><b>Information: </b>${i.id}<br/></a>
+                                <a class="card-text"><b>Quantity: </b>${i.quantity}<br/></a>
+                                </div>
+                                </div>`;
+                                return;
+                            }
+
+
                             let brand = item.brand;
                             let category = item.category;
                             let cost = item.cost;
