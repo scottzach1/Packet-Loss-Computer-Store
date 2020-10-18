@@ -20,13 +20,8 @@
     let contents = document.getElementById("item-content");
     let url = window.location.origin + "/api/v1/shop/items/" + itemId;
 
-    contents.innerHTML = `
-                <div style="display: flex; justify-content: center">
-                <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-                </div>
-                </div>
-    `
+    let loadingCard = document.getElementById("loading-card");
+    loadingCard.style.display = "flex";
 
     fetch(url, {
         method: 'GET',
@@ -34,6 +29,7 @@
     })
         .then(data => data.json())
         .then(item => {
+            loadingCard.style.display = "none";
             let i = item.item;
             let id = i._id;
             let available = i.available;
@@ -249,7 +245,7 @@
                 if (res.errors) {
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
-                        errorCard.innerHTML += `<b>- ${error}</b>`;
+                        errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
                 } else {
                     // Show success
@@ -325,7 +321,7 @@
                     // Show errors
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
-                        errorCard.innerHTML += `<b>- ${error}</b>`;
+                        errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
                 } else {
                     // Show success

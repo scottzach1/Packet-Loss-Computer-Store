@@ -23,7 +23,7 @@ export interface AuthResponse {
  */
 export const createToken = (user: UserDoc) => {
     return jwt.sign({id: user.id, email: user.email}, config.JWT_SECRET, {
-        expiresIn: '1h',
+        expiresIn: '30m',
     });
 }
 

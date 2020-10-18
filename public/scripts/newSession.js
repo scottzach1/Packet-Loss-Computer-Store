@@ -1,4 +1,4 @@
-const TOKEN_TIMEOUT_MINS = 55;
+const TOKEN_TIMEOUT_MINS = 25;
 let token = window.localStorage.getItem("token");
 let isAdmin = window.localStorage.getItem("admin") === "true";
 let displayName = window.localStorage.getItem("displayName");
