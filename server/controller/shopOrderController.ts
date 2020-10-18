@@ -13,29 +13,29 @@ import {clearCart, getCartItems} from "./shopCartController";
  * @param cart - the cart to create the order from.
  */
 export const makeOrder = async (user: UserDoc, cart: ShopCartDoc): Promise<ShopOrderDoc | null> => {
-    const {userId, items} = cart;
+  const {userId, items} = cart;
 
-    // Quick user id check.
-    if (!cart.userId.equals(user._id))
-        return null;
+  // Quick user id check.
+  if (!cart.userId.equals(user._id))
+    return null;
 
-    // Make order.
-    const order = new ShopOrder({
-        userId,
-        items,
-        date: new Date(),
-    });
-    await order.save();
+  // Make order.
+  const order = new ShopOrder({
+    userId,
+    items,
+    date: new Date(),
+  });
+  await order.save();
 
-    // Clear cart.
-    await clearCart(cart);
+  // Clear cart.
+  await clearCart(cart);
 
-    // Add order to user.
-    const {orderIds} = user;
-    user.orderIds = (orderIds) ? [...orderIds, order._id] : [order._id];
-    await user.save();
+  // Add order to user.
+  const {orderIds} = user;
+  user.orderIds = (orderIds) ? [...orderIds, order._id] : [order._id];
+  await user.save();
 
-    return order;
+  return order;
 }
 
 /**
@@ -47,12 +47,12 @@ export const makeOrder = async (user: UserDoc, cart: ShopCartDoc): Promise<ShopO
  * @param user - the user to retrieve all orders for.
  */
 export const getAllOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null> => {
-    const {_id} = user;
+  const {_id} = user;
 
-    if (!_id) return null;
-    if (!user.orderIds) return [];
+  if (!_id) return null;
+  if (!user.orderIds) return [];
 
-    return ShopOrder.find({userId: _id});
+  return ShopOrder.find({userId: _id});
 }
 
 /**
@@ -61,9 +61,9 @@ export const getAllOrders = async (user: UserDoc): Promise<ShopOrderDoc[] | null
  * @param order - the order to get all items for.
  */
 export const getOrderItems = async (order: ShopOrderDoc): Promise<any> => {
-    const {_doc}: any = order;
+  const {_doc}: any = order;
 
-    return {..._doc, items: await getCartItems(order)};
+  return {..._doc, items: await getCartItems(order)};
 }
 
 /**
@@ -72,6 +72,6 @@ export const getOrderItems = async (order: ShopOrderDoc): Promise<any> => {
  * @param orders - `ShopOrderDoc`'s to map to detail views.
  */
 export const getAllOrderItems = async (orders: ShopOrderDoc[]): Promise<any> => {
-    const promises: Promise<any>[] = orders.map((order) => getOrderItems(order));
-    return await Promise.all(promises);
+  const promises: Promise<any>[] = orders.map((order) => getOrderItems(order));
+  return await Promise.all(promises);
 }

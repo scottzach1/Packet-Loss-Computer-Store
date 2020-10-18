@@ -1,11 +1,11 @@
 import express, {Request, Response} from 'express';
 import {
-    createItem,
-    getAllItems,
-    getItemById,
-    removeItem,
-    searchItemByString,
-    updateItem
+  createItem,
+  getAllItems,
+  getItemById,
+  removeItem,
+  searchItemByString,
+  updateItem
 } from "../controller/shopListingController";
 import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
 import passport from "passport";
@@ -16,20 +16,20 @@ const router = express.Router();
  * Gets all `ShopListItem`'s stored within MongoDB.
  */
 router.get('/items/all', [], async (req: Request, res: Response) => {
-    try {
-        const listings = await getAllItems();
-        if (!listings) throw 'Failed to get all items';
+  try {
+    const listings = await getAllItems();
+    if (!listings) throw 'Failed to get all items';
 
-        return res
-            .status(200)
-            .json({items: listings})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    return res
+      .status(200)
+      .json({items: listings})
+      .send();
+  } catch (e) {
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -43,24 +43,24 @@ router.get('/items/all', [], async (req: Request, res: Response) => {
  * @param res - express response.
  */
 router.get('/items/search', [], async (req: Request, res: Response) => {
-    const {q}: any = req.query;
+  const {q}: any = req.query;
 
-    try {
-        if (!q) throw 'Was expecting string query parameter `q`: `/api/v1/items/search?q=amd`'
+  try {
+    if (!q) throw 'Was expecting string query parameter `q`: `/api/v1/items/search?q=amd`'
 
-        const items = await searchItemByString(q);
-        if (!items) throw 'Failed to search for query';
+    const items = await searchItemByString(q);
+    if (!items) throw 'Failed to search for query';
 
-        return res
-            .status(200)
-            .json({items})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    return res
+      .status(200)
+      .json({items})
+      .send();
+  } catch (e) {
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -70,24 +70,24 @@ router.get('/items/search', [], async (req: Request, res: Response) => {
  * - itemdId (string) the id of the item.
  */
 router.get('/items/:itemId', [], async (req: Request, res: Response) => {
-    const itemId = req.params.itemId;
+  const itemId = req.params.itemId;
 
-    try {
-        if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
+  try {
+    if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
 
-        const item = await getItemById(itemId).catch(extractErrorsAndThrow);
-        if (!item) throw 'No item could be found with that particular id';
+    const item = await getItemById(itemId).catch(extractErrorsAndThrow);
+    if (!item) throw 'No item could be found with that particular id';
 
-        return res
-            .status(200)
-            .json({item})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    return res
+      .status(200)
+      .json({item})
+      .send();
+  } catch (e) {
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -105,28 +105,28 @@ router.get('/items/:itemId', [], async (req: Request, res: Response) => {
  * @param res - express response.
  */
 router.post('/items/add', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
-    const {body, user}: any = req;
+  const {body, user}: any = req;
 
-    try {
-        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+  try {
+    if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
-        // Save Model within Mongodb.
-        let item: null | ShopListingDoc;
-        item = await createItem(body).catch(extractErrorsAndThrow);
-        if (!item) throw 'Failed to create new item';
+    // Save Model within Mongodb.
+    let item: null | ShopListingDoc;
+    item = await createItem(body).catch(extractErrorsAndThrow);
+    if (!item) throw 'Failed to create new item';
 
-        // Success.
-        return res
-            .status(201)
-            .json({item})
-            .send();
-    } catch (e) {
-        // Failure.
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    // Success.
+    return res
+      .status(201)
+      .json({item})
+      .send();
+  } catch (e) {
+    // Failure.
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -139,28 +139,28 @@ router.post('/items/add', [passport.authenticate("jwt", {session: false})], asyn
  * @param res - express response.
  */
 router.delete('/items/remove', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
-    // Extract vales from request body.
-    const {body, user}: any = req;
+  // Extract vales from request body.
+  const {body, user}: any = req;
 
-    try {
-        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+  try {
+    if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
-        let item = await getItemById(body.id).catch(extractErrorsAndThrow);
-        if (!item) throw 'Item could not be found';
+    let item = await getItemById(body.id).catch(extractErrorsAndThrow);
+    if (!item) throw 'Item could not be found';
 
-        item = await removeItem(item).catch(extractErrorsAndThrow);
-        if (item) throw 'Item could not be removed';
+    item = await removeItem(item).catch(extractErrorsAndThrow);
+    if (item) throw 'Item could not be removed';
 
-        return res
-            .status(200)
-            .json({response: 'Item Removed Successfully'})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    return res
+      .status(200)
+      .json({response: 'Item Removed Successfully'})
+      .send();
+  } catch (e) {
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -180,29 +180,29 @@ router.delete('/items/remove', [passport.authenticate("jwt", {session: false})],
  * @param res - express response.
  */
 router.patch('/items/update', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
-    // Extract values from request body.
-    const {user, body}: any = req;
+  // Extract values from request body.
+  const {user, body}: any = req;
 
-    try {
-        if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
+  try {
+    if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
-        let shopListing = await ShopListing.findById(body.id);
+    let shopListing = await ShopListing.findById(body.id);
 
-        if (!shopListing) throw 'Item could not be found';
+    if (!shopListing) throw 'Item could not be found';
 
-        shopListing = await updateItem(shopListing, req.body).catch(extractErrorsAndThrow);
-        if (!shopListing) throw 'Failed to update item';
+    shopListing = await updateItem(shopListing, req.body).catch(extractErrorsAndThrow);
+    if (!shopListing) throw 'Failed to update item';
 
-        return res
-            .status(200)
-            .json({items: shopListing})
-            .send();
-    } catch (e) {
-        return res
-            .status(400)
-            .json({errors: (Array.isArray(e)) ? e : [e]})
-            .send();
-    }
+    return res
+      .status(200)
+      .json({items: shopListing})
+      .send();
+  } catch (e) {
+    return res
+      .status(400)
+      .json({errors: (Array.isArray(e)) ? e : [e]})
+      .send();
+  }
 });
 
 /**
@@ -212,13 +212,13 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
  * @param doc - the potentially erroneous document.
  */
 const extractErrorsAndThrow = (doc: any): never => {
-    if (doc.errors)
-        throw Object.keys(doc.errors).map((i: any) => doc.errors[i].message);
+  if (doc.errors)
+    throw Object.keys(doc.errors).map((i: any) => doc.errors[i].message);
 
-    if (doc.message)
-        throw (doc.message);
+  if (doc.message)
+    throw (doc.message);
 
-    throw 'Failed to perform action.';
+  throw 'Failed to perform action.';
 }
 
 export {router as shopServerRouter};

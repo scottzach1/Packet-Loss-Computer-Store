@@ -8,16 +8,16 @@ import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
  * @param value - containing the properties to create the new item.
  */
 export const createItem = async (value: any) => {
-    if (typeof value !== 'object') return null;
+  if (typeof value !== 'object') return null;
 
-    // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    ['id', '_id', '__V'].forEach((id) => delete value[id]);
+  // Remove any dangerous values, (this should already be handled by Mongoose regardless).
+  ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
-    // Construct object using values.
-    return await new ShopListing({
-        ...value,
-        createdDate: new Date(),
-    }).save();
+  // Construct object using values.
+  return await new ShopListing({
+    ...value,
+    createdDate: new Date(),
+  }).save();
 }
 
 /**
@@ -26,12 +26,12 @@ export const createItem = async (value: any) => {
  * @param item - `ShopListingDoc` reference to remove from MongoDB.
  */
 export const removeItem = async (item: ShopListingDoc) => {
-    // Extract vales from request body.
-    const {id} = item;
+  // Extract vales from request body.
+  const {id} = item;
 
-    await item.remove();
+  await item.remove();
 
-    return ShopListing.findById(id);
+  return ShopListing.findById(id);
 }
 
 /**
@@ -43,26 +43,26 @@ export const removeItem = async (item: ShopListingDoc) => {
  * @param value - object containing all of the properties to update the item with.
  */
 export const updateItem = async (item: ShopListingDoc, value: any) => {
-    if (typeof value !== 'object') return null;
+  if (typeof value !== 'object') return null;
 
-    // Remove any dangerous values, (this should already be handled by Mongoose regardless).
-    ['id', '_id', '__V'].forEach((id) => delete value[id]);
+  // Remove any dangerous values, (this should already be handled by Mongoose regardless).
+  ['id', '_id', '__V'].forEach((id) => delete value[id]);
 
-    // Update values of the item (FIXME: this has been deprecated but works fine).
-    await item.update({
-        ...value,
-        updatedDate: new Date(),
-    });
+  // Update values of the item (FIXME: this has been deprecated but works fine).
+  await item.update({
+    ...value,
+    updatedDate: new Date(),
+  });
 
-    // Search for the updated doc.
-    return ShopListing.findById(item.id);
+  // Search for the updated doc.
+  return ShopListing.findById(item.id);
 }
 
 /**
  * Gets all `ShopListItem` items stored within the `shoplistings` MongoDB collection.
  */
 export const getAllItems = async () => {
-    return ShopListing.find();
+  return ShopListing.find();
 }
 
 /**
@@ -71,7 +71,7 @@ export const getAllItems = async () => {
  * @param itemId - the id reference of the item to find.
  */
 export const getItemById = async (itemId: string) => {
-    return ShopListing.findById(itemId);
+  return ShopListing.findById(itemId);
 }
 
 /**
@@ -81,30 +81,30 @@ export const getItemById = async (itemId: string) => {
  * @param query - the query to run over all items.
  */
 export const searchItemByString = async (query: string) => {
-    const allItems = await getAllItems();
-    const q = query.toLocaleLowerCase();
+  const allItems = await getAllItems();
+  const q = query.toLocaleLowerCase();
 
-    return allItems
-        // First we string filter based off any `string` properties of item.
-        .filter((item: ShopListingDoc) => {
-            // Extract the underlying doc. (This took a while to debug - it is hidden).
-            const {_doc}: any = item;
+  return allItems
+    // First we string filter based off any `string` properties of item.
+    .filter((item: ShopListingDoc) => {
+      // Extract the underlying doc. (This took a while to debug - it is hidden).
+      const {_doc}: any = item;
 
-            for (const key in _doc) {
-                // Standard safety type checking.
-                if (!_doc.hasOwnProperty(key) || typeof _doc[key] !== 'string')
-                    continue;
+      for (const key in _doc) {
+        // Standard safety type checking.
+        if (!_doc.hasOwnProperty(key) || typeof _doc[key] !== 'string')
+          continue;
 
-                // Lowercase Compare.
-                const v = _doc[key].toLocaleLowerCase();
+        // Lowercase Compare.
+        const v = _doc[key].toLocaleLowerCase();
 
-                // Hit
-                if (v.includes(q))
-                    return true;
-            }
-            // No Hit.
-            return false;
-        })
-        // Second we order by product titles alphabetically.
-        .sort((a, b) => a.title.localeCompare(b.title));
+        // Hit
+        if (v.includes(q))
+          return true;
+      }
+      // No Hit.
+      return false;
+    })
+    // Second we order by product titles alphabetically.
+    .sort((a, b) => a.title.localeCompare(b.title));
 }

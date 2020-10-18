@@ -41,42 +41,42 @@
                     token: token
                 })
             })
-            .then(res => res.json())
-            .then(res => {
-                accountOrders.innerHTML = ""
+                .then(res => res.json())
+                .then(res => {
+                    accountOrders.innerHTML = ""
 
-                if (res.orders.length === 0){
-                    accountOrders.innerHTML = `
+                    if (res.orders.length === 0) {
+                        accountOrders.innerHTML = `
                     <div class="card-body">
                     <h5 class="card-title">No orders yet</h5>
                     </div>
                     `
-                    loadingCard.style.display = "none";
-                    return;
-                }
+                        loadingCard.style.display = "none";
+                        return;
+                    }
 
-                res.orders.forEach(order => {
-                    let orderId = order._id;
-                    let date = order.orderDate;
-                    let items = order.items;
-                    let total = 0;
+                    res.orders.forEach(order => {
+                        let orderId = order._id;
+                        let date = order.orderDate;
+                        let items = order.items;
+                        let total = 0;
 
-                    // Title
-                    accountOrders.innerHTML += `
+                        // Title
+                        accountOrders.innerHTML += `
                     <div class="card-body" style="background-color: #f3f2f2">
                     <h5 class="card-title">Order: ${orderId}</h5>
                     <a class="card-text"><b>Date Ordered: </b>${date}<br/><br/></a>
                     </div>
                     `
 
-                    items.forEach(i => {
-                        let item = i.item;
-                        let quantity = Number(i.quantity);
-                        if (!item.error){
-                            const {title, brand, category, cost} = item;
-                            total += (Number(cost) * quantity)
+                        items.forEach(i => {
+                            let item = i.item;
+                            let quantity = Number(i.quantity);
+                            if (!item.error) {
+                                const {title, brand, category, cost} = item;
+                                total += (Number(cost) * quantity)
 
-                            accountOrders.innerHTML += `
+                                accountOrders.innerHTML += `
                                     <div class="card-body">
                                     <h6 class="card-subtitle text-muted">Item: X${quantity}<br/></h6>
                                     <a class="card-text"><b>Title: </b>${title}<br/></a>
@@ -84,17 +84,17 @@
                                     <a class="card-text"><b>Category: </b>${category}<br/></a>
                                     </div>
                                     `
-                        }
-                    })
+                            }
+                        })
 
-                    // Close title
-                    accountOrders.innerHTML += `
+                        // Close title
+                        accountOrders.innerHTML += `
                                     <div class="card-body">
                                     <h5 class="card-title">Total: $${total.toFixed(2)}</h5>
                                     </div><br/>`
-                })
+                    })
 
-                loadingCard.style.display = "none";
-            })
+                    loadingCard.style.display = "none";
+                })
         })
 </script>

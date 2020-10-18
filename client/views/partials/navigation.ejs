@@ -54,13 +54,13 @@
     accLink.href = accountRef;
     accText.innerText = displayName ? displayName : "Account"
 
-    if (isAdmin){
+    if (isAdmin) {
         let addItem = document.getElementById("add-link");
         addItem.style.display = "inline-block";
         addItem.href = addRef;
     }
 
-    function doSearch(){
+    function doSearch() {
         let searchText = document.getElementById("search-bar").value;
         let searchQueryUrl = new URL(window.location.origin + "/shop/items/search");
         searchQueryUrl.searchParams.append("q", searchText);
