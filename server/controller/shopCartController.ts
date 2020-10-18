@@ -1,7 +1,7 @@
 import {ShopCart, ShopCartDoc} from "../models/shopCartModel";
 import {UserDoc} from "../models/userModel";
 import {Types} from "mongoose";
-import {ShopListing, ShopListingDoc} from "../models/shopListingModel";
+import {ShopListing} from "../models/shopListingModel";
 
 /**
  * Creates a new cart and associates it with the new `UserDoc`.
@@ -45,11 +45,15 @@ export const getCartItems = async (cart: ShopCartDoc): Promise<any[]> => {
     // Make requests for every item (will result in a list of 'promissible' objects).
     const promises: any[] = cart.items.map((entry) => ShopListing.findById(entry.itemId));
     // Await all promises, then filter out null entries (more verbose, but more efficient too).
-    const items = (await Promise.all(promises)).filter((doc: ShopListingDoc | null) => doc);
-    // Merge with item id's.
-    return items.map((item: ShopListingDoc, index: number) => (
-        {item, quantity: cart.items[index].quantity})
-    );
+    const items = await Promise.all(promises)
+    // Join all response items to matching quantities.
+    return cart.items.map((entry, index) => {
+        const item = items[index];
+        return {
+            quantity: entry.quantity,
+            item: (item) ? item : {error: 'This item is no longer available'}
+        };
+    });
 }
 
 /**
