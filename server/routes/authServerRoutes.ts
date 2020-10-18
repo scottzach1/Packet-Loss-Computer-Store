@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express';
 import {
     checkPasswordComplexity,
+    createToken,
     loginHandler,
     signinWithGoogleHandler,
     signupHandler,
@@ -65,6 +66,21 @@ router.post('/complexity', [], (req: Request, res: Response) => {
     const response = checkPasswordComplexity(password);
     // Notify sender.
     return res.status(200).json(response).send();
+});
+
+
+router.post('/renew', [passport.authenticate("jwt", {session: false})], (req: Request, res: Response) => {
+    const {user}: any = req;
+
+    if (!user) {
+        return res.status(400).json({errors: ["Invalid User for Token Renewal"]}).send()
+    }
+
+    // Renew user token
+    let token = createToken(user);
+
+    // Notify sender
+    return res.status(200).json({token}).send()
 });
 
 export {router as authServerRouter};

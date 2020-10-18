@@ -36,7 +36,6 @@
 </nav>
 
 <script>
-    let token = window.localStorage.getItem("token");
     let logoutRef = "/auth/logout"
     let loginRef = "/auth/login"
     let accountRef = "/account/get"
@@ -51,10 +50,9 @@
     let accText = document.getElementById("account-text");
     accLink.style.display = token ? "inline-block" : "none";
     accLink.href = accountRef;
-    let displayName = window.localStorage.getItem("displayName");
     accText.innerText = displayName ? displayName : "Account"
 
-    if (window.localStorage.getItem("admin") === "true"){
+    if (isAdmin){
         let addItem = document.getElementById("add-link");
         addItem.style.display = "inline-block";
         addItem.href = addRef;

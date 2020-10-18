@@ -19,7 +19,6 @@
 
     let contents = document.getElementById("item-content");
     let url = window.location.origin + "/api/v1/shop/items/" + itemId;
-    let isAdmin = window.localStorage.getItem("admin") === "true";
 
     contents.innerHTML = `
                 <div style="display: flex; justify-content: center">
