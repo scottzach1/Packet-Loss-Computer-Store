@@ -47,8 +47,12 @@ export const getCartItems = async (cart: ShopCartDoc): Promise<any[]> => {
     // Await all promises, then filter out null entries (more verbose, but more efficient too).
     const items = (await Promise.all(promises)).filter((doc: ShopListingDoc | null) => doc);
     // Merge with item id's.
-    return items.map((item: ShopListingDoc, index: number) => (
-        {item, quantity: cart.items[index].quantity})
+    console.log(cart);
+    return items.map((item: ShopListingDoc, index: number) => {
+            return {
+                item, quantity: cart.items[index].quantity
+            }
+        }
     );
 }
 

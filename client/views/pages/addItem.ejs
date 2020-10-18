@@ -109,11 +109,11 @@
                 if (res.errors) {
                     // Show errors
                     errorCard.style.display = "block"
-                    let errorItem = res.errors[0].errors;
-                    for (let key in errorItem) {
-                        let message = errorItem[key].message;
-                        errorCard.innerHTML += `<b>- ${message}<br/></b>`;
-                    }
+                    errorCard.innerHTML = ""
+                    res.errors.forEach(error => {
+                        console.log(error);
+                        errorCard.innerHTML += `<b>- ${error}<br/></b>`;
+                    })
                 } else {
                     // Show success
                     successCard.style.display = "block";

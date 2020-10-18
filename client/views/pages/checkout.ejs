@@ -47,14 +47,17 @@
                         `
                 } else {
                     data.items.forEach(i => {
+                            // GET i.item details
                             let item = i.item;
-                            let quantity = i.quantity;
                             let brand = item.brand;
                             let category = item.category;
                             let cost = item.cost;
                             let description = item.description;
                             let title = item.title;
                             let id = item._id;
+
+                            // Get i.quantity
+                            let quantity = Number(i.quantity);
 
                             total += (cost * quantity)
 

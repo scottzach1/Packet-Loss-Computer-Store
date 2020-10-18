@@ -249,7 +249,7 @@
                 if (res.errors) {
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
-                        errorCard.innerHTML += `<b>- ${error}</b>`;
+                        errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
                 } else {
                     // Show success
@@ -325,7 +325,7 @@
                     // Show errors
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
-                        errorCard.innerHTML += `<b>- ${error}</b>`;
+                        errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
                 } else {
                     // Show success
