@@ -28,7 +28,9 @@ const jwtOptions: JwtStrategyOptions = {
  * (from token).
  */
 export const JwtEmailPasswordMiddleware = new JwtStrategy(jwtOptions, async (payload, done) => {
-    console.log('authenticated token with payload', payload);
+    if (config.NODE_ENV !== 'testing') {
+        console.log('authenticated token with payload', payload);
+    }
     try {
         const user = await User.findById(payload.id);
         if (user) return done(null, user);

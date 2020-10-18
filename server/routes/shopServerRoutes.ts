@@ -22,7 +22,7 @@ router.get('/items/all', [], async (req: Request, res: Response) => {
 
         return res
             .status(200)
-            .json({item: listings})
+            .json({items: listings})
             .send();
     } catch (e) {
         return res
@@ -75,8 +75,7 @@ router.get('/items/:itemId', [], async (req: Request, res: Response) => {
     try {
         if (!itemId) throw 'ItemId was expected: `/api/v1/items/5f7eb5bfaa2eeede1d640202`'
 
-        const item = await getItemById(itemId);
-
+        const item = await getItemById(itemId).catch(extractErrorsAndThrow);
         if (!item) throw 'No item could be found with that particular id';
 
         return res
@@ -113,7 +112,7 @@ router.post('/items/add', [passport.authenticate("jwt", {session: false})], asyn
 
         // Save Model within Mongodb.
         let item: null | ShopListingDoc;
-        item = await createItem(body).catch((e) => extractErrorsAndThrow(e));
+        item = await createItem(body).catch(extractErrorsAndThrow);
         if (!item) throw 'Failed to create new item';
 
         // Success.
@@ -146,10 +145,10 @@ router.delete('/items/remove', [passport.authenticate("jwt", {session: false})],
     try {
         if (!(user?.admin)) throw 'Insufficient permissions to perform this action.';
 
-        let item = await getItemById(body.id).catch((e) => extractErrorsAndThrow(e));
+        let item = await getItemById(body.id).catch(extractErrorsAndThrow);
         if (!item) throw 'Item could not be found';
 
-        item = await removeItem(item).catch((e) => extractErrorsAndThrow(e));
+        item = await removeItem(item).catch(extractErrorsAndThrow);
         if (item) throw 'Item could not be removed';
 
         return res
@@ -191,7 +190,7 @@ router.patch('/items/update', [passport.authenticate("jwt", {session: false})], 
 
         if (!shopListing) throw 'Item could not be found';
 
-        shopListing = await updateItem(shopListing, req.body).catch((e) => extractErrorsAndThrow(e));
+        shopListing = await updateItem(shopListing, req.body).catch(extractErrorsAndThrow);
         if (!shopListing) throw 'Failed to update item';
 
         return res

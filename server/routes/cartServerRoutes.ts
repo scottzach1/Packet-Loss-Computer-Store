@@ -86,6 +86,7 @@ router.put('/add', [passport.authenticate("jwt", {session: false})], async (req:
             .send();
     } catch (e) {
         // Failure
+        if (e.message) e = e.message;
         return res
             .status(400)
             .json({errors: [e]})

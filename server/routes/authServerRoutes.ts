@@ -2,9 +2,9 @@ import express, {Request, Response} from 'express';
 import {
     checkPasswordComplexity,
     createToken,
-    loginHandler,
+    loginUser,
     signinWithGoogleHandler,
-    signupHandler,
+    signupUser,
     updatePasswordHandler
 } from "../controller/authController";
 import passport from "passport";
@@ -15,16 +15,16 @@ const router = express.Router();
 router.post('/login', [], async (req: Request, res: Response) => {
     const {email, password} = req.body;
     // Try handler.
-    const response = await loginHandler(email, password);
+    const response = await loginUser(email, password);
     const code = (response.success) ? 200 : 400;
     // Notify sender.
     return res.status(code).json(response).send();
 });
 
-router.post(`/signup`, [], async (req: Request, res: Response) => {
+router.post('/signup', [], async (req: Request, res: Response) => {
     const {email, password, displayName} = req.body;
     // Try handler.
-    const response = await signupHandler(email, password, displayName);
+    const response = await signupUser(email, password, displayName);
     const code = (response.success) ? 201 : 400;
     // Notify sender.
     return res.status(code).json(response).send();
@@ -92,7 +92,7 @@ router.post('/renew', [passport.authenticate("jwt", {session: false})], (req: Re
     }
 
     // Renew user token
-    let token = createToken(user);
+    const token = createToken(user);
 
     // Notify sender
     return res.status(200).json({token}).send()

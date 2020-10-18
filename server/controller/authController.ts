@@ -34,7 +34,7 @@ export const createToken = (user: UserDoc) => {
  * @param password - users provided password.
  * @return AuthResponse containing success / failure and any error messages.
  */
-export const loginHandler = async (email: string, password: string): Promise<AuthResponse> => {
+export const loginUser = async (email: string, password: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
@@ -79,7 +79,7 @@ export const loginHandler = async (email: string, password: string): Promise<Aut
  * @param displayName - (optional) password confirmation.
  * @return AuthResponse containing success / failure and any error messages.
  */
-export const signupHandler = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
+export const signupUser = async (email: string, password: string, displayName?: string): Promise<AuthResponse> => {
     const response: AuthResponse = {
         errors: [],
         success: false,
