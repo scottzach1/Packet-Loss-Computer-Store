@@ -3,6 +3,8 @@ let token = window.localStorage.getItem("token");
 let isAdmin = window.localStorage.getItem("admin") === "true";
 let displayName = window.localStorage.getItem("displayName");
 
+console.log(isAdmin);
+
 let errorCard = document.getElementById("error-card");
 let successCard = document.getElementById("success-card");
 let loadingCard = document.getElementById("loading-card");

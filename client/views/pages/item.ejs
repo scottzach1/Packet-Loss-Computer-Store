@@ -3,13 +3,12 @@
 </div>
 
 <script>
+    resetCards();
     let urlContents = window.location.href.split("/");
     let itemId = urlContents[urlContents.length - 1];
 
     let contents = document.getElementById("item-content");
     let url = window.location.origin + "/api/v1/shop/items/" + itemId;
-
-    loadingCard.style.display = "flex";
 
     fetch(url, {
         method: 'GET',

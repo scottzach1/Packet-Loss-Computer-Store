@@ -66,6 +66,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 if (!data.success) {
                     errorCard.style.display = "block";
                     data.errors.forEach(error => {
@@ -73,7 +74,7 @@
                     });
                 } else {
 
-                    window.location.href = success
+                    // window.location.href = success
                     window.localStorage.setItem("token", data.token);
                     window.localStorage.setItem("admin", data.admin);
                     data.displayName ? window.localStorage.setItem("displayName", data.displayName) :
