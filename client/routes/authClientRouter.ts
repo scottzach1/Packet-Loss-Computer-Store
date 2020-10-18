@@ -7,6 +7,10 @@ router.get('/login', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/login', 'Login', {...req.body});
 }));
 
+router.get('/auto', [], ((req : Request, res: Response) => {
+    render(req, res, 'pages/autoLogin', 'Auto Login', {...req.body});
+}));
+
 router.get('/signup', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/signup', 'Signup', {});
 }));
