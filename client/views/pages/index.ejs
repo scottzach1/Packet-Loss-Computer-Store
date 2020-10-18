@@ -1,39 +1,58 @@
-<div class="loading box-shadow page-section" id="loading-card">
-    <div style="display: block; justify-content: center">
-        <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
+<div>
+    <div class="card-body">
+        <h1>Recommended: </h1>
+        <div id="recommended" class="div-hscroll"></div>
+    </div>
+
+    <div class="card-body">
+        <h1>Store Items: </h1>
+        <div id="store-contents"></div>
     </div>
 </div>
 
-<div>
-    <h1>Recommended: </h1>
-    <div id="recommended" class="div-hscroll"></div>
-
-    <h1>Store Items: </h1>
-    <div id="store-contents"></div>
-</div>
-
 <script>
-    //TODO: Implement Recommended
+    resetCards();
     let contents = document.getElementById("store-contents");
+
     let recommended = document.getElementById("recommended");
+    contents.innerHTML = "";
 
-    let recommendedURL = window.location.origin + "/api/v1/recommend/nearby"
+    recommended.innerHTML = "";
     let contentsURL = window.location.origin + "/api/v1/shop/items/all"
+    let recommendedURL = window.location.origin + "/api/v1/recommend/nearby"
 
-    let loadingCard = document.getElementById("loading-card");
-    loadingCard.style.display = "flex";
+    // Alter all the components on the page
+    fetch(contentsURL, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(response => response.json())
+        .then(data => {
+            data.item.forEach(item => {
+                const {brand, category, cost, description, title, _id} = item;
 
-    if (recommended.innerHTML === "") {
-        fetch(recommendedURL, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-        })
-            .then(res => res.json())
-            .then(res => {
-                res.recommendations.forEach(rec => {
-                    recommended.innerHTML += `
+                contents.innerHTML += `
+                    <div class="card box-shadow page-section">
+                    <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <a class="card-text"><b>Cost: </b>$${cost.toFixed(2)}<br/></a>
+                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'">Go to item page</a>
+                    </div>
+                    </div>`;
+            })
+        });
+
+    fetch(recommendedURL, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.recommendations.forEach(rec => {
+                recommended.innerHTML += `
                         <div class="card-small box-shadow">
                         <div class="card-body">
                         <h5 class="card-title">${rec.name}<br/></h5>
@@ -48,39 +67,8 @@
                         </div>
                         </div>
                 `
-                })
             })
-    }
-
-    // Alter all the components on the page
-    fetch(contentsURL, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-    })
-        .then(response => response.json())
-        .then(data => {
             loadingCard.style.display = "none";
-
-            data.item.forEach(item => {
-                let brand = item.brand;
-                let category = item.category;
-                let cost = item.cost;
-                let description = item.description;
-                let title = item.title;
-                let id = item._id;
-
-                contents.innerHTML += `
-                    <div class="card box-shadow page-section">
-                    <div class="card-body">
-                    <h5 class="card-title">${title}</h5>
-                    <a class="card-text"><b>Cost: </b>$${cost.toFixed(2)}<br/></a>
-                    <a class="card-text"><b>Category: </b>${category}<br/></a>
-                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
-                    <a class="card-text"><b>Description: </b>${description}<br/></a>
-                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${id}'">Go to item page</a>
-                    </div>
-                    </div>`;
-            })
-        });
+        })
 
 </script>

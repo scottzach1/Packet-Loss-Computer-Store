@@ -11,6 +11,10 @@ router.get('/signup', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/signup', 'Signup', {});
 }));
 
+router.get('/forgot', [], ((req : Request, res: Response) => {
+    render(req, res, 'pages/forgotPassword', 'Signup', {});
+}));
+
 router.get('/logout', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/logout', 'Logout', {});
 }));

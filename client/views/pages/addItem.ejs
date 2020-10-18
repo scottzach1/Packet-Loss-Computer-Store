@@ -1,16 +1,5 @@
-<div class="success box-shadow page-section" id="success-card"></div>
-<div class="error box-shadow page-section" id="error-card"></div>
-<div class="loading box-shadow page-section" id="loading-card">
-    <div style="display: block; justify-content: center">
-        <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-</div>
-
 <div>
     <div class="card-body" id="add-card">
-
 
         <p class="card-text">
             Inputs with a '*' next to their name are mandatory.
@@ -58,14 +47,7 @@
 <script>
 
     function addItem() {
-        let successCard = document.getElementById("success-card");
-        successCard.style.display = "none";
-        successCard.innerHTML = "";
-        let errorCard = document.getElementById("error-card");
-        errorCard.style.display = "none";
-        errorCard.innerHTML ="";
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
+        resetCards();
 
         let addUrl = window.location.origin + "/api/v1/shop/items/add";
 
@@ -98,8 +80,6 @@
         })
             .then(res => res.json())
             .then(res => {
-                loadingCard.style.display = "none";
-
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to make delete request</b>`;
@@ -124,6 +104,8 @@
                     brandEle.value = "";
                     descriptionEle.value = "";
                 }
+
+                loadingCard.style.display = "none";
             })
     }
 </script>

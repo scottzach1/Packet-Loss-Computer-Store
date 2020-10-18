@@ -1,27 +1,14 @@
-<div class="success box-shadow page-section" id="success-card"></div>
-<div class="error box-shadow page-section" id="error-card"></div>
-<div class="loading box-shadow page-section" id="loading-card">
-    <div style="display: block; justify-content: center">
-        <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-</div>
-
-
 <div>
     <div class="box-shadow card page-section" id="item-content"></div>
 </div>
 
 <script>
+    resetCards();
     let urlContents = window.location.href.split("/");
     let itemId = urlContents[urlContents.length - 1];
 
     let contents = document.getElementById("item-content");
     let url = window.location.origin + "/api/v1/shop/items/" + itemId;
-
-    let loadingCard = document.getElementById("loading-card");
-    loadingCard.style.display = "flex";
 
     fetch(url, {
         method: 'GET',
@@ -29,40 +16,32 @@
     })
         .then(data => data.json())
         .then(item => {
-            loadingCard.style.display = "none";
-            let i = item.item;
-            let id = i._id;
-            let available = i.available;
-            let brand = i.brand;
-            let category = i.category;
-            let cost = i.cost;
-            let description = i.description;
-            let title = i.title;
-            let createdDate = new Date(i.createdDate);
-            let updatedDate = new Date(i.updatedDate);
+            const {_id, available, brand, category, cost, description, title, createdDate, updatedDate} = item.item;
+            let cDate = new Date(createdDate);
+            let uDate = new Date(updatedDate);
 
-            contents.innerHTML = ``;
+            contents.innerHTML = "";
 
             // If this is not admin, then just send through the information about the item
             if (!isAdmin) {
                 contents.innerHTML += `
                     <div class="card-body">
                     <h5 class="card-title">${title}</h5>
-                    <a class="card-text"><b>ID: </b>${id}<br/></a>
+                    <a class="card-text"><b>ID: </b>${_id}<br/></a>
                     <a class="card-text"><b>Available: </b>${available}<br/></a>
                     <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
                     <a class="card-text"><b>Category: </b>${category}<br/></a>
                     <a class="card-text"><b>Brand: </b>${brand}<br/></a>
                     <a class="card-text"><b>Description: </b>${description}<br/></a>
-                    <a class="card-text"><b>Created: </b>${createdDate}<br/></a>
-                    <a class="card-text"><b>Updated: </b>${updatedDate}<br/></a>
+                    <a class="card-text"><b>Created: </b>${cDate}<br/></a>
+                    <a class="card-text"><b>Updated: </b>${uDate}<br/></a>
                     </div>
 
                     <div class="card box-shadow page-section">
                     <div>
                     <label>Quantity: </label>
                     <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"/>
-                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${_id}', '${title}')">Add to cart</a>
                     </div>
                     </div>`;
             }
@@ -74,7 +53,7 @@
 
                     <div class="form-group">
                     <label><b>ID:</b></label>
-                    <input class="form-control form-control-sm" id="update-id" value="${id}" disabled>
+                    <input class="form-control form-control-sm" id="update-id" value="${_id}" disabled>
                     </div>
 
                     <div class="form-group">
@@ -107,12 +86,12 @@
 
                     <div class="form-group">
                     <label><b>Created:</b></label>
-                    <input class="form-control form-control-sm" id="update-created" value="${createdDate}" disabled/>
+                    <input class="form-control form-control-sm" id="update-created" value="${cDate}" disabled/>
                     </div>
 
                     <div class="form-group">
                     <label><b>Updated:</b></label>
-                    <input class="form-control form-control-sm" id="update-updated" value="${updatedDate}" disabled/>
+                    <input class="form-control form-control-sm" id="update-updated" value="${uDate}" disabled/>
                     </div>
 
                     </div>
@@ -121,12 +100,12 @@
                     <div>
                     <label>Quantity: </label>
                     <input  class="quantity" value="1" id="quantity-amount" min="1" type="number"/>
-                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${id}', '${title}')">Add to cart</a>
+                    <a class="btn btn-primary mr-auto inline-right" onclick="addToCart('${_id}', '${title}')">Add to cart</a>
                     </div>
                     </div>
                     <div class="card-body">
-                    <a class="btn btn-warning inline-block" onclick="adminDelete('${id}')">Delete</a>
-                    <a class="btn btn-warning inline-block" onclick="adminUpdate('${id}')">Update</a>
+                    <a class="btn btn-warning inline-block" onclick="adminDelete('${_id}')">Delete</a>
+                    <a class="btn btn-warning inline-block" onclick="adminUpdate('${_id}')">Update</a>
                     </div>
                 `;
 
@@ -135,6 +114,7 @@
                 document.getElementById("update-available")
                     .getElementsByTagName('option')[available ? 0 : 1].selected = true;
             }
+            loadingCard.style.display = "none";
         })
 
     /**
@@ -145,6 +125,8 @@
      * @param itemTitle - item title
      */
     function addToCart(id, itemTitle) {
+        resetCards();
+
         let addUrl = window.location.origin + "/api/v1/cart/add";
         let doc = document.getElementById("quantity-amount");
         let quantity = Number(doc.value);
@@ -153,24 +135,12 @@
         let itemCard = document.getElementById("item-content");
         itemCard.style.display = "block";
 
-        // SUCCESS CARD
-        let successCard = document.getElementById("success-card");
-        successCard.style.display = "none";
-        successCard.innerHTML = "";
-
-        // ERROR CARD
-        let errorCard = document.getElementById("error-card");
-        errorCard.style.display = "none";
-        errorCard.innerHTML ="";
 
         if (isNaN(quantity) || quantity < 1 || !id) {
             errorCard.style.display = "block";
             errorCard.innerHTML = `<b>${quantity} is not a valid amount</b>`;
             return;
         }
-
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
 
         fetch(addUrl, {
             method: 'PUT',
@@ -187,10 +157,7 @@
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to add item to cart</b>`;
-                    return;
-                }
-
-                if (!token) {
+                } else if (!token) {
                     errorCard.style.display = "block";
                     errorCard.innerHTML = `<b>You must be logged in to add to your cart</b>`;
                 } else {
@@ -202,26 +169,13 @@
     }
 
     function adminDelete(id) {
-        // first, security measure means that we must check that the user is an admin
+        resetCards();
 
         // ITEM CARD
         let itemCard = document.getElementById("item-content");
+
         itemCard.style.display = "block";
-
-        // SUCCESS CARD
-        let successCard = document.getElementById("success-card");
-        successCard.style.display = "none";
-        successCard.innerHTML = "";
-
-        // ERROR CARD
-        let errorCard = document.getElementById("error-card");
-        errorCard.style.display = "none";
-        errorCard.innerHTML ="";
-
         let deleteUrl = window.location.origin + "/api/v1/shop/items/remove";
-
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
 
         fetch(deleteUrl, {
             method: 'DELETE',
@@ -233,16 +187,10 @@
         })
             .then(res => res.json())
             .then(res => {
-                loadingCard.style.display = "none";
-
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to make delete request</b>`;
-                    return;
-                }
-
-
-                if (res.errors) {
+                } else if (res.errors) {
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
                         errorCard.innerHTML += `<b>- ${error}<br/></b>`;
@@ -258,34 +206,16 @@
                     successCard.innerHTML = `<b>Item ${id} has been successfully removed</b>`;
                 }
                 window.scrollTo(0, 0);
+                loadingCard.style.display = "none";
             })
     }
 
     function adminUpdate(id) {
-        // first, security measure means that we must check that the user is an admin
-
-        // ITEM CARD
-        let itemCard = document.getElementById("item-content");
-        itemCard.style.display = "block";
-
-        // SUCCESS CARD
-        let successCard = document.getElementById("success-card");
-        successCard.style.display = "none";
-        successCard.innerHTML = "";
-
-        // LOADING CARD
-        let loadingCard = document.getElementById("loading-card");
-        loadingCard.style.display = "flex";
-
-        // ERROR CARD
-        let errorCard = document.getElementById("error-card");
-        errorCard.style.display = "none";
-        errorCard.innerHTML ="";
+        resetCards();
 
         let updateUrl = window.location.origin + "/api/v1/shop/items/update";
 
         // Get all the new values
-
         let title = document.getElementById("update-title").value;
         let available = document.getElementById("update-available").value === "True";
         let cost = Number(document.getElementById("update-cost").value);
@@ -310,14 +240,11 @@
         })
             .then(res => res.json())
             .then(res => {
-                loadingCard.style.display = "none";
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to make update request</b>`;
-                    return;
-                }
+                } else if (res.errors) {
 
-                if (res.errors) {
                     // Show errors
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
@@ -329,6 +256,7 @@
                     successCard.innerHTML = `<b>Item ${id} has been successfully updated</b>`;
                 }
                 window.scrollTo(0, 0);
+                loadingCard.style.display = "none";
             })
     }
 </script>
