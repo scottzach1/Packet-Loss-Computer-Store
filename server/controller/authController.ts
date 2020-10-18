@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import config from "../config";
 // @ts-ignore - valid library, no type definitions available anywhere.
 import passwordStrength from 'check-password-strength';
+import bcrypt from "bcrypt";
+import EmailHandler from '../emails';
 
 /**
  * Interface defining the object structure of a response from this file.
@@ -184,6 +186,46 @@ export const updatePasswordHandler = async (user: UserDoc | null, password: stri
     // Return result.
     response.success = true;
     return response;
+}
+
+export const generateResetLinkHandler = async (user: UserDoc) => {
+    // Generate unique hash for each instance.
+    const salt = await bcrypt.genSalt(10);
+    let hash = await bcrypt.hash(JSON.stringify([user.id, user.__v]), salt);
+
+    // Sanitise hash for URL.
+    hash = encodeURIComponent(hash);
+
+    // Update user document with seed.
+    user.resetSeed = hash;
+    await user.save();
+
+    // Send email to client!
+    EmailHandler.sendMail(
+        user.email,
+        'Password Reset Link',
+        `
+A request was made to reset your password. If this was not you, you can safely ignore this email.
+The link below is for one time use. Thank you for using Computer Store!
+
+http://localhost:3000/auth/reset?seed=${hash}
+        `
+    );
+
+    return {seed: hash};
+}
+
+export const redeemResetLinkHandler = async (seed: string, password: string) => {
+    let user = await User.findOne({resetSeed: seed});
+
+    if (!user) return {errors: ['invalid reset link!']};
+
+    user.resetSeed = '';
+    user.password = password;
+
+    user = await user.save();
+
+    return user;
 }
 
 

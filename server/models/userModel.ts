@@ -9,6 +9,7 @@ export interface UserDoc extends Document {
     cartId?: Types.ObjectId,
     orderIds?: Types.ObjectId[],
     admin: boolean,
+    resetSeed?: string,
 }
 
 const userSchema = new Schema({
@@ -43,6 +44,10 @@ const userSchema = new Schema({
         type: Boolean,
         required: false,
         default: false,
+    },
+    resetSeed: {
+        type: String,
+        required: false,
     }
 });
 

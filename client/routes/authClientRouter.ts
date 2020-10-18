@@ -20,7 +20,8 @@ router.get('/forgot', [], ((req : Request, res: Response) => {
 }));
 
 router.get('/reset', [], ((req : Request, res: Response) => {
-    render(req, res, 'pages/passwordReset', 'Reset', {});
+    const {seed} = req.query;
+    render(req, res, 'pages/passwordReset', 'Reset', {seed});
 }));
 
 router.get('/logout', [], ((req : Request, res: Response) => {
