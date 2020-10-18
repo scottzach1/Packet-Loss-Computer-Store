@@ -20,4 +20,8 @@ router.get('/items/:itemId', [], (req: Request, res: Response) => {
     render(req, res, 'pages/item', 'About us', {});
 });
 
+router.get('/add', [], (req: Request, res: Response) => {
+    render(req, res, 'pages/addItem', 'About us', {});
+});
+
 export {router as shopClientRouter};

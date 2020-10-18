@@ -15,4 +15,8 @@ router.get('/logout', [], ((req : Request, res: Response) => {
     render(req, res, 'pages/logout', 'Logout', {});
 }));
 
+router.get('/inactive', [], ((req : Request, res: Response) => {
+    render(req, res, 'pages/inactivity', 'Logout Inactive', {});
+}));
+
 export {router as authClientRouter};

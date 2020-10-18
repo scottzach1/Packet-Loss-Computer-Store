@@ -9,7 +9,7 @@
 }
 
 .card-small {
-    align-self: center;
+    display: inline-block;
     min-width: 280px;
     width: 50%;
 }
@@ -26,6 +26,11 @@
     background-color: #c1ff94;
 }
 
+.loading {
+    display: none;
+    justify-content: center;
+}
+
 .login {
     background-color: #f3f2f2;
 }
@@ -36,10 +41,10 @@
 }
 
 .div-hscroll {
-    display: flex;
-    align-items: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
     background-color: transparent;
-    overflow-x: auto;
 }
 
 .quantity {

@@ -1,3 +1,11 @@
+<div class="loading box-shadow page-section" id="loading-card">
+    <div style="display: block; justify-content: center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
 <div>
     <div id="checkout-contents"></div>
     <div class="card card-small page-section box-shadow" id="order-now" style="display: none">Order: ...</div>
@@ -17,6 +25,9 @@
                 <h4>You must be logged in to access your cart.</h4>
                 `
     } else {
+        let loadingCard = document.getElementById("loading-card");
+        loadingCard.style.display = "flex";
+
         fetch(contentsURL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -26,6 +37,8 @@
         })
             .then(response => response.json())
             .then(data => {
+                loadingCard.style.display = "none";
+
                 if (!data.items.length) {
                     contents.innerHTML = `
                             <div class="logout box-shadow page-section">
