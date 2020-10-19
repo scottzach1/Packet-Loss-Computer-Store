@@ -25,6 +25,20 @@ const api = '/api/v1';
  */
 describe('API Tests', function () {
 
+    before(function (done) {
+      console.log('Waiting to connect to mongoose.')
+      this.timeout(10000);
+
+      const pollServer = (callback: () => void) => {
+        setTimeout(() => {
+          if (mongoose.connection.readyState === 1) done();
+          else pollServer(callback)
+        }, 500);
+      };
+
+      pollServer(done);
+    });
+
     describe('Shop Items', function () {
 
       const saveAllItems = (items: any[]) => {
