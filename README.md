@@ -1,6 +1,7 @@
 # Computer Parts Store
 
-> An Express.js commerce site split into front and backend. Visit it [here](https://packet-loss-store.herokuapp.com/)!
+> An Express.js commerce site split into front and backend. Visit it
+> [here](https://packet-loss-store.herokuapp.com/)!
 
 ## Package Management
 
@@ -92,8 +93,15 @@ For the backend of this project we have developed a JSON based REST api.
 This api is used natively by the client and is the sole interface for
 interfacing with the backend model and data store. Unfortunately due to
 time limitations, we were not able to create a full Swaggerhub of
-documentation using OpenAPI. However, instead a copy of the [postman](https://www.postman.com/)
-requests can be found within [docs/postman](./docs/postman/postman-queries.json)
+documentation using OpenAPI. However, instead a copy of the
+[postman](https://www.postman.com/) requests can be found within
+[docs/postman](./docs/postman/postman-queries.json)
+
+## Testing
+
+Testing for this project is implemented using
+[Mocha](https://mochajs.org/) + [Chai](https://www.chaijs.com/). To run
+the tests execute `yarn run test`.
 
 ## Authors
 
@@ -101,3 +109,4 @@ requests can be found within [docs/postman](./docs/postman/postman-queries.json)
 |:-----------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1)                                                                               | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr)                                                                               | [Jeffrey Tong](https://gitlab.ecs.vuw.ac.nz/tonghoh)                                                                                           |
 | 300447976                                                                                                                          | 300402048                                                                                                                            | 300417799                                                                                                                                      |
+
