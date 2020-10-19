@@ -5,6 +5,7 @@ import config from "../config";
 import passwordStrength from 'check-password-strength';
 import bcrypt from "bcrypt";
 import EmailHandler from '../emails';
+import {addDays} from "date-fns";
 
 /**
  * Interface defining the object structure of a response from this file.
@@ -204,6 +205,7 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
 
   // Update user document with seed.
   user.resetSeed = hash;
+  user.resetExpire = addDays(new Date(), 1);
   await user.save();
 
   // Send email to client!
@@ -211,16 +213,16 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
     user.email,
     'Password Reset Link - Computer Store',
     `
-        Hi ${(user.displayName) ? user.displayName : 'there!'},
+Hi ${(user.displayName) ? user.displayName : 'there!'},
 
-        A request was made to reset your password. If this was not you, you can safely ignore this email.
-        The link below is for one time use. Thank you for using Computer Store!
+A request was made to reset your password. If this was not you, you can safely ignore this email.
+The link below is for one time use. Thank you for using Computer Store!
 
-        http://localhost:3000/auth/reset?seed=${hash}
+${config.SERVER.ORIGIN}/auth/reset?seed=${hash}
 
-        All the best,
-        Computer Store
-        `
+All the best,
+Computer Store
+          `
   );
 }
 
@@ -232,25 +234,36 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
  * @param password - the desired password.
  */
 export const redeemResetLinkHandler = async (seed: string, password: string) => {
-  let user = await User.findOne({resetSeed: seed});
+  try {
+    let user = await User.findOne({resetSeed: seed});
+    const expDate = user?.resetExpire;
 
-  if (!user) return {errors: ['invalid reset link!'], success: false};
+    if (!user || !expDate) throw 'invalid reset link!';
 
-  const resp = checkPasswordComplexity(password);
+    if (new Date().getTime() > expDate.getTime())
+      throw 'reset link has expired!'
 
-  if (!resp.success)
-    return resp;
+    const resp = checkPasswordComplexity(password);
 
-  user.resetSeed = '';
-  user.password = password;
+    if (!resp.success)
+      return resp;
 
-  user = await user.save();
+    user.resetSeed = undefined;
+    user.resetExpire = undefined;
+    user.password = password;
 
-  resp.success = true;
+    user = await user.save();
 
-  return user;
+    resp.success = true;
+
+    return user;
+  } catch (e) {
+    return {
+      errors: [e],
+      success: false,
+    }
+  }
 }
-
 
 /**
  * Checks the current password for complexity, returning any errors within the AuthResponse.

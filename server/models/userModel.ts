@@ -10,6 +10,7 @@ export interface UserDoc extends Document {
   orderIds?: Types.ObjectId[],
   admin: boolean,
   resetSeed?: string,
+  resetExpire?: Date,
 }
 
 const userSchema = new Schema({
@@ -48,7 +49,11 @@ const userSchema = new Schema({
   resetSeed: {
     type: String,
     required: false,
-  }
+  },
+  resetExpire: {
+    type: Date,
+    required: false,
+  },
 });
 
 /**
@@ -58,7 +63,6 @@ const userSchema = new Schema({
  */
 userSchema.pre<UserDoc>('save', async function (next) {
   const user = this;
-  user.admin = false;
 
   if (!user.isModified('password')) return next();
 

@@ -3,6 +3,9 @@ import config from "./config";
 import Mail from "nodemailer/lib/mailer";
 import {MailOptions} from "nodemailer/lib/smtp-transport";
 
+/**
+ * Config for our smtp mail client.
+ */
 const options = {
   host: config.NODE_MAILER.HOST,
   port: 465,
@@ -13,6 +16,10 @@ const options = {
   }
 }
 
+/**
+ * Simple Handler class designed to obfuscate any complexity when handling
+ * password reset emails.
+ */
 class EmailHandler {
   private transporter: Mail;
 
@@ -20,6 +27,14 @@ class EmailHandler {
     this.transporter = nodemailer.createTransport(options);
   }
 
+  /**
+   * Send an email from the servers default host email address with the following
+   * target email, subject and text body.
+   *
+   * @param email - the email to send to.
+   * @param subject - the subject in email header.
+   * @param text - the body of the email.
+   */
   sendMail(email: string, subject: string, text: string) {
     const mail: MailOptions = {
       to: email,
