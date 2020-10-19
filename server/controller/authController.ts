@@ -211,16 +211,16 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
     user.email,
     'Password Reset Link - Computer Store',
     `
-        Hi ${(user.displayName) ? user.displayName : 'there!'},
+Hi ${(user.displayName) ? user.displayName : 'there!'},
 
-        A request was made to reset your password. If this was not you, you can safely ignore this email.
-        The link below is for one time use. Thank you for using Computer Store!
+A request was made to reset your password. If this was not you, you can safely ignore this email.
+The link below is for one time use. Thank you for using Computer Store!
 
-        ${config.SERVER.ORIGIN}/auth/reset?seed=${hash}
+${config.SERVER.ORIGIN}/auth/reset?seed=${hash}
 
-        All the best,
-        Computer Store
-        `
+All the best,
+Computer Store
+          `
   );
 }
 
