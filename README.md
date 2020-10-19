@@ -86,10 +86,18 @@ the user makes a purchase, the price must never retrospectively change.
 
 ![Database Schema](./docs/assets/DbSchema.png)
 
+## Rest API
+
+For the backend of this project we have developed a JSON based REST api.
+This api is used natively by the client and is the sole interface for
+interfacing with the backend model and data store. Unfortunately due to
+time limitations, we were not able to create a full Swaggerhub of
+documentaion using OpenAPI. However, instead a copy of the [postman](https://www.postman.com/)
+requests can be found within [docs/postman](./docs/postman/postman-queries.json)
+
 ## Authors
 
 | [![Zac Scott](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1422/avatar.png)](https://gitlab.ecs.vuw.ac.nz/scottzach1) | [![Harrison Cook](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1476/avatar.png)](https://gitlab.ecs.vuw.ac.nz/cookharr) | [![Jeffrey Tong](https://secure.gravatar.com/avatar/51cde15ab7b44e147b07c62c7516b984?s=180&d=identicon)](https://gitlab.ecs.vuw.ac.nz/tonghoh) |
 |:-----------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1)                                                                               | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr)                                                                               | [Jeffrey Tong](https://gitlab.ecs.vuw.ac.nz/tonghoh)                                                                                           |
 | 300447976                                                                                                                          | 300402048                                                                                                                            | 300417799                                                                                                                                      |
-
