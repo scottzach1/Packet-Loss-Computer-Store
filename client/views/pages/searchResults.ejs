@@ -6,11 +6,15 @@
 </div>
 
 <script>
+    // Close SUCCESS and ERROR cards, open LOADING card
     resetCards();
 
+    // Get the search contents from the NAV DOM
     let searchResultContents = document.getElementById("search-result-contents");
+    // Reset the search DOM with no entry
     searchResultContents.innerHTML = "";
 
+    // Create a URL with the search params
     let searchParams = window.location.href.replaceAll(window.location.origin, "");
     let searchUrl = window.location.origin + "/api/v1/" + searchParams;
     let searchQuery = searchParams.replaceAll("/shop/items/search?q=", "");
@@ -21,12 +25,13 @@
     })
         .then(res => res.json())
         .then(data => {
-
+            // If there are errors, then tell the user
             if (data.errors || !data.items.length) {
                 errorCard.style.display = "block"
                 errorCard.innerHTML += `<b> - No Search Results for "${searchQuery}"<br/></b>`;
             } else {
 
+                // Dynamically update the dom with all the search results returned
                 document.getElementById("search-result-text").innerHTML = `
                     <h5 class="card-title"><b>Search Results For:</b> "${searchQuery}"</h5>
                 `

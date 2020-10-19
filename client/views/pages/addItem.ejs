@@ -47,23 +47,27 @@
 <script>
 
     function addItem() {
+        // Close SUCCESS and ERROR cards, open LOADING card
         resetCards();
 
-        let addUrl = window.location.origin + "/api/v1/shop/items/add";
-
+        // Extract the page specific elements (needed to utilize later, avoid combining with current values)
         let titleEle = document.getElementById("add-title");
         let availableEle = document.getElementById("add-available");
         let costEle = document.getElementById("add-cost");
         let categoryEle = document.getElementById("add-category");
         let brandEle = document.getElementById("add-brand");
         let descriptionEle = document.getElementById("add-description");
-
         let title = titleEle.value;
+
+        // Extract the current values from the elements above
         let available = availableEle.value === "True";
         let cost = Number(costEle.value);
         let category = categoryEle.value;
         let brand = brandEle.value;
         let description = descriptionEle.value;
+
+        // Variable with URL for adding an item, extracted for ease of reading fetch
+        let addUrl = window.location.origin + "/api/v1/shop/items/add";
 
         fetch(addUrl, {
             method: 'POST',
@@ -80,12 +84,18 @@
         })
             .then(res => res.json())
             .then(res => {
+
+                // If there is no response, then the server is unable to make the request
                 if (!res) {
                     errorCard.style.display = "block"
-                    errorCard.innerHTML += `<b>- Unable to make delete request</b>`;
+                    errorCard.innerHTML += `<b>- Unable to make add request</b>`;
+                    // Once we reach here, then the loading has completed
+                    loadingCard.style.display = "none";
                     return;
                 }
 
+                // If the response has errors, then there were some issues that will be shown to the user
+                // in an error card popup
                 if (res.errors) {
                     // Show errors
                     errorCard.style.display = "block"
@@ -93,7 +103,10 @@
                     res.errors.forEach(error => {
                         errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
-                } else {
+                }
+                // Else, there were no issues, thus, reset the values of all the elements on the page (this is
+                // why the above implementation extracts the elements away from their current values)
+                else {
                     // Show success
                     successCard.style.display = "block";
                     successCard.innerHTML = `<b>'${title}' has been successfully added to the store</b>`;
@@ -105,6 +118,7 @@
                     descriptionEle.value = "";
                 }
 
+                // Once we reach here, then the loading has completed
                 loadingCard.style.display = "none";
             })
     }

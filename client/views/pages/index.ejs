@@ -11,13 +11,18 @@
 </div>
 
 <script>
+    // Close SUCCESS and ERROR cards, open LOADING card
     resetCards();
+
+    // Extract the contents of the DOM
     let contents = document.getElementById("store-contents");
-
     let recommended = document.getElementById("recommended");
-    contents.innerHTML = "";
 
+    // RESET the contents of the DOM elemenmts
+    contents.innerHTML = "";
     recommended.innerHTML = "";
+
+    // Extract URLS for ease of reading fetch req
     let contentsURL = window.location.origin + "/api/v1/shop/items/all"
     let recommendedURL = window.location.origin + "/api/v1/recommend/nearby"
 
@@ -28,6 +33,7 @@
     })
         .then(response => response.json())
         .then(data => {
+            // For all the items returned from the request, add them to the store page
             data.items.forEach(item => {
                 const {brand, category, cost, description, title, _id} = item;
 
@@ -45,12 +51,14 @@
             })
         });
 
+    // Alter all the components for the recommended bar
     fetch(recommendedURL, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     })
         .then(res => res.json())
         .then(res => {
+            // For all the items returned from the request, add them to the recommended component
             res.recommendations.forEach(rec => {
                 recommended.innerHTML += `
                         <div class="card-small box-shadow">

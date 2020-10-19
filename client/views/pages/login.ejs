@@ -35,24 +35,36 @@
 </div>
 
 <script>
+    // Add event listeners to all relevant buttons which need to perform some fetch
     document.getElementById("show-password").addEventListener('change', showPassword);
     document.getElementById("login-btn").addEventListener("click", login);
     document.getElementById("google-btn").addEventListener("click", googleLogin);
 
 
+    /**
+     * Toggle showing the password from "password" input to "text" input
+     */
     function showPassword() {
         let value = document.getElementById("password").type;
         document.getElementById("password").type = value === "password" ? "text" : "password";
     }
 
+    /**
+     * Login the user
+     */
     function login() {
+        // Close SUCCESS and ERROR cards, open LOADING card
         resetCards();
 
+        // Extract the contents in the DOM elements
         let email = document.getElementById("email")?.value;
         let pass = document.getElementById("password")?.value;
         let remember = document.getElementById("remember")?.checked;
+
+        // Extract the urls for ease of reading fetch
         let url = window.location.origin + "/api/v1/auth/login"
         let success = window.location.origin + "/"
+
 
         fetch(url, {
             method: 'POST',
@@ -65,25 +77,32 @@
         })
             .then(response => response.json())
             .then(data => {
+                // If the login was unsuccessful, then tell the user
                 if (!data.success) {
                     errorCard.style.display = "block";
                     data.errors.forEach(error => {
                         errorCard.innerHTML += `<b> - \t${error}<br/></b>`;
                     });
                 } else {
+                    // Login successful, put the user on the store front page
                     window.location.href = success
+                    // Update the local storage such that the user reference can be utilized around the store
                     window.localStorage.setItem("token", data.token);
                     window.localStorage.setItem("admin", data.admin);
                     data.displayName ? window.localStorage.setItem("displayName", data.displayName) :
                         null;
+
+                    // Start a token renewal loop, where each token is renewed every 25 mins (5 mins before it runs out)
                     setTimeout(renewToken, 1000 * 60 * TOKEN_TIMEOUT_MINS);
                 }
                 loadingCard.style.display = "none";
             });
     }
 
+    /**
+     * Change the window location to the GOOGLE login page
+     */
     function googleLogin() {
         window.location.href = window.location.origin + "/api/v1/auth/login/google";
-
     }
 </script>

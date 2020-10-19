@@ -5,20 +5,27 @@
 </div>
 
 <script>
+
+    // Extract the two DOM elements that will be dynamically altered
     let contents = document.getElementById("checkout-contents");
     let totalAmount = document.getElementById("total-amount");
 
+    // Extract the url for ease of reading the fetch request
     let contentsURL = window.location.origin + "/api/v1/cart/get/items"
 
+    // Maintain a running total of the cart
     let total = 0;
 
+    // If the user has not logged in (no token) then tell the user they must login to utilize the cart
     if (!token) {
         contents.className = "logout box-shadow page-section"
         contents.innerHTML = `
                 <h4>You must be logged in to access your cart.</h4>
                 `
-    } else {
-        let loadingCard = document.getElementById("loading-card");
+    }
+    // The user has logged in, so dynamically update the DOM elements to represent their cart
+    else {
+        // Close SUCCESS and ERROR cards, open LOADING card
         resetCards();
 
         fetch(contentsURL, {
@@ -30,6 +37,7 @@
         })
             .then(response => response.json())
             .then(data => {
+                // If there are no items returned, then the cart is empty, tell the user this information
                 if (!data.items.length) {
                     contents.innerHTML = `
                             <div class="logout box-shadow page-section">
@@ -37,10 +45,13 @@
                             </div>
                         `
                 } else {
+                    // If there are items in the cart, then cycle through each item and add it to the DOM elements
                     data.items.forEach(i => {
-                            // GET i.item details
+                            // GET ith.item details
                             let item = i.item;
 
+                            // If the item has been allocated some error, that means it no longer exists.
+                            // tell the user this information
                             if (item.error) {
                                 contents.innerHTML += `
                                 <div class="card box-shadow page-section">
@@ -50,53 +61,70 @@
                                 <a class="card-text"><b>Quantity: </b>${i.quantity}<br/></a>
                                 </div>
                                 </div>`;
-                                return;
                             }
+                            // Else, if the item is valid
+                            else {
+                                // Extract the information from the item
+                                const {brand, category, cost, description, title, _id} = item;
+
+                                // Get the quantity of this item
+                                let quantity = Number(i.quantity);
+
+                                // Increase the total cost of the cart
+                                total += (cost * quantity)
 
 
-                            const {brand, category, cost, description, title, _id} = item;
-
-                            // Get i.quantity
-                            let quantity = Number(i.quantity);
-
-                            total += (cost * quantity)
-
-
-                            contents.innerHTML += `
-                            <div class="card box-shadow page-section">
-                            <div class="card-body">
-                            <h5 class="card-title">${title}</h5>
-                            <a class="card-text"><b>Quantity:</b>${quantity}<br/></a>
-                            <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
-                            <a class="card-text"><b>Category: </b>${category}<br/></a>
-                            <a class="card-text"><b>Brand: </b>${brand}<br/></a>
-                            <a class="card-text"><b>Description: </b>${description}<br/></a>
-                            <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'"><span>Go to item page</span></a>
-                            <a class="btn btn-warning" onclick="removeItem('${_id}', '${title}', '${quantity}')"><span>Remove item</span></a>
-                            </div>
-                            </div>`;
-
-                            totalAmount.innerHTML = `
-                            <div>
-                            <a>Total: $${total.toFixed(2)}<br/></a>
-                            <a class="btn btn-success" onclick="placeOrder(${total})">Place order</a>
-                            <a class="btn btn-danger" onclick="clearCart()">Clear cart</a>
-                            </div>
-                            `;
-                            totalAmount.style.display = "";
+                                // Create a card for every item, inserting the item specific values
+                                contents.innerHTML += `
+                                    <div class="card box-shadow page-section">
+                                    <div class="card-body">
+                                    <h5 class="card-title">${title}</h5>
+                                    <a class="card-text"><b>Quantity:</b>${quantity}<br/></a>
+                                    <a class="card-text"><b>Cost per item: </b>$${cost.toFixed(2)}<br/></a>
+                                    <a class="card-text"><b>Category: </b>${category}<br/></a>
+                                    <a class="card-text"><b>Brand: </b>${brand}<br/></a>
+                                    <a class="card-text"><b>Description: </b>${description}<br/></a>
+                                    <a class="btn btn-primary" onclick="window.location.href = '/shop/items/${_id}'"><span>Go to item page</span></a>
+                                    <a class="btn btn-primary" onclick="removeItem('${_id}', '${title}', '${quantity}')"><span>Remove item</span></a>
+                                    </div>
+                                    </div>`;
+                            }
                         }
-                    )
+                    );
+
+                    // Update the total amount in the cart
+                    totalAmount.innerHTML = `
+                                    <div>
+                                    <a>Total: $${total.toFixed(2)}<br/></a>
+                                    <a class="btn btn-success" onclick="placeOrder(${total})">Place order</a>
+                                    <a class="btn btn-danger" onclick="clearCart()">Clear cart</a>
+                                    </div>
+                                    `;
+                    totalAmount.style.display = "";
                 }
                 loadingCard.style.display = "none";
             })
     }
 
+    /**
+     * This Function will confirm the user wants to remove all of this item from their cart
+     * @param id - Item ID
+     * @param title - Item Title
+     * @param quantity - The number of items being removed
+     */
     function removeItem(id, title, quantity) {
+        // Ask the user if they are sure
         let answer = window.confirm(`Are you sure you want to remove all ${quantity} of ${title}: ${id}`);
+
+        // If they are sure they want to remove the item from their cart, then do so
         if (answer) {
+            // Close SUCCESS and ERROR cards, open LOADING card
             resetCards();
+
+            // Extract the url for ease of reading the fetch request
             let removeUrl = window.location.origin + "/api/v1/cart/remove"
 
+            // Delete the item from the server
             fetch(removeUrl, {
                 method: 'DELETE',
                 headers: {'Content-Type': 'application/json'},
@@ -106,16 +134,26 @@
                 })
             })
                 .then(() => {
+                    // Reload the page to update the change
                     window.location.reload();
+                    loadingCard.style.display = "none";
                 });
         }
     }
 
 
+    /**
+     * Easy fetch request to DELETE all items in the cart for some user
+     */
     function clearCart() {
+        // Confirm the user wants to empty their cart
         let answer = window.confirm("Are you sure you want to clear your entire cart?");
+        // If the user is sure they want to empty their cart
         if (answer) {
+            // Close SUCCESS and ERROR cards, open LOADING card
             resetCards();
+
+            // Extract the url for ease of reading the fetch request
             let clearCartUrl = window.location.origin + "/api/v1/cart/clear"
 
             fetch(clearCartUrl, {
@@ -127,16 +165,27 @@
             })
                 .then(res => res.json())
                 .then(() => {
+                    // Reload the window
                     window.location.reload();
                     loadingCard.style.display = "none";
                 })
         }
     }
 
+    /**
+     * Fetch request to place an order for the contents of the cart
+     * @param total - Cart total amount cost
+     */
     function placeOrder(total) {
+        // Confirm the user wants to place an order
         let answer = window.confirm(`Confirm Purchase for $${total.toFixed(2)}?`);
+
+        // If the user is sure they want to empty their cart
         if (answer) {
+            // Close SUCCESS and ERROR cards, open LOADING card
             resetCards();
+
+            // Extract the url for ease of reading the fetch request
             let createOrder = window.location.origin + "/api/v1/orders/create"
 
             fetch(createOrder, {
@@ -148,6 +197,7 @@
             })
                 .then(res => res.json())
                 .then(() => {
+                    // Reload the window
                     window.location.reload();
                     loadingCard.style.display = "none";
                 })

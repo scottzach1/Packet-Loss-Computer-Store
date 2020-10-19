@@ -4,11 +4,14 @@
 </div>
 
 <script>
+    // Close SUCCESS and ERROR cards, open LOADING card
     resetCards();
 
+    // Get the two dynamic components
     let accountContents = document.getElementById("account-contents");
     let accountOrders = document.getElementById("account-orders");
 
+    // Variables utilized for ease of reading fetch request
     let contentsURL = window.location.origin + "/api/v1/account/get"
     let orderURL = window.location.origin + "/api/v1/orders/get/all/details"
 
@@ -21,19 +24,20 @@
     })
         .then(data => data.json())
         .then(info => {
-            let email = info.email;
-            let displayName = info.displayName;
-            let id = info._id;
+            // Extract the necessary information from the provided user
+            const {email, displayName, _id} = info;
 
+            // Set the contents of the account information panel
             accountContents.innerHTML = `
                     <div class="card-body">
                     <h5 class="card-title">Account Information:</h5>
                     <a class="card-text"><b>Email: </b>${email}<br/></a>
                     <a class="card-text"><b>Name: </b>${displayName}<br/></a>
-                    <a class="card-text"><b>Id: </b>${id}<br/></a>
+                    <a class="card-text"><b>Id: </b>${_id}<br/></a>
                     </div>
             `
 
+            // Fetch the order history of this user
             fetch(orderURL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -43,32 +47,36 @@
             })
                 .then(res => res.json())
                 .then(res => {
+                    // Empty the order html element before appending new content
                     accountOrders.innerHTML = ""
 
+                    // If there are no orders, tell the user
                     if (res.orders.length === 0) {
                         accountOrders.innerHTML = `
                     <div class="card-body">
                     <h5 class="card-title">No orders yet</h5>
                     </div>
                     `
+                        // Stop the loading bar, this function is finished
                         loadingCard.style.display = "none";
                         return;
                     }
 
+                    // If there are orders for the user
                     res.orders.forEach(order => {
-                        let orderId = order._id;
-                        let date = order.orderDate;
-                        let items = order.items;
+                        // Extract the contents from the order
+                        const {_id, orderDate, items} = order;
                         let total = 0;
 
-                        // Title
+                        // Dynamically appends this order item to the order card
                         accountOrders.innerHTML += `
-                    <div class="card-body" style="background-color: #f3f2f2">
-                    <h5 class="card-title">Order: ${orderId}</h5>
-                    <a class="card-text"><b>Date Ordered: </b>${date}<br/><br/></a>
-                    </div>
-                    `
+                        <div class="card-body" style="background-color: #f3f2f2">
+                        <h5 class="card-title">Order: ${_id}</h5>
+                        <a class="card-text"><b>Date Ordered: </b>${orderDate}<br/><br/></a>
+                        </div>
+                        `
 
+                        // Dynamically add each item from the order to the order card under it's order title (above)
                         items.forEach(i => {
                             let item = i.item;
                             let quantity = Number(i.quantity);
@@ -87,13 +95,14 @@
                             }
                         })
 
-                        // Close title
+                        // Show the total for some order at the bottom of the items text
                         accountOrders.innerHTML += `
                                     <div class="card-body">
                                     <h5 class="card-title">Total: $${total.toFixed(2)}</h5>
                                     </div><br/>`
                     })
 
+                    // Loading has finished, stop showing the loading spinner
                     loadingCard.style.display = "none";
                 })
         })

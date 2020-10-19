@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light">
-    <a class="navbar-brand" href="/"/><b>Computer Parts Store</b></a>
+    <a class="navbar-brand" href="/"><b>Computer Parts Store</b></a>
     <label class="input-group">
         <input type="text" class="form-control" placeholder="Search" id="search-bar">
         <div class="input-group-append" id="search-btn">
@@ -62,12 +62,19 @@
     }
 
 
+    /**
+     * If the user presses enter in the search bar, then also search
+     * @param e - event
+     */
     function key_down(e) {
         if(e.keyCode === 13) {
             doSearch();
         }
     }
 
+    /**
+     * Search for the contents in the search bar
+     */
     function doSearch() {
         let searchText = document.getElementById("search-bar").value;
         let searchQueryUrl = new URL(window.location.origin + "/shop/items/search");

@@ -3,11 +3,17 @@
 </div>
 
 <script>
+    // Close SUCCESS and ERROR cards, open LOADING card
     resetCards();
+
+    // Extract the item id from the URL
     let urlContents = window.location.href.split("/");
     let itemId = urlContents[urlContents.length - 1];
 
+    // Get the dynamic DOM element
     let contents = document.getElementById("item-content");
+
+    // Extract the url for ease of reading the fetch request below
     let url = window.location.origin + "/api/v1/shop/items/" + itemId;
 
     fetch(url, {
@@ -16,10 +22,12 @@
     })
         .then(data => data.json())
         .then(item => {
+            // Extract the returned information from the request
             const {_id, available, brand, category, cost, description, title, createdDate, updatedDate} = item.item;
             let cDate = new Date(createdDate);
             let uDate = new Date(updatedDate);
 
+            // Reset the dynamic element's content
             contents.innerHTML = "";
 
             // If this is not admin, then just send through the information about the item
@@ -125,17 +133,23 @@
      * @param itemTitle - item title
      */
     function addToCart(id, itemTitle) {
+        // Close SUCCESS and ERROR cards, open LOADING card
         resetCards();
 
-        let addUrl = window.location.origin + "/api/v1/cart/add";
+        // Get the number of this item to add to the cart
         let doc = document.getElementById("quantity-amount");
         let quantity = Number(doc.value);
 
-        // ITEM CARD
+        // Get the item card to dynamically update
         let itemCard = document.getElementById("item-content");
         itemCard.style.display = "block";
 
+        // Extract the url so the fetch request is easier to read
+        let addUrl = window.location.origin + "/api/v1/cart/add";
 
+
+        // If the quantity if not a number, or less than 1, or the ID is not valid
+        // Tell the user
         if (isNaN(quantity) || quantity < 1 || !id) {
             errorCard.style.display = "block";
             errorCard.innerHTML = `<b>${quantity} is not a valid amount</b>`;
@@ -152,29 +166,45 @@
             })
         })
             .then(res => {
-                loadingCard.style.display = "none";
 
+                // If there is no response, then tell the user that there was nothing that could be done to
+                // add the item to the card
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to add item to cart</b>`;
-                } else if (!token) {
+                }
+                // Else if there if no token, tell the user the must be logged in to add to their cart
+                else if (!token) {
                     errorCard.style.display = "block";
                     errorCard.innerHTML = `<b>You must be logged in to add to your cart</b>`;
-                } else {
+                }
+                // Else, the item was added to their cart
+                else {
                     successCard.style.display = "block";
                     successCard.innerHTML = `<b>${quantity} x "${itemTitle}" successfully added to your cart</b>`;
                 }
+
+                // Stop loading spinner and scroll to top for error/success banner information
+                loadingCard.style.display = "none";
                 window.scrollTo(0, 0);
             })
     }
 
+    /**
+     * In the case where the user is an admin, and they click the delete button
+     * @param id - Item Id
+     */
     function adminDelete(id) {
+        // Close SUCCESS and ERROR cards, open LOADING card
         resetCards();
 
         // ITEM CARD
         let itemCard = document.getElementById("item-content");
 
+        // display the item contents
         itemCard.style.display = "block";
+
+        // extract URL to aid with reading the fetch req
         let deleteUrl = window.location.origin + "/api/v1/shop/items/remove";
 
         fetch(deleteUrl, {
@@ -187,15 +217,21 @@
         })
             .then(res => res.json())
             .then(res => {
+
+                // if there is no response, tell the admin the request couldn't be completed
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to make delete request</b>`;
-                } else if (res.errors) {
+                }
+                // If there were errors with deleting the object then tell the admin
+                else if (res.errors) {
                     errorCard.style.display = "block"
                     res.errors.forEach(error => {
                         errorCard.innerHTML += `<b>- ${error}<br/></b>`;
                     })
-                } else {
+                }
+                // TEll the admin that the delete was successful
+                else {
                     // Show success
                     successCard.style.display = "block";
 
@@ -210,10 +246,12 @@
             })
     }
 
+    /**
+     * In the case where the user is an admin and they click the update button
+     * @param id - Item ID
+     */
     function adminUpdate(id) {
         resetCards();
-
-        let updateUrl = window.location.origin + "/api/v1/shop/items/update";
 
         // Get all the new values
         let title = document.getElementById("update-title").value;
@@ -223,6 +261,7 @@
         let brand = document.getElementById("update-brand").value;
         let description = document.getElementById("update-description").value;
 
+        let updateUrl = window.location.origin + "/api/v1/shop/items/update";
 
         fetch(updateUrl, {
             method: 'PATCH',
@@ -240,6 +279,8 @@
         })
             .then(res => res.json())
             .then(res => {
+
+                // No response, tell the admin
                 if (!res) {
                     errorCard.style.display = "block"
                     errorCard.innerHTML += `<b>- Unable to make update request</b>`;

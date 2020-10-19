@@ -25,17 +25,24 @@
 </div>
 
 <script>
+    // Add listeners to all components that require functionality
     document.getElementById("show-password").addEventListener('change', showPassword);
     document.getElementById("password").addEventListener("input", () => passwordComplexity());
     document.getElementById("create-btn").addEventListener("click", createAccount)
 
 
+    /**
+     * TOGGLE between text and password type for the password and confirm password elements
+     */
     function showPassword() {
         let value = document.getElementById("password").type;
         document.getElementById("password").type = value === "password" ? "text" : "password";
         document.getElementById("password-confirm").type = value === "password" ? "text" : "password";
     }
 
+    /**
+     * Get the password complexity, and show the user how secure their password is
+     */
     function passwordComplexity() {
         let pw = document.getElementById("password").value;
         let url = window.location.origin + "/api/v1/auth/complexity";
@@ -76,6 +83,9 @@
     }
 
 
+    /**
+     * Attempts to create an account with the information in the DOM elements
+     */
     function createAccount() {
         let email = document.getElementById("email")?.value;
         let pass = document.getElementById("password")?.value;
@@ -96,7 +106,6 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify({
                 email: email,
@@ -106,7 +115,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.errors.length) {
                     errorCard.style.display = "block";
                     errorCard.innerHTML = ""
