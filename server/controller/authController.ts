@@ -248,7 +248,7 @@ export const redeemResetLinkHandler = async (seed: string, password: string) => 
     if (!resp.success)
       return resp;
 
-    user.resetSeed = '';
+    user.resetSeed = undefined;
     user.resetExpire = undefined;
     user.password = password;
 
@@ -264,7 +264,6 @@ export const redeemResetLinkHandler = async (seed: string, password: string) => 
     }
   }
 }
-
 
 /**
  * Checks the current password for complexity, returning any errors within the AuthResponse.
