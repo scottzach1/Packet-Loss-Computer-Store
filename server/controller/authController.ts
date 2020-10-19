@@ -216,7 +216,7 @@ export const generateResetLinkHandler = async (user: UserDoc) => {
         A request was made to reset your password. If this was not you, you can safely ignore this email.
         The link below is for one time use. Thank you for using Computer Store!
 
-        http://localhost:3000/auth/reset?seed=${hash}
+        ${config.SERVER.ORIGIN}/auth/reset?seed=${hash}
 
         All the best,
         Computer Store
