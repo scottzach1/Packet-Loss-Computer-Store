@@ -63,7 +63,6 @@ const userSchema = new Schema({
  */
 userSchema.pre<UserDoc>('save', async function (next) {
   const user = this;
-  user.admin = false;
 
   if (!user.isModified('password')) return next();
 

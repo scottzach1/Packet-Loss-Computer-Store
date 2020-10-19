@@ -14,9 +14,22 @@ router.post('/get', [passport.authenticate("jwt", {session: false})], async (req
   return res.status(code).json(user).send();
 });
 
-router.patch('/update', [], (req: Request, res: Response) => {
-  // TODO: This will need to be implemented in much more depth.
-  return res.send('SOME ACTION');
+router.patch('/update', [passport.authenticate("jwt", {session: false})], async (req: Request, res: Response) => {
+  const {_id}: any = req.user;
+  const {displayName} = req.body;
+
+  // User authenticated;
+  const user = await User.findById(_id);
+  const code = (user) ? 200 : 400;
+  if (user) {
+    user.displayName = displayName;
+    await user.save();
+  }
+
+  return res
+    .status(code)
+    .json((user) ? user : {errors: ['Account could not be found!']})
+    .send();
 });
 
 export {router as accountServerRouter};
