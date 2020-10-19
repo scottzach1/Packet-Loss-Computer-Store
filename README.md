@@ -1,8 +1,11 @@
 # Computer Parts Store
 
-> An Express.js commerce site split into front and backend.
+> An Express.js commerce site split into front and backend. Visit it
+> [here](https://packet-loss-store.herokuapp.com/)!
 
-## Package Management
+## House Keeping
+
+### Package Management
 
 For this project we are using the [yarn](https://yarnpkg.com/) package
 manager. After cloning this project, type `yarn install` to install all
@@ -15,6 +18,22 @@ installation as a development dependency, use the `-D` argument. Eg.
 Alternatively, you can delete the `yarn.lock` file and run `npm install`
 with the [npm](https://www.npmjs.com/) package manager.
 
+### Execution
+
+The project can be run by any of the start script specified within the
+`package.json`. Each of the scripts will target a different target
+MongoDB server for their respective purposes / environment.
+
+### Environment Variables
+
+Please note that in order for the service to perform as expected, you
+will need to place a `.env` file in the root folder of this project
+containing all the required environment variables. These must be kept
+separate from the repository to ensure that no private keys or
+information make it onto public source control. To obtain a copy of the
+`.env` file to run this project. Please contact on of the contributors
+of this project. They can be seen at the bottom of this document.
+
 ## Coding Conventions
 
 As we are using TypeScript for this project, we are going to be
@@ -22,6 +41,35 @@ following the conventions that have been set out within this
 [styleguide](https://github.com/basarat/typescript-book/blob/master/docs/styleguide/styleguide.md).
 
 ## Project Structure
+
+This project has been distinctly organised to two different projects,
+the client and the server. Each of the files unique to a given sub
+project wil be located within their respective packages.
+
+Within this project we utilised an MVC data structure to allow better
+separation of duty and a more modular approach to design.
+
+### Server Structure
+
+Within the `server/` package there are 4 main directories of interest:
+
+| Directory    | Explanation                                                                                                                                                                                                                                                                                                                                                                     |
+|:-------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `models/`    | The `models/` directory is concerned with the model of the MVC. Here we are defining what and how the data is to be indexed and stored within our MongoDB backend.                                                                                                                                                                                                              |
+| `controller` | This `controller` directory is concerned with the controller of the MVC. Here we are concerned about the logic regarding how we manipulate the data and handle edge cases etc.                                                                                                                                                                                                  |
+| `middleware` | This `middleware` directory is concenred with the middleware of the server. Middleware are functions that can be called and run before any respective routing. We utilise the `middleware/` directory to handle authentication on some of our restricted routes.                                                                                                                |
+| `routes`     | This `routes` directory is concerned with the actual routing of the api path endpoints of the MVC. Here we handle the HTTP requests received from the web and parse all of the information. With this extracted information, we can then call the appropriate controller functions to update the data store via the model. These routes will append the base path of `/api/v1/` |
+
+### Client Structure
+
+Within the `client/` package there are 2 main directories of interest.
+
+| Directory | Explanation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|:----------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `views`   | The `views/` directory contains all the webpages to be rendered and sent to the client on a client request. For this project, these front end pages are written using [EJS](https://ejs.co/) as they allow us to dynamically generate the pages to send to the server. The front end of the application acts as the view within the MVC, and the Javascript embedded within the client pages are used to directly interface with the controller written within the backend (server routes). |
+| `routes`  | The `routes/` directory contains all the routes to listen on the Express server. These routes will append the base path of `/`.                                                                                                                                                                                                                                                                                                                                                             |
+
+### File Structure
 
 ```bash
 # Client
@@ -85,6 +133,49 @@ representation of an instance of a cart payment at a given time. When
 the user makes a purchase, the price must never retrospectively change.
 
 ![Database Schema](./docs/assets/DbSchema.png)
+
+## Rest API
+
+For the backend of this project we have developed a JSON based REST api.
+This api is used natively by the client and is the sole interface for
+interfacing with the backend model and data store. Unfortunately due to
+time limitations, we were not able to create a full Swaggerhub of
+documentation using OpenAPI. However, instead a copy of the
+[postman](https://www.postman.com/) requests can be found within
+[docs/postman](./docs/postman/postman-queries.json)
+
+## Error Handling
+
+For each route in the routers of the express server, where appropriate
+we have implemented a try-catch based approach. Here we are able to
+catch any errors that are thrown (as well as throw any errors where an
+invalid state was experienced). This approach allows for better
+certainty of heuristics, as well as aids in providing a more consistent
+and reliable response from the server on situations such as errors.
+Given more time, we would have loved to have documented the error
+responses of the site using OpenAPI + Swaggerhub.
+
+To assist with error handling of the server, 100% of the code are
+written using [TypeScript](https://www.typescriptlang.org/). TypeScript
+is an extension of the Javascript language that adds strongly typed
+types. Using TypeScript we can verify that our variables and responses
+comply with the specified format and do not change into invalid states.
+This by nature, greatly increases the certainty of the software (reduces
+number of bugs).
+
+Additionally, if the server ends up in a bad state where it is stuck
+attempting to serve the client for too long. We are using an extra
+middleware called
+[connect-timeout](https://www.npmjs.com/package/connect-timeout). Using
+this middleware we are able to set a hard timeout of 10s to serve a
+given connection. This value can easily be changed and tweaked as the
+site and needs change over time.
+
+## Testing
+
+Testing for this project is implemented using
+[Mocha](https://mochajs.org/) + [Chai](https://www.chaijs.com/). To run
+the tests execute `yarn run test`.
 
 ## Authors
 

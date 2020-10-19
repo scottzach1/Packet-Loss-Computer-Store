@@ -1,10 +1,11 @@
 /**
  * Full credit to 'ChriwW' from StackOverflow. I really liked his approach as I thought it would
- * produce the tidiest test cases by providing expected values.
+ * produce the tidiest test cases by providing expected values. This function compares an object
+ * with an example object. For every item within subject, it must deeply equal the example.
  *
- * @param subject - TODO
- * @param example - TODO
- * @param optional - TODO
+ * @param subject - the subject to test.
+ * @param example - the example to compare to.
+ * @param optional - any optional properties to ignore.
  */
 export function assertEquals<T>(subject: any, example: T, optional?: Set<string>): T {
   // this is called recursively to compare each element
