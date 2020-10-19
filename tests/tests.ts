@@ -26,7 +26,6 @@ const api = '/api/v1';
 describe('API Tests', function () {
 
     before(function (done) {
-      console.log('Waiting to connect to mongoose.')
       this.timeout(10000);
 
       const pollServer = (callback: () => void) => {
