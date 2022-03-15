@@ -24,7 +24,7 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "mongoose": "^5.10.8",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "node-ipinfo": "^1.0.1",
     "nodemailer": "^6.4.14",
     "passport": "^0.4.1",
