@@ -25,7 +25,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.10.8",
     "node-fetch": "^2.6.1",
-    "node-ipinfo": "^1.0.1",
+    "node-ipinfo": "^2.0.1",
     "nodemailer": "^6.4.14",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
